@@ -14,6 +14,17 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
+          name: Check npm and node versions
+          command: |
+            npm --version
+            node --version
+      - run:
+          name: List package.json content
+          command: cat package.json
+      - run:
+          name: Install dependencies with verbose logging
+          command: npm install --verbose
+      - run:
           name: Run linter
           command: npx eslint .
       - run:
