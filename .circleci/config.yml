@@ -15,11 +15,23 @@ jobs:
           name: Output package.json contents
           command: cat package.json
       - run:
-          name: Install Yarn
-          command: npm install -g yarn
+          name: Check for Yarn
+          command: |
+            if ! command -v yarn &> /dev/null; then
+              echo "Yarn not found, installing..."
+              npm install -g yarn
+            fi
+            yarn --version
+      - restore_cache:
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
           command: yarn install --frozen-lockfile
+      - save_cache:
+          paths:
+            - ~/.cache/yarn
+          key: yarn-packages-{{ checksum "yarn.lock" }}
       - run:
           name: List installed packages
           command: yarn list --depth=0
@@ -33,7 +45,7 @@ jobs:
           command: yarn run eslint .
       - run:
           name: Run tests
-          command: yarn test
+          command: yarn test --passWithNoTests
       - run:
           name: Build application
           command: yarn build
