@@ -8,20 +8,19 @@ orbs:
 jobs:
   build-and-test:
     docker:
-      - image: cimg/node:14.19
+      - image: cimg/base:stable
     steps:
       - checkout
+      - node/install:
+          node-version: '16.20'
+      - run:
+          name: Check Node.js and Yarn versions
+          command: |
+            node --version
+            yarn --version
       - run:
           name: Output package.json contents
           command: cat package.json
-      - run:
-          name: Check for Yarn
-          command: |
-            if ! command -v yarn &> /dev/null; then
-              echo "Yarn not found, installing..."
-              npm install -g yarn
-            fi
-            yarn --version
       - restore_cache:
           keys:
             - yarn-packages-{{ checksum "yarn.lock" }}
@@ -35,11 +34,6 @@ jobs:
       - run:
           name: List installed packages
           command: yarn list --depth=0
-      - run:
-          name: Check yarn and node versions
-          command: |
-            yarn --version
-            node --version
       - run:
           name: Run linter
           command: yarn run eslint .
