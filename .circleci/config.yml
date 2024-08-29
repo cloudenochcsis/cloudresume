@@ -14,6 +14,11 @@ jobs:
       - node/install:
           node-version: '16.20'
       - run:
+          name: Install Yarn
+          command: |
+            sudo npm install -g yarn
+            yarn --version
+      - run:
           name: Check Node.js and Yarn versions
           command: |
             node --version
