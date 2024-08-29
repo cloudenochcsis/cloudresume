@@ -11,28 +11,32 @@ jobs:
       - image: cimg/node:14.19
     steps:
       - checkout
-      - node/install-packages:
-          pkg-manager: npm
       - run:
-          name: Check npm and node versions
-          command: |
-            npm --version
-            node --version
-      - run:
-          name: List package.json content
+          name: Output package.json contents
           command: cat package.json
       - run:
-          name: Install dependencies with verbose logging
-          command: npm install --verbose
+          name: Install Yarn
+          command: npm install -g yarn
+      - run:
+          name: Install dependencies
+          command: yarn install --frozen-lockfile
+      - run:
+          name: List installed packages
+          command: yarn list --depth=0
+      - run:
+          name: Check yarn and node versions
+          command: |
+            yarn --version
+            node --version
       - run:
           name: Run linter
-          command: npx eslint .
+          command: yarn run eslint .
       - run:
           name: Run tests
-          command: npm test
+          command: yarn test
       - run:
           name: Build application
-          command: npm run build
+          command: yarn build
       - persist_to_workspace:
           root: .
           paths:
