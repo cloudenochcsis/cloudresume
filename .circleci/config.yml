@@ -1,27 +1,20 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@5.0.2
   aws-cli: circleci/aws-cli@2.0.3
   aws-s3: circleci/aws-s3@3.0.0
 
 jobs:
   build-and-test:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/node:16.20
     steps:
       - checkout
-      - node/install:
-          node-version: '16.20'
       - run:
-          name: Install Yarn
-          command: |
-            sudo npm install -g yarn
-            yarn --version
-      - run:
-          name: Check Node.js and Yarn versions
+          name: Check Node.js, npm, and Yarn versions
           command: |
             node --version
+            npm --version
             yarn --version
       - run:
           name: Output package.json contents
