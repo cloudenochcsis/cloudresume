@@ -93,3 +93,15 @@ dist
 .pnp.*
 
 
+# Dependency directories
+node_modules/
+
+# npm lock file (we're using yarn)
+package-lock.json
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Yarn debug log
+yarn-debug.log*
+yarn-error.log*
