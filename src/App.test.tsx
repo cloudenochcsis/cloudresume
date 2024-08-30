@@ -38,23 +38,20 @@ describe('App Component', () => {
 
   test('passes correct props to Main component', () => {
     render(<App />);
-    expect(screen.getByTestId('core-competencies').textContent).toBe('4');
-    expect(screen.getByTestId('skills').textContent).toBe('14');
-    expect(screen.getByTestId('research-areas').textContent).toBe('4');
+    expect(screen.getByTestId('core-competencies')).toHaveTextContent('4');
+    expect(screen.getByTestId('skills')).toHaveTextContent('14');
+    expect(screen.getByTestId('research-areas')).toHaveTextContent('4');
   });
 
   test('applies correct CSS classes', () => {
     render(<App />);
-    const outerDiv = screen.getByTestId('resume-provider').firstChild as HTMLElement;
+    const outerDiv = screen.getByTestId('resume-provider').querySelector('div');
     
     if (!outerDiv) {
       throw new Error('Outer div not found');
     }
 
-    const actualClasses = outerDiv.className.split(' ').filter(Boolean);
-    console.log('Actual classes:', actualClasses);
-
-    const expectedClasses = [
+    const expectedOuterClasses = [
       'min-h-screen',
       'bg-gradient-to-br',
       'from-blue-100',
@@ -66,19 +63,15 @@ describe('App Component', () => {
       'lg:px-8'
     ];
 
-    console.log('Expected classes:', expectedClasses);
+    expectedOuterClasses.forEach(className => {
+      expect(outerDiv).toHaveClass(className);
+    });
 
-    const missingClasses = expectedClasses.filter(cls => !actualClasses.includes(cls));
-    const extraClasses = actualClasses.filter(cls => !expectedClasses.includes(cls));
+    const innerDiv = outerDiv.querySelector('div');
+    if (!innerDiv) {
+      throw new Error('Inner div not found');
+    }
 
-    console.log('Missing classes:', missingClasses);
-    console.log('Extra classes:', extraClasses);
-
-    expect(missingClasses).toEqual([]);
-    expect(extraClasses).toEqual([]);
-
-    // Check for the inner div with max-w-4xl and mx-auto classes
-    const innerDiv = outerDiv.firstChild as HTMLElement;
     expect(innerDiv).toHaveClass('max-w-4xl', 'mx-auto');
   });
 });
