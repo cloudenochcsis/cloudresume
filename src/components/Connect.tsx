@@ -8,7 +8,7 @@ interface SocialLink {
 }
 
 const socialLinks: SocialLink[] = [
-  { href: "https://github.com/Akpad3tsi/Akpad3tsi", icon: Github, label: "GitHub" },
+  { href: "https://github.com/Akpad3tsi", icon: Github, label: "GitHub" },
   { href: "https://www.linkedin.com/in/enoch-a-b00766138/", icon: Linkedin, label: "LinkedIn" },
   { href: "mailto:cloudenochcsis@gmail.com", icon: Mail, label: "Email" },
 ];
