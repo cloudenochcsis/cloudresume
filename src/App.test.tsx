@@ -32,6 +32,8 @@ describe('App Component', () => {
     render(<App />);
     expect(screen.getByTestId('theme-provider')).toBeInTheDocument();
     expect(screen.getByTestId('resume-provider')).toBeInTheDocument();
+    expect(screen.getByTestId('app-outer-div')).toBeInTheDocument();
+    expect(screen.getByTestId('app-inner-div')).toBeInTheDocument();
     expect(screen.getByTestId('mock-header')).toBeInTheDocument();
     expect(screen.getByTestId('mock-main')).toBeInTheDocument();
   });
@@ -45,12 +47,9 @@ describe('App Component', () => {
 
   test('applies correct CSS classes', () => {
     render(<App />);
-    const outerDiv = screen.getByTestId('resume-provider').querySelector('div');
+    const outerDiv = screen.getByTestId('app-outer-div');
+    const innerDiv = screen.getByTestId('app-inner-div');
     
-    if (!outerDiv) {
-      throw new Error('Outer div not found');
-    }
-
     const expectedOuterClasses = [
       'min-h-screen',
       'bg-gradient-to-br',
@@ -66,11 +65,6 @@ describe('App Component', () => {
     expectedOuterClasses.forEach(className => {
       expect(outerDiv).toHaveClass(className);
     });
-
-    const innerDiv = outerDiv.querySelector('div');
-    if (!innerDiv) {
-      throw new Error('Inner div not found');
-    }
 
     expect(innerDiv).toHaveClass('max-w-4xl', 'mx-auto');
   });

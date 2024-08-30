@@ -39,8 +39,8 @@ const App: React.FC = () => {
   return (
     <ThemeProvider>
       <ResumeProvider>
-        <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100 py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
+        <div data-testid="app-outer-div" className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100 py-12 px-4 sm:px-6 lg:px-8">
+          <div data-testid="app-inner-div" className="max-w-4xl mx-auto">
             <Header />
             <Main 
               coreCompetencies={coreCompetencies}
