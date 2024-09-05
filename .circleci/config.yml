@@ -43,14 +43,9 @@ jobs:
       - run:
           name: Deploy to DigitalOcean
           command: |
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} << EOF
-              rm -rf /var/www/portfolio/*
-              exit
-            EOF
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'rm -rf /var/www/portfolio/*'
             scp -r build/* root@${DROPLET_IP}:/var/www/portfolio/
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} << EOF
-              sudo systemctl reload nginx
-            EOF
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'sudo systemctl reload nginx'
 
 workflows:
   version: 2
