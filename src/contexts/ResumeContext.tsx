@@ -8,8 +8,8 @@ interface ResumeData {
 
 const resumeData: ResumeData = {
   name: "Enoch",
-  title: "Information Security Specialist | Cloud/DevOps Engineer | SRE | PhD Researcher",
-  about: "As a passionate Information Security and Cybersecurity professional, I bring extensive experience in Cloud/DevOps and Site Reliability Engineering to the table. My current focus is on pushing the boundaries of cybersecurity through my PhD research, where I'm exploring innovative ways to leverage Artificial Intelligence in enhancing Information Security practices."
+  title: "Information Security | Infrastructure Engineer | PhD Researcher",
+  about: "As a passionate Information Technology professional, I bring extensive experience in Cloud Infrastructure and Security to the table. My current focus is on pushing the boundaries of cybersecurity through my PhD research, where I'm exploring innovative ways to leverage Artificial Intelligence in enhancing Information Security practices."
 };
 
 const ResumeContext = createContext<ResumeData | undefined>(undefined);
