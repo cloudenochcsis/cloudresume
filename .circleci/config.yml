@@ -63,10 +63,24 @@ jobs:
               echo "Docker is not installed. Please install Docker on your DigitalOcean droplet."
               exit 1
             fi
+            
+            # Check and stop any service using port 80
+            if sudo lsof -i :80; then
+              echo "Stopping services using port 80..."
+              sudo fuser -k 80/tcp || true
+            fi
+
+            # Pull the latest image
             /usr/bin/docker pull akpadetsi/cloudenoch:latest &&
-            /usr/bin/docker stop cloudenoch-container || true &&
-            /usr/bin/docker rm cloudenoch-container || true &&
+            
+            # Stop and remove the old container if it exists
+            (/usr/bin/docker stop cloudenoch-container || true) &&
+            (/usr/bin/docker rm cloudenoch-container || true) &&
+            
+            # Run the new container on port 80 (adjust port if needed)
             /usr/bin/docker run -d --name cloudenoch-container -p 80:80 akpadetsi/cloudenoch:latest &&
+            
+            # Clean up unused Docker images
             /usr/bin/docker image prune -f
             '
 
