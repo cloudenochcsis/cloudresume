@@ -49,27 +49,11 @@ jobs:
             scp -r build/* root@${DROPLET_IP}:/var/www/portfolio/
             
             # Deploy backend
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} << EOF
-              # Create backend directory if it doesn't exist
-              mkdir -p /var/www/portfolio/backend
-              
-              # Remove old backend files
-              rm -rf /var/www/portfolio/backend/*
-              
-              # Copy new backend files
-              EOF
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mkdir -p /var/www/portfolio/backend && rm -rf /var/www/portfolio/backend/*'
             scp -r backend/* root@${DROPLET_IP}:/var/www/portfolio/backend/
             
             # Setup and run backend
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} << EOF
-              cd /var/www/portfolio/backend
-              npm install
-              echo "MONGODB_URI=${MONGODB_URI}" > .env
-              pm2 restart server || pm2 start server.js
-              
-              # Reload Nginx
-              sudo systemctl reload nginx
-            EOF
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "cd /var/www/portfolio/backend && npm install && echo \"MONGODB_URI=${MONGODB_URI}\" > .env && (pm2 restart server || pm2 start server.js) && sudo systemctl reload nginx"
 
 workflows:
   version: 2
