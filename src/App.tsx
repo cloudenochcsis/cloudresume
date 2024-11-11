@@ -4,7 +4,7 @@ import { ResumeProvider } from './contexts/ResumeContext';
 import Header from './components/Header';
 import Main from './components/Main';
 import { Shield, Cloud, Server, Brain } from 'lucide-react';
-import ViewCounter from './components/ViewCounter';
+
 
 // Types
 export type Skill = string;
