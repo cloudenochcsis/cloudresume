@@ -48,7 +48,7 @@ const App: React.FC = () => {
               skills={skills}
               researchAreas={researchAreas}
             />
-            <ViewCounter />
+
           </div>
         </div>
       </ResumeProvider>
