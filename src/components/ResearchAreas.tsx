@@ -9,7 +9,7 @@ interface Props {
 const ResearchAreas: React.FC<Props> = ({ areas }) => (
   <div>
     <p className="text-gray-700 mb-4">
-      My doctoral research is at the cutting edge of AI applications in Information Security. Key focus areas include:
+      My doctoral research is at the cutting edge of Artificial Intelligence applications in Information Security. Key focus areas include:
     </p>
     <ul className="space-y-2 text-gray-700">
       {areas.map((area, index) => (
