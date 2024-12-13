@@ -17,7 +17,6 @@ export type ResearchArea = string;
 // Data
 const coreCompetencies: CoreCompetency[] = [
   { icon: Shield, label: "Information Security" },
-  { icon: Shield, label: "Cyber Security" },
   { icon: Cloud, label: "Cloud/DevOps" },
   { icon: Server, label: "SRE" },
   { icon: Brain, label: "AI Research" }
