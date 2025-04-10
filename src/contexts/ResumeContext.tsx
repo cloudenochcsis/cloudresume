@@ -56,19 +56,19 @@ interface ResumeData {
 const resumeData: ResumeData = {
   name: "Enoch",
   title: "Information Security | Infrastructure Engineer | PhD Researcher",
-  location: "New York, NY",
+  location: "Cape Town, SA",
   about: "As a passionate Information Technology professional, I bring extensive experience in Cloud Infrastructure and Security to the table. My current focus is on pushing the boundaries of cybersecurity through my PhD research, where I'm exploring innovative ways to leverage Artificial Intelligence in enhancing Information Security practices.",
   experiences: [
     {
-      title: "Lead Cloud Security Engineer",
-      company: "TechSecure Solutions",
-      location: "New York, NY",
-      period: "2021 - Present",
+      title: "Lead Cloud Engineer",
+      company: "Technology Excellence Services",
+      location: "Indiana, IN",
+      period: "2023 - Present",
       description: [
-        "Leading a team of 8 security engineers implementing cloud-native security solutions across multi-cloud environments (AWS, Azure, GCP)",
-        "Architected a zero-trust security framework reducing security incidents by 43% year-over-year",
-        "Designed and deployed ML-based threat detection system capable of identifying novel attack patterns with 92% accuracy",
-        "Implemented infrastructure-as-code security scanning pipeline, reducing vulnerabilities in production by 67%"
+        "Leading a team of cloud engineers to design and implement scalable, secure, and cost-effective cloud solutions across multi-cloud environments (AWS, Azure, GCP)",
+        "Developed cloud-native architectures that improved system performance and reduced operational costs by 30%",
+        "Implemented automated cloud infrastructure provisioning using Infrastructure-as-Code (IaC) tools, reducing deployment time by 50%",
+        "Collaborated with cross-functional teams to ensure compliance with security and regulatory standards in cloud deployments"
       ],
       technologies: ["AWS", "Azure", "GCP", "Terraform", "Python", "Kubernetes", "Docker", "CI/CD"]
     },
@@ -83,7 +83,7 @@ const resumeData: ResumeData = {
         "Developed automated security compliance tooling for continuous auditing against SOC2 and HIPAA standards",
         "Implemented secure CI/CD pipelines with integrated vulnerability scanning"
       ],
-      technologies: ["AWS", "Terraform", "Ansible", "Python", "Jenkins", "GitLab CI", "Docker"]
+      technologies: ["AWS", "Terraform", "Ansible", "Python", "CircleCI", "Azure", "Docker"]
     }
   ],
   education: [
@@ -105,7 +105,7 @@ const resumeData: ResumeData = {
       degree: "B.S. in Computer Science and Information Technology",
       institution: "Community College",
       location: "Austin, TX",
-      period: "2014 - 2018"
+      period: "2011 - 2015"
     }
   ],
   certifications: [
@@ -118,7 +118,7 @@ const resumeData: ResumeData = {
     {
       name: "Azure Certified Administrator",
       issuer: "Microsoft",
-      date: "2023",
+      date: "2025",
       link: "https://learn.microsoft.com/en-us/users/enochayivor-0815/credentials/f46a46b56d4133fb?ref=https%3A%2F%2Fwww.linkedin.com%2F"
     },
     {
@@ -146,16 +146,17 @@ const resumeData: ResumeData = {
   ],
   projects: [
     {
-      title: "SecureCloudGuard",
-      description: "Open-source security scanning tool for cloud infrastructure with automated remediation capabilities",
-      technologies: ["Python", "AWS", "Terraform", "Docker"],
-      link: "https://github.com/CloudEnochCSIS/SecureCloudGuard"
+      title: "Terraform 2-Tier Deployment on AWS",
+      description: "Deployed a scalable 2-tier architecture using Terraform, featuring a load balancer, application servers, and a database layer. Automated infrastructure provisioning and ensured high availability.",
+      technologies: ["Terraform", "AWS", "Load Balancer", "EC2", "RDS"],
+      link: "https://github.com/cloudenochcsis/Terraform2TierDeployment"
     },
+    
     {
-      title: "AI-ThreatDetector",
-      description: "Machine learning system for detecting anomalies in network traffic patterns with real-time alerting",
-      technologies: ["Python", "TensorFlow", "Kafka", "Elasticsearch"],
-      link: "https://github.com/CloudEnochCSIS/AI-ThreatDetector"
+      title: "Azure Development Environment with Terraform",
+      description: "This project is a hands-on guide to building a development environment on Microsoft Azure using Terraform.",
+      technologies: ["Terraform", "Azure", "Virtual Machines", "Networking", "Storage"],
+      link: "https://github.com/cloudenochcsis/Azure_DevEnv_With_Terraform"
     }
   ]
 };
