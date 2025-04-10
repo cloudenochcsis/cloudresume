@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useResume } from '../contexts/ResumeContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { Sun, Moon, MapPin, Download, Menu, X } from 'lucide-react';
+import { Sun, Moon, MapPin, Menu, X } from 'lucide-react';
 import useIntersectionObserver from '../hooks/useIntersectionObserver';
 
 const Header: React.FC = () => {
@@ -104,18 +104,6 @@ const Header: React.FC = () => {
               >
                 Connect
               </a>
-              <button 
-                className="button-primary"
-                onClick={() => {
-                  alert('Download functionality would be implemented here');
-                  toggleMenu();
-                }}
-              >
-                <span className="flex items-center justify-center">
-                  <Download className="h-5 w-5 mr-2" />
-                  Download PDF
-                </span>
-              </button>
             </div>
           </div>
         </div>
@@ -144,13 +132,6 @@ const Header: React.FC = () => {
               ) : (
                 <Moon className="h-5 w-5 text-white" />
               )}
-            </button>
-            <button
-              className="flex items-center text-sm bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg"
-              onClick={() => alert('Download functionality would be implemented here')}
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Resume PDF
             </button>
           </div>
 
