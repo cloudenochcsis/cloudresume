@@ -88,17 +88,17 @@ const resumeData: ResumeData = {
   ],
   education: [
     {
-      degree: "Ph.D. in Cybersecurity",
-      institution: "MIT",
-      location: "Cambridge, MA",
-      period: "2020 - Present",
+      degree: "Doctoral Researcher in Information Systems",
+      institution: "UCT",
+      location: "Cape Town, SA",
+      period: "2024 - Present",
       description: "Research focus on AI-driven security automation and advanced threat detection systems"
     },
     {
-      degree: "M.S. in Computer Science",
-      institution: "Stanford University",
-      location: "Stanford, CA",
-      period: "2016 - 2018",
+      degree: "M.Sc. in Information Systems",
+      institution: "GIMPA",
+      location: "Accra, GH",
+      period: "2018 - 2021",
       description: "Specialization in Security and Machine Learning"
     },
     {
@@ -110,22 +110,22 @@ const resumeData: ResumeData = {
   ],
   certifications: [
     {
-      name: "AWS Certified Security Specialty",
+      name: "AWS Certified Solutions Architect – Associate",
       issuer: "Amazon Web Services",
-      date: "2022",
-      link: "https://aws.amazon.com/certification/certified-security-specialty/"
+      date: "2023",
+      link: "https://aws.amazon.com/certification/certified-solutions-architect-associate/"
     },
     {
-      name: "Certified Information Systems Security Professional (CISSP)",
-      issuer: "ISC²",
-      date: "2021",
-      link: "https://www.isc2.org/Certifications/CISSP"
+      name: "Terraform Certified Associate",
+      issuer: "HashiCorp",
+      date: "2023",
+      link: "https://developer.hashicorp.com/certifications/infrastructure-automation/terraform-certified-associate"
     },
     {
-      name: "Google Professional Cloud Security Engineer",
-      issuer: "Google Cloud",
-      date: "2020",
-      link: "https://cloud.google.com/certification/cloud-security-engineer"
+      name: "Azure Certified Administrator Associate",
+      issuer: "Microsoft",
+      date: "2025",
+      link: "https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/?practice-assessment-type=certification"
     }
   ],
   publications: [
