@@ -6,7 +6,7 @@ import useIntersectionObserver from '../hooks/useIntersectionObserver';
 
 const Header: React.FC = () => {
   const { name, title, location } = useResume();
-  const { theme, toggleTheme, animationPreference, toggleAnimationPreference } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const headerRef = useRef<HTMLDivElement>(null);
   const isIntersecting = useIntersectionObserver(headerRef, { threshold: 0.1 });
   const [menuOpen, setMenuOpen] = React.useState(false);
