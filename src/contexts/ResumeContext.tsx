@@ -88,24 +88,24 @@ const resumeData: ResumeData = {
   ],
   education: [
     {
-      degree: "Doctoral Researcher in Information Systems",
-      institution: "UCT",
-      location: "Cape Town, SA",
-      period: "2024 - Present",
+      degree: "PhD in Information Systems",
+      institution: "Baylor University",
+      location: "Waco, TX",
+      period: "2022 - Present",
       description: "Research focus on AI-driven security automation and advanced threat detection systems"
     },
     {
-      degree: "M.Sc. in Information Systems",
-      institution: "GIMPA",
-      location: "Accra, GH",
+      degree: "M.S. in Computer Science",
+      institution: "University of Texas at El Paso",
+      location: "El Paso, TX",
       period: "2018 - 2021",
       description: "Specialization in Security and Machine Learning"
     },
     {
-      degree: "B.S. in Computer Engineering",
-      institution: "Carnegie Mellon University",
-      location: "Pittsburgh, PA",
-      period: "2012 - 2016"
+      degree: "B.S. in Computer Science and Information Technology",
+      institution: "Community College",
+      location: "Austin, TX",
+      period: "2014 - 2018"
     }
   ],
   certifications: [
@@ -113,19 +113,19 @@ const resumeData: ResumeData = {
       name: "AWS Certified Solutions Architect – Associate",
       issuer: "Amazon Web Services",
       date: "2023",
-      link: "https://aws.amazon.com/certification/certified-solutions-architect-associate/"
+      link: "https://www.credly.com/badges/59645601-fc1c-42a8-b95b-4fbf3c499ef6/linked_in_profile"
+    },
+    {
+      name: "Azure Certified Administrator",
+      issuer: "Microsoft",
+      date: "2023",
+      link: "https://learn.microsoft.com/en-us/users/enochayivor-0815/credentials/f46a46b56d4133fb?ref=https%3A%2F%2Fwww.linkedin.com%2F"
     },
     {
       name: "Terraform Certified Associate",
       issuer: "HashiCorp",
       date: "2023",
-      link: "https://developer.hashicorp.com/certifications/infrastructure-automation/terraform-certified-associate"
-    },
-    {
-      name: "Azure Certified Administrator Associate",
-      issuer: "Microsoft",
-      date: "2025",
-      link: "https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/?practice-assessment-type=certification"
+      link: "https://www.credly.com/badges/193050a7-1625-4d8e-b77d-26d2fe8dd1e2/linked_in_profile"
     }
   ],
   publications: [
