@@ -88,44 +88,44 @@ const resumeData: ResumeData = {
   ],
   education: [
     {
-      degree: "Ph.D. in Cybersecurity",
-      institution: "MIT",
-      location: "Cambridge, MA",
-      period: "2020 - Present",
+      degree: "PhD in Information Systems",
+      institution: "Baylor University",
+      location: "Waco, TX",
+      period: "2022 - Present",
       description: "Research focus on AI-driven security automation and advanced threat detection systems"
     },
     {
       degree: "M.S. in Computer Science",
-      institution: "Stanford University",
-      location: "Stanford, CA",
-      period: "2016 - 2018",
+      institution: "University of Texas at El Paso",
+      location: "El Paso, TX",
+      period: "2018 - 2021",
       description: "Specialization in Security and Machine Learning"
     },
     {
-      degree: "B.S. in Computer Engineering",
-      institution: "Carnegie Mellon University",
-      location: "Pittsburgh, PA",
-      period: "2012 - 2016"
+      degree: "B.S. in Computer Science and Information Technology",
+      institution: "Community College",
+      location: "Austin, TX",
+      period: "2014 - 2018"
     }
   ],
   certifications: [
     {
-      name: "AWS Certified Security Specialty",
+      name: "AWS Certified Solutions Architect – Associate",
       issuer: "Amazon Web Services",
-      date: "2022",
-      link: "https://aws.amazon.com/certification/certified-security-specialty/"
+      date: "2023",
+      link: "https://www.credly.com/badges/59645601-fc1c-42a8-b95b-4fbf3c499ef6/linked_in_profile"
     },
     {
-      name: "Certified Information Systems Security Professional (CISSP)",
-      issuer: "ISC²",
-      date: "2021",
-      link: "https://www.isc2.org/Certifications/CISSP"
+      name: "Azure Certified Administrator",
+      issuer: "Microsoft",
+      date: "2023",
+      link: "https://learn.microsoft.com/en-us/users/enochayivor-0815/credentials/f46a46b56d4133fb?ref=https%3A%2F%2Fwww.linkedin.com%2F"
     },
     {
-      name: "Google Professional Cloud Security Engineer",
-      issuer: "Google Cloud",
-      date: "2020",
-      link: "https://cloud.google.com/certification/cloud-security-engineer"
+      name: "Terraform Certified Associate",
+      issuer: "HashiCorp",
+      date: "2023",
+      link: "https://www.credly.com/badges/193050a7-1625-4d8e-b77d-26d2fe8dd1e2/linked_in_profile"
     }
   ],
   publications: [
