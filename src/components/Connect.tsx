@@ -64,14 +64,13 @@ const Connect: React.FC = () => (
     </div>
     
     <div className="mt-10 text-center">
-      <a 
-        href="#" 
+      <button 
         className="inline-flex items-center text-primary-600 dark:text-primary-400 font-medium hover:underline"
-        onClick={(e) => e.preventDefault()}
+        onClick={() => window.alert('Portfolio link coming soon')}
       >
         View my full portfolio
         <ExternalLink className="h-4 w-4 ml-1" />
-      </a>
+      </button>
     </div>
   </div>
 );

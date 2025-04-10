@@ -6,7 +6,7 @@ import ResearchAreas from './ResearchAreas';
 import Connect from './Connect';
 import { CoreCompetency, Skill, ResearchArea } from '../App';
 import { useResume } from '../contexts/ResumeContext';
-import { Briefcase, GraduationCap, Award, FileText, Newspaper, BookOpen, ExternalLink, Code } from 'lucide-react';
+import { ExternalLink, Code } from 'lucide-react';
 
 interface MainProps {
   coreCompetencies: CoreCompetency[];

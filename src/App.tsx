@@ -37,7 +37,7 @@ const researchAreas: ResearchArea[] = [
 ];
 
 const AppContent: React.FC = () => {
-  const { theme, animationPreference } = useTheme();
+  const { animationPreference } = useTheme();
   
   // Add class to body for reduced animations
   useEffect(() => {

@@ -47,14 +47,13 @@ const ResearchAreaCard: React.FC<{ area: ResearchArea; index: number }> = ({ are
         {getResearchDescription(area)}
       </p>
       
-      <a 
-        href="#" 
-        className="text-primary-600 dark:text-primary-400 text-sm font-medium mt-4 inline-flex items-center group"
-        onClick={(e) => e.preventDefault()}
+      <button 
+        className="text-primary-600 dark:text-primary-400 text-sm font-medium mt-4 inline-flex items-center group border-none bg-transparent p-0 cursor-pointer"
+        onClick={() => window.alert('Research details coming soon')}
       >
         Learn more 
         <ArrowRight className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" />
-      </a>
+      </button>
     </div>
   );
 };
