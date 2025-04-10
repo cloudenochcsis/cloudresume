@@ -22,6 +22,7 @@ jest.mock('./components/Main', () => ({
 ));
 jest.mock('./contexts/ThemeContext', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="theme-provider">{children}</div>,
+  useTheme: () => ({ theme: 'light', animationPreference: 'full' }),
 }));
 jest.mock('./contexts/ResumeContext', () => ({
   ResumeProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="resume-provider">{children}</div>,
@@ -52,11 +53,11 @@ describe('App Component', () => {
     
     const expectedOuterClasses = [
       'min-h-screen',
-      'bg-gradient-to-br',
-      'from-blue-100',
-      'via-white',
-      'to-purple-100',
-      'py-12',
+      'transition-colors',
+      'duration-300',
+      'bg-gray-50',
+      'pt-8',
+      'pb-16',
       'px-4',
       'sm:px-6',
       'lg:px-8'
@@ -66,6 +67,6 @@ describe('App Component', () => {
       expect(outerDiv).toHaveClass(className);
     });
 
-    expect(innerDiv).toHaveClass('max-w-4xl', 'mx-auto');
+    expect(innerDiv).toHaveClass('max-w-5xl', 'mx-auto');
   });
 });
