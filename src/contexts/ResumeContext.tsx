@@ -145,11 +145,11 @@ const resumeData: ResumeData = {
     }
   ],
   projects: [
-    {
-      title: "Terraform 2-Tier Deployment on AWS",
-      description: "Deployed a scalable 2-tier architecture using Terraform, featuring a load balancer, application servers, and a database layer. Automated infrastructure provisioning and ensured high availability.",
-      technologies: ["Terraform", "AWS", "Load Balancer", "EC2", "RDS"],
-      link: "https://github.com/cloudenochcsis/Terraform2TierDeployment"
+      {
+      title: "Terraform 3-Tier Architecture on AWS",
+      description: "Designed and deployed a robust 3-tier infrastructure using Terraform, consisting of a VPC, public and private subnets, internet and NAT gateways, load balancers, auto scaling groups, application and database layers. Automated provisioning of EC2 instances, security groups, and RDS Aurora with high availability across multiple AZs.",
+      technologies: ["Terraform", "AWS", "VPC", "ALB", "EC2", "Auto Scaling", "RDS Aurora", "NAT Gateway"],
+      link: "https://github.com/cloudenochcsis/terraform-aws-3tier-architecture.git"
     },
     
     {
