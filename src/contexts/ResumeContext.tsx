@@ -132,6 +132,18 @@ const resumeData: ResumeData = {
       issuer: "Microsoft",
       date: "2025",
       link: "https://learn.microsoft.com/en-us/users/enochayivor-0815/credentials/azure-devops-engineer"
+    },
+    {
+      name: "Certified Kubernetes Administrator (CKA)",
+      issuer: "Cloud Native Computing Foundation",
+      date: "Planned 2025",
+      link: "coming-soon"
+    },
+    {
+      name: "Azure DevOps Engineer Expert",
+      issuer: "Microsoft",
+      date: "Planned 2025",
+      link: "coming-soon"
     }
   ],
   publications: [
