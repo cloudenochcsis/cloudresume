@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="3" failures="0" skipped="0" tests="3" time="92.103" timestamp="2025-04-19T13:41:12.105255+00:00" hostname="MacBookPro"><testcase classname="test.test_main" name="test_get_visitor_count" time="30.320"><error message="failed on setup with &quot;pymongo.errors.ServerSelectionTimeoutError: localhost:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: &lt;TopologyDescription id: 6803a7f87b308d4b29614707, topology_type: Unknown, servers: [&lt;ServerDescription ('localhost', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('localhost:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')&gt;]&gt;&quot;">@pytest_asyncio.fixture(autouse=True)
+    async def setup_test_db():
+        """Setup a test database before each test"""
+        # Connect to test MongoDB
+        client = AsyncIOMotorClient("mongodb://localhost:27017")
+        db = client.test_db
+        collection = db.visitorCounter
+    
+        # Reset counter before each test
+&gt;       await collection.delete_many({})
+
+test/test_main.py:20: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+../../../.pyenv/versions/3.13.3/lib/python3.13/concurrent/futures/thread.py:59: in run
+    result = self.fn(*self.args, **self.kwargs)
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/collection.py:1711: in delete_many
+    self._delete_retryable(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/collection.py:1587: in _delete_retryable
+    return self._database.client._retryable_write(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:2040: in _retryable_write
+    return self._retry_with_session(retryable, func, s, bulk, operation, operation_id)
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:1926: in _retry_with_session
+    return self._retry_internal(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/_csot.py:119: in csot_wrapper
+    return func(self, *args, **kwargs)
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:1972: in _retry_internal
+    ).run()
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:2709: in run
+    return self._read() if self._is_read else self._write()
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:2819: in _write
+    self._server = self._get_server()
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:2802: in _get_server
+    return self._client._select_server(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:1791: in _select_server
+    server = topology.select_server(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/topology.py:409: in select_server
+    server = self._select_server(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/topology.py:387: in _select_server
+    servers = self.select_servers(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/topology.py:294: in select_servers
+    server_descriptions = self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;Topology &lt;TopologyDescription id: 6803a7f87b308d4b29614707, topology_type: Unknown, servers: [&lt;ServerDescription ('lo...017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')&gt;]&gt;&gt;
+selector = &lt;function writable_server_selector at 0x106e5bce0&gt;, timeout = 30
+operation = &lt;_Op.DELETE: 'delete'&gt;, operation_id = None, address = None
+
+    def _select_servers_loop(
+        self,
+        selector: Callable[[Selection], Selection],
+        timeout: float,
+        operation: str,
+        operation_id: Optional[int],
+        address: Optional[_Address],
+    ) -&gt; list[ServerDescription]:
+        """select_servers() guts. Hold the lock when calling this."""
+        now = time.monotonic()
+        end_time = now + timeout
+        logged_waiting = False
+    
+        if _SERVER_SELECTION_LOGGER.isEnabledFor(logging.DEBUG):
+            _debug_log(
+                _SERVER_SELECTION_LOGGER,
+                message=_ServerSelectionStatusMessage.STARTED,
+                selector=selector,
+                operation=operation,
+                operationId=operation_id,
+                topologyDescription=self.description,
+                clientId=self.description._topology_settings._topology_id,
+            )
+    
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector
+        )
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now &gt; end_time:
+                if _SERVER_SELECTION_LOGGER.isEnabledFor(logging.DEBUG):
+                    _debug_log(
+                        _SERVER_SELECTION_LOGGER,
+                        message=_ServerSelectionStatusMessage.FAILED,
+                        selector=selector,
+                        operation=operation,
+                        operationId=operation_id,
+                        topologyDescription=self.description,
+                        clientId=self.description._topology_settings._topology_id,
+                        failure=self._error_message(selector),
+                    )
+&gt;               raise ServerSelectionTimeoutError(
+                    f"{self._error_message(selector)}, Timeout: {timeout}s, Topology Description: {self.description!r}"
+                )
+E               pymongo.errors.ServerSelectionTimeoutError: localhost:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: &lt;TopologyDescription id: 6803a7f87b308d4b29614707, topology_type: Unknown, servers: [&lt;ServerDescription ('localhost', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('localhost:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')&gt;]&gt;
+
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/topology.py:344: ServerSelectionTimeoutError</error></testcase><testcase classname="test.test_main" name="test_multiple_visits" time="30.324"><error message="failed on setup with &quot;pymongo.errors.ServerSelectionTimeoutError: localhost:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: &lt;TopologyDescription id: 6803a8167b308d4b29614708, topology_type: Unknown, servers: [&lt;ServerDescription ('localhost', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('localhost:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')&gt;]&gt;&quot;">@pytest_asyncio.fixture(autouse=True)
+    async def setup_test_db():
+        """Setup a test database before each test"""
+        # Connect to test MongoDB
+        client = AsyncIOMotorClient("mongodb://localhost:27017")
+        db = client.test_db
+        collection = db.visitorCounter
+    
+        # Reset counter before each test
+&gt;       await collection.delete_many({})
+
+test/test_main.py:20: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+../../../.pyenv/versions/3.13.3/lib/python3.13/concurrent/futures/thread.py:59: in run
+    result = self.fn(*self.args, **self.kwargs)
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/collection.py:1711: in delete_many
+    self._delete_retryable(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/collection.py:1587: in _delete_retryable
+    return self._database.client._retryable_write(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:2040: in _retryable_write
+    return self._retry_with_session(retryable, func, s, bulk, operation, operation_id)
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:1926: in _retry_with_session
+    return self._retry_internal(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/_csot.py:119: in csot_wrapper
+    return func(self, *args, **kwargs)
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:1972: in _retry_internal
+    ).run()
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:2709: in run
+    return self._read() if self._is_read else self._write()
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:2819: in _write
+    self._server = self._get_server()
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:2802: in _get_server
+    return self._client._select_server(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:1791: in _select_server
+    server = topology.select_server(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/topology.py:409: in select_server
+    server = self._select_server(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/topology.py:387: in _select_server
+    servers = self.select_servers(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/topology.py:294: in select_servers
+    server_descriptions = self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;Topology &lt;TopologyDescription id: 6803a8167b308d4b29614708, topology_type: Unknown, servers: [&lt;ServerDescription ('lo...017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')&gt;]&gt;&gt;
+selector = &lt;function writable_server_selector at 0x106e5bce0&gt;, timeout = 30
+operation = &lt;_Op.DELETE: 'delete'&gt;, operation_id = None, address = None
+
+    def _select_servers_loop(
+        self,
+        selector: Callable[[Selection], Selection],
+        timeout: float,
+        operation: str,
+        operation_id: Optional[int],
+        address: Optional[_Address],
+    ) -&gt; list[ServerDescription]:
+        """select_servers() guts. Hold the lock when calling this."""
+        now = time.monotonic()
+        end_time = now + timeout
+        logged_waiting = False
+    
+        if _SERVER_SELECTION_LOGGER.isEnabledFor(logging.DEBUG):
+            _debug_log(
+                _SERVER_SELECTION_LOGGER,
+                message=_ServerSelectionStatusMessage.STARTED,
+                selector=selector,
+                operation=operation,
+                operationId=operation_id,
+                topologyDescription=self.description,
+                clientId=self.description._topology_settings._topology_id,
+            )
+    
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector
+        )
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now &gt; end_time:
+                if _SERVER_SELECTION_LOGGER.isEnabledFor(logging.DEBUG):
+                    _debug_log(
+                        _SERVER_SELECTION_LOGGER,
+                        message=_ServerSelectionStatusMessage.FAILED,
+                        selector=selector,
+                        operation=operation,
+                        operationId=operation_id,
+                        topologyDescription=self.description,
+                        clientId=self.description._topology_settings._topology_id,
+                        failure=self._error_message(selector),
+                    )
+&gt;               raise ServerSelectionTimeoutError(
+                    f"{self._error_message(selector)}, Timeout: {timeout}s, Topology Description: {self.description!r}"
+                )
+E               pymongo.errors.ServerSelectionTimeoutError: localhost:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: &lt;TopologyDescription id: 6803a8167b308d4b29614708, topology_type: Unknown, servers: [&lt;ServerDescription ('localhost', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('localhost:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')&gt;]&gt;
+
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/topology.py:344: ServerSelectionTimeoutError</error></testcase><testcase classname="test.test_main" name="test_cors_headers" time="30.319"><error message="failed on setup with &quot;pymongo.errors.ServerSelectionTimeoutError: localhost:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: &lt;TopologyDescription id: 6803a8357b308d4b29614709, topology_type: Unknown, servers: [&lt;ServerDescription ('localhost', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('localhost:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')&gt;]&gt;&quot;">@pytest_asyncio.fixture(autouse=True)
+    async def setup_test_db():
+        """Setup a test database before each test"""
+        # Connect to test MongoDB
+        client = AsyncIOMotorClient("mongodb://localhost:27017")
+        db = client.test_db
+        collection = db.visitorCounter
+    
+        # Reset counter before each test
+&gt;       await collection.delete_many({})
+
+test/test_main.py:20: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+../../../.pyenv/versions/3.13.3/lib/python3.13/concurrent/futures/thread.py:59: in run
+    result = self.fn(*self.args, **self.kwargs)
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/collection.py:1711: in delete_many
+    self._delete_retryable(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/collection.py:1587: in _delete_retryable
+    return self._database.client._retryable_write(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:2040: in _retryable_write
+    return self._retry_with_session(retryable, func, s, bulk, operation, operation_id)
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:1926: in _retry_with_session
+    return self._retry_internal(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/_csot.py:119: in csot_wrapper
+    return func(self, *args, **kwargs)
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:1972: in _retry_internal
+    ).run()
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:2709: in run
+    return self._read() if self._is_read else self._write()
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:2819: in _write
+    self._server = self._get_server()
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:2802: in _get_server
+    return self._client._select_server(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py:1791: in _select_server
+    server = topology.select_server(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/topology.py:409: in select_server
+    server = self._select_server(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/topology.py:387: in _select_server
+    servers = self.select_servers(
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/topology.py:294: in select_servers
+    server_descriptions = self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;Topology &lt;TopologyDescription id: 6803a8357b308d4b29614709, topology_type: Unknown, servers: [&lt;ServerDescription ('lo...017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')&gt;]&gt;&gt;
+selector = &lt;function writable_server_selector at 0x106e5bce0&gt;, timeout = 30
+operation = &lt;_Op.DELETE: 'delete'&gt;, operation_id = None, address = None
+
+    def _select_servers_loop(
+        self,
+        selector: Callable[[Selection], Selection],
+        timeout: float,
+        operation: str,
+        operation_id: Optional[int],
+        address: Optional[_Address],
+    ) -&gt; list[ServerDescription]:
+        """select_servers() guts. Hold the lock when calling this."""
+        now = time.monotonic()
+        end_time = now + timeout
+        logged_waiting = False
+    
+        if _SERVER_SELECTION_LOGGER.isEnabledFor(logging.DEBUG):
+            _debug_log(
+                _SERVER_SELECTION_LOGGER,
+                message=_ServerSelectionStatusMessage.STARTED,
+                selector=selector,
+                operation=operation,
+                operationId=operation_id,
+                topologyDescription=self.description,
+                clientId=self.description._topology_settings._topology_id,
+            )
+    
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector
+        )
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now &gt; end_time:
+                if _SERVER_SELECTION_LOGGER.isEnabledFor(logging.DEBUG):
+                    _debug_log(
+                        _SERVER_SELECTION_LOGGER,
+                        message=_ServerSelectionStatusMessage.FAILED,
+                        selector=selector,
+                        operation=operation,
+                        operationId=operation_id,
+                        topologyDescription=self.description,
+                        clientId=self.description._topology_settings._topology_id,
+                        failure=self._error_message(selector),
+                    )
+&gt;               raise ServerSelectionTimeoutError(
+                    f"{self._error_message(selector)}, Timeout: {timeout}s, Topology Description: {self.description!r}"
+                )
+E               pymongo.errors.ServerSelectionTimeoutError: localhost:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: &lt;TopologyDescription id: 6803a8357b308d4b29614709, topology_type: Unknown, servers: [&lt;ServerDescription ('localhost', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('localhost:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')&gt;]&gt;
+
+../../../.pyenv/versions/3.13.3/lib/python3.13/site-packages/pymongo/synchronous/topology.py:344: ServerSelectionTimeoutError</error></testcase></testsuite></testsuites>
