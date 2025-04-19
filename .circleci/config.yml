@@ -178,6 +178,8 @@ jobs:
           name: Run API tests
           command: |
             cd api
+            # Set MongoDB URI to connect to the MongoDB service container
+            # In CircleCI, service containers are accessible via localhost
             echo "MONGODB_URI=mongodb://localhost:27017/test" > .env
             python -m pytest --cov=. --cov-report=xml --junitxml=test-results/pytest/results.xml
       - store_test_results:

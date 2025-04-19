@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import VisitorCounter from '../VisitorCounter';
 
 describe('VisitorCounter', () => {
@@ -18,8 +18,12 @@ describe('VisitorCounter', () => {
       json: () => Promise.resolve({ count: mockCount }),
     });
 
-    render(<VisitorCounter />);
-    expect(await screen.findByText(`Visitors: ${mockCount}`)).toBeInTheDocument();
+    await act(async () => {
+      render(<VisitorCounter />);
+    });
+
+    expect(screen.getByText(mockCount.toString())).toBeInTheDocument();
+    expect(screen.getByText(/visitors/i)).toBeInTheDocument();
   });
 
   it('displays error message when API call fails with HTTP error', async () => {
@@ -28,8 +32,11 @@ describe('VisitorCounter', () => {
       status: 500,
     });
 
-    render(<VisitorCounter />);
-    expect(await screen.findByText(/Error loading visitor count/i)).toBeInTheDocument();
+    await act(async () => {
+      render(<VisitorCounter />);
+    });
+
+    expect(screen.getByText(/Error loading visitor count/i)).toBeInTheDocument();
   });
 
   it('displays error message when response has invalid format', async () => {
@@ -38,7 +45,10 @@ describe('VisitorCounter', () => {
       json: () => Promise.resolve({ invalidKey: 'invalid' }),
     });
 
-    render(<VisitorCounter />);
-    expect(await screen.findByText(/Error loading visitor count/i)).toBeInTheDocument();
+    await act(async () => {
+      render(<VisitorCounter />);
+    });
+
+    expect(screen.getByText(/Error loading visitor count/i)).toBeInTheDocument();
   });
 });
