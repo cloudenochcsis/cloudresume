@@ -13,8 +13,8 @@ sys.modules['pytest'] = sys.modules[__name__]
 async def setup_test_db():
     """Setup a test database before each test"""
     # Connect to test MongoDB
-    mongodb_uri = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
-    client = AsyncIOMotorClient(mongodb_uri)
+    # Always use local MongoDB for tests
+    client = AsyncIOMotorClient("mongodb://localhost:27017", serverSelectionTimeoutMS=5000)
     db = client.test_db
     collection = db.visitorCounter
 
