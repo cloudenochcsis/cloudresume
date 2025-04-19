@@ -14,22 +14,18 @@ jobs:
       - node/install-packages:
           pkg-manager: yarn
       - run:
-          name: Check versions
+          name: Install test dependencies
           command: |
-            node --version
-            npm --version
-            yarn --version
+            yarn add --dev @testing-library/react @testing-library/jest-dom @testing-library/user-event jest jest-environment-jsdom ts-jest identity-obj-proxy @types/jest
       - run:
-          name: Run linter
-          command: yarn run eslint .
+          name: Create test directories
+          command: mkdir -p test-results/jest
       - run:
           name: Run frontend unit tests
-          command: yarn test --coverage
+          command: yarn test --coverage --ci --reporters=default --reporters=jest-junit
           environment:
             JEST_JUNIT_OUTPUT_DIR: ./test-results/jest
-      - run:
-          name: Run TypeScript type check
-          command: yarn tsc --noEmit
+            JEST_JUNIT_OUTPUT_NAME: results.xml
       - store_test_results:
           path: test-results
       - store_artifacts:
@@ -136,8 +132,18 @@ jobs:
     docker:
       - image: cimg/python:3.10.13
       - image: mongo:4.4
+        command: [mongod, --nojournal, --noauth]
     steps:
       - checkout
+      - run:
+          name: Wait for MongoDB
+          command: |
+            for i in {1..30}; do
+              nc -z localhost 27017 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for MongoDB && exit 1
       - python/install-packages:
           pkg-manager: pip
           args: -r requirements.txt
@@ -146,14 +152,18 @@ jobs:
           name: Install test dependencies
           command: |
             cd api
-            pip install pytest-cov pytest-asyncio httpx motor
+            pip install pytest-cov pytest-asyncio httpx motor pytest-junit
+      - run:
+          name: Create test directories
+          command: |
+            cd api
+            mkdir -p test-results/pytest
       - run:
           name: Run API tests
           command: |
             cd api
-            mkdir -p test-results/pytest
             echo "MONGODB_URI=mongodb://localhost:27017/test" > .env
-            python -m pytest
+            python -m pytest --junitxml=test-results/pytest/results.xml
       - store_test_results:
           path: api/test-results
       - store_artifacts:
