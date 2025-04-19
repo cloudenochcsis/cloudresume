@@ -18,22 +18,30 @@ async def setup_test_db():
     db = client.test_db
     collection = db.visitorCounter
 
-    # Reset counter before each test
-    await collection.delete_many({})
-    await collection.insert_one({"_id": "visitorCounter", "count": 0})
+    try:
+        # Reset counter before each test
+        await collection.delete_many({})
+        await collection.insert_one({"_id": "visitorCounter", "count": 0})
 
-    # Update app's counter collection
-    import main
-    main.counter_collection = collection
+        # Update app's counter collection
+        import main
+        main.counter_collection = collection
 
-    # Create a test client
-    test_client = TestClient(app)
+        # Create a test client
+        test_client = TestClient(app)
 
-    yield test_client
+        yield test_client
 
-    # Cleanup
-    await collection.delete_many({})
-    await client.close()
+    finally:
+        # Cleanup
+        try:
+            await collection.delete_many({})
+        except Exception:
+            pass
+        try:
+            await client.close()
+        except Exception:
+            pass
 
 async def test_get_visitor_count(setup_test_db):
     """Test getting the visitor count"""
