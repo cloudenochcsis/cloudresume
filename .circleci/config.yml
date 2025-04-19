@@ -51,6 +51,7 @@ jobs:
       - docker/build:
           image: $DOCKER_IMAGE_API
           path: ./api
+          dockerfile: Dockerfile
           tag: latest
       - docker/push:
           image: $DOCKER_IMAGE_FRONTEND
