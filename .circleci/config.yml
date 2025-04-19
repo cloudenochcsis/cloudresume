@@ -168,7 +168,7 @@ jobs:
           app-dir: ./api
       - run:
           name: Install netcat
-          command: apt-get update && apt-get install -y netcat-openbsd
+          command: sudo apt-get update && sudo apt-get install -y netcat-openbsd
       - run:
           name: Install test dependencies
           command: |
