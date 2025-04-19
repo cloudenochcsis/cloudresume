@@ -48,17 +48,16 @@ jobs:
           image: $DOCKER_IMAGE_FRONTEND
           path: .
           tag: latest
-      - docker/build:
+      - run:
+          name: Build API Docker image
+          command: |
+            cd api
+            docker build -t $DOCKER_IMAGE_API:latest .
+      - docker/push:
           image: $DOCKER_IMAGE_API
-          path: ./api
-          dockerfile: Dockerfile
           tag: latest
-          extra_build_args: --build-context=api=./api
       - docker/push:
           image: $DOCKER_IMAGE_FRONTEND
-          tag: latest
-      - docker/push:
-          image: $DOCKER_IMAGE_API
           tag: latest
 
   deployment:
