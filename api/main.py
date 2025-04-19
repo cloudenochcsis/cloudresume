@@ -20,14 +20,19 @@ app = FastAPI()
 # Configure CORS
 # Get allowed origins from environment or use defaults
 allowed_origins = [
-    os.getenv("FRONTEND_URL", "http://localhost:3001"),  # Local development
-    "https://cloudenoch.com",  # Production
+    "http://localhost:3001",      # Local development
+    "http://0.0.0.0:3001",        # Docker local frontend
+    "http://127.0.0.1:3001",      # Alternative local address
+    "https://cloudenoch.com",     # Production
     "https://www.cloudenoch.com"  # Production with www
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=[
+        "https://cloudenoch.com",
+        "https://www.cloudenoch.com"
+    ],
     allow_credentials=True,
     allow_methods=["GET"],
     allow_headers=["*"],
@@ -37,9 +42,11 @@ app.add_middleware(
 def setup_mongodb():
     mongo_uri = os.getenv("MONGODB_URI")
     if not mongo_uri:
+        logger.error("MONGODB_URI environment variable is not set")
         raise ValueError("MONGODB_URI environment variable is not set")
 
     try:
+        logger.info("Attempting to connect to MongoDB...")
         client = MongoClient(
             mongo_uri,
             server_api=ServerApi('1'),
@@ -52,7 +59,17 @@ def setup_mongodb():
         
         # Get database and collection
         db = client.resumeStats
-        return db.visitorCounter
+        collection = db.visitorCounter
+        
+        # Initialize the counter if it doesn't exist
+        collection.update_one(
+            {"_id": "visitorCounter"},
+            {"$setOnInsert": {"count": 0}},
+            upsert=True
+        )
+        logger.info("Visitor counter collection initialized")
+        
+        return collection
         
     except Exception as e:
         logger.error(f"Failed to connect to MongoDB: {e}")

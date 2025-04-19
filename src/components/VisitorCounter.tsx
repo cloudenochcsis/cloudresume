@@ -13,19 +13,27 @@ const VisitorCounter: React.FC<VisitorCounterProps> = ({ className }) => {
     const fetchVisitorCount = async () => {
       try {
         setLoading(true);
-        // Update this URL to your FastAPI endpoint when deployed
         const apiUrl = process.env.REACT_APP_COUNTER_API_URL || 'http://localhost:8000/api/counter';
-        const response = await fetch(apiUrl);
+        console.log('Fetching visitor count from:', apiUrl);
+        
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+          },
+        });
         
         if (!response.ok) {
-          throw new Error('Failed to fetch visitor count');
+          const errorText = await response.text();
+          throw new Error(`Failed to fetch visitor count: ${response.status} ${errorText}`);
         }
         
         const data = await response.json();
+        console.log('Received visitor count:', data);
         setCount(data.count);
       } catch (err) {
         console.error('Error fetching visitor count:', err);
-        setError('Failed to load visitor count');
+        setError(err instanceof Error ? err.message : 'Failed to load visitor count');
       } finally {
         setLoading(false);
       }

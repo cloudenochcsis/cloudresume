@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.2
   python: circleci/python@2.1
+  docker: circleci/docker@2.1.1
 
 jobs:
   build-and-test:
@@ -32,21 +33,106 @@ jobs:
           paths:
             - build
 
+  build-and-push-images:
+    docker:
+      - image: cimg/python:3.10.13
+    steps:
+      - checkout
+      - setup_remote_docker
+      - docker/build:
+          image: $DOCKER_IMAGE_FRONTEND
+          path: .
+          tag: latest
+      - docker/build:
+          image: $DOCKER_IMAGE_API
+          path: ./api
+          tag: latest
+      - docker/push:
+          image: $DOCKER_IMAGE_FRONTEND
+          tag: latest
+      - docker/push:
+          image: $DOCKER_IMAGE_API
+          tag: latest
+
   deploy:
     docker:
       - image: cimg/base:stable
     steps:
-      - attach_workspace:
-          at: .
       - add_ssh_keys:
           fingerprints:
             - "IrFlIKv6KdHjCdm+FroGYwh1FpSvaUDozW+QbOoZRfk"
+      - checkout
+      - run:
+          name: Install Docker on Server
+          command: |
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'bash -s' << 'ENDSSH'
+            # Install Docker if not installed
+            if ! command -v docker &> /dev/null; then
+                echo "Installing Docker..."
+                curl -fsSL https://get.docker.com -o get-docker.sh
+                sh get-docker.sh
+                rm get-docker.sh
+            fi
+
+            # Install Docker Compose if not installed
+            if ! command -v docker-compose &> /dev/null; then
+                echo "Installing Docker Compose..."
+                curl -L "https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+                chmod +x /usr/local/bin/docker-compose
+            fi
+            ENDSSH
+
       - run:
           name: Deploy to DigitalOcean
           command: |
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'rm -rf /var/www/portfolio/*'
-            scp -r build/* root@${DROPLET_IP}:/var/www/portfolio/
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'sudo systemctl reload nginx'
+            # Create deployment script
+            echo '#!/bin/bash
+            set -e
+
+            # Login to Docker Hub
+            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+
+            # Pull latest images
+            docker pull $DOCKER_IMAGE_FRONTEND:latest
+            docker pull $DOCKER_IMAGE_API:latest
+
+            # Create env files
+            echo "MONGODB_URI=$MONGODB_URI" > /root/api/.env
+            
+            # Create docker-compose.override.yml for production settings
+            cat > /root/docker-compose.override.yml << EOL
+            version: "3.8"
+            services:
+              frontend:
+                environment:
+                  - REACT_APP_COUNTER_API_URL=https://api.cloudenoch.com/api/counter
+                image: $DOCKER_IMAGE_FRONTEND:latest
+              api:
+                environment:
+                  - MONGODB_URI=$MONGODB_URI
+                image: $DOCKER_IMAGE_API:latest
+            EOL
+
+            # Stop and remove existing containers
+            docker-compose down
+
+            # Start new containers
+            docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
+            ' > deploy.sh
+
+            # Ensure remote directories exist
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mkdir -p /root/api'
+
+            # Copy deployment files
+            scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml nginx.prod.conf root@${DROPLET_IP}:/root/
+            
+            # Copy nginx configuration
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'cp /root/nginx.prod.conf /etc/nginx/sites-available/docker-apps.conf'
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'ln -sf /etc/nginx/sites-available/docker-apps.conf /etc/nginx/sites-enabled/'
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'nginx -t && systemctl reload nginx'
+            
+            # Execute deployment
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'chmod +x /root/deploy.sh && /root/deploy.sh'
 
   test-api:
     docker:
@@ -70,10 +156,16 @@ workflows:
     jobs:
       - build-and-test
       - test-api
-      - deploy:
+      - build-and-push-images:
           requires:
             - build-and-test
             - test-api
+          filters:
+            branches:
+              only: main
+      - deploy:
+          requires:
+            - build-and-push-images
           filters:
             branches:
               only: main
