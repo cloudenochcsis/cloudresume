@@ -7,25 +7,22 @@ from motor.motor_asyncio import AsyncIOMotorClient
 async def setup_test_db():
     """Setup a test database before each test"""
     # Connect to test MongoDB
+    global counter_collection
     client = AsyncIOMotorClient("mongodb://localhost:27017")
     db = client.test_db
-    collection = db.visitorCounter
+    counter_collection = db.visitorCounter
 
     # Reset counter before each test
-    await collection.update_one(
+    await counter_collection.update_one(
         {"_id": "visitorCounter"},
         {"$set": {"count": 0}},
         upsert=True
     )
 
-    # Update app state
-    app.state.mongodb = client
-    app.state.db = db
-
     yield
 
     # Cleanup
-    await collection.delete_many({})
+    await counter_collection.delete_many({})
     await client.close()
 
 @pytest.mark.asyncio

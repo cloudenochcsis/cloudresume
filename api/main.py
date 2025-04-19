@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pymongo import MongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.server_api import ServerApi
 from pymongo.errors import ConnectionFailure
 import os
@@ -39,7 +39,7 @@ app.add_middleware(
 )
 
 # MongoDB setup
-def setup_mongodb():
+async def setup_mongodb():
     mongo_uri = os.getenv("MONGODB_URI")
     if not mongo_uri:
         logger.error("MONGODB_URI environment variable is not set")
@@ -47,22 +47,19 @@ def setup_mongodb():
 
     try:
         logger.info("Attempting to connect to MongoDB...")
-        client = MongoClient(
+        client = AsyncIOMotorClient(
             mongo_uri,
             server_api=ServerApi('1'),
             tls=True,
             tlsAllowInvalidCertificates=True  # Only for development/testing
         )
-        # Verify the connection
-        client.admin.command('ping')
-        logger.info("Successfully connected to MongoDB")
         
         # Get database and collection
         db = client.resumeStats
         collection = db.visitorCounter
         
         # Initialize the counter if it doesn't exist
-        collection.update_one(
+        await collection.update_one(
             {"_id": "visitorCounter"},
             {"$setOnInsert": {"count": 0}},
             upsert=True
@@ -78,11 +75,14 @@ def setup_mongodb():
 # Initialize MongoDB collection
 counter_collection = None
 
-if not "pytest" in sys.modules:
-    try:
-        counter_collection = setup_mongodb()
-    except Exception as e:
-        logger.error(f"Failed to connect to MongoDB: {e}")
+@app.on_event("startup")
+async def startup_event():
+    global counter_collection
+    if not "pytest" in sys.modules:
+        try:
+            counter_collection = await setup_mongodb()
+        except Exception as e:
+            logger.error(f"Failed to connect to MongoDB: {e}")
 
 @app.get("/")
 def root():
@@ -90,7 +90,7 @@ def root():
     return {"message": "Resume Visitor Counter API is running"}
 
 @app.get("/api/counter")
-def get_visitor_count():
+async def get_visitor_count():
     if counter_collection is None:
         if "pytest" in sys.modules:
             # For testing, return a mock response
@@ -99,7 +99,7 @@ def get_visitor_count():
             raise HTTPException(status_code=503, detail="Database not connected")
 
     try:
-        result = counter_collection.find_one_and_update(
+        result = await counter_collection.find_one_and_update(
             {"_id": "visitorCounter"},
             {"$inc": {"count": 1}},
             upsert=True,
