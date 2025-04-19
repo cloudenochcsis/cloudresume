@@ -55,8 +55,7 @@ jobs:
       - checkout
       - python/install-packages:
           pkg-manager: pip
-          packages:
-            - pytest
+          args: -r requirements.txt
           app-dir: ./api
       - run:
           name: Run API tests
