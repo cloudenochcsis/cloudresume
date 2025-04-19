@@ -190,10 +190,23 @@ workflows:
             - api-test
           filters:
             branches:
-              only: main
-      - deploy:
+              only:
+                - main
+                - feature/visitor-count
+      - hold-deploy:
+          type: approval
           requires:
             - build-and-push-images
           filters:
             branches:
-              only: main
+              only:
+                - main
+                - feature/visitor-count
+      - deploy:
+          requires:
+            - hold-deploy
+          filters:
+            branches:
+              only:
+                - main
+                - feature/visitor-count
