@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   node: circleci/node@5.0.2
+  python: circleci/python@2.1
 
 jobs:
   build-and-test:
@@ -47,14 +48,32 @@ jobs:
             scp -r build/* root@${DROPLET_IP}:/var/www/portfolio/
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'sudo systemctl reload nginx'
 
+  test-api:
+    docker:
+      - image: cimg/python:3.10.13
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+          args: -r requirements.txt
+          app-dir: ./api
+      - run:
+          name: Run API tests
+          command: |
+            cd api
+            echo "MONGODB_URI=$MONGODB_URI" > .env
+            python -m pytest
+
 workflows:
   version: 2
   build-test-deploy:
     jobs:
       - build-and-test
+      - test-api
       - deploy:
           requires:
             - build-and-test
+            - test-api
           filters:
             branches:
               only: main

@@ -55,7 +55,7 @@ const IconLink: React.FC<SocialLink> = ({ href, icon: Icon, label, color }) => (
 const Connect: React.FC = () => (
   <div>
     <p className="text-gray-700 dark:text-gray-300 text-lg mb-8 text-center">
-      I'm always interested in collaborating on innovative projects in cloud security and AI. Feel free to connect with me.
+      I'm always interested in collaborating on innovative projects in cloud. Feel free to connect with me.
     </p>
     <div className="flex justify-center space-x-8 sm:space-x-12">
       {socialLinks.map((link, index) => (
