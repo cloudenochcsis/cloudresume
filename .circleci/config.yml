@@ -13,15 +13,6 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: yarn
-      - run:
-          name: Install test dependencies
-          command: |
-            yarn add --dev \
-              @testing-library/react@^14.1.2 \
-              @testing-library/jest-dom@^6.1.5 \
-              @testing-library/user-event@^14.5.1 \
-              jest@^29.7.0 \
-              jest-environment-jsdom@^29.7.0 \
               ts-jest@^29.1.1 \
               identity-obj-proxy@^3.0.0 \
               @types/jest@^29.5.11 \
