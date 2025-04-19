@@ -132,6 +132,7 @@ const resumeData: ResumeData = {
       issuer: "Microsoft",
       date: "2025",
       link: "https://learn.microsoft.com/en-us/users/enochayivor-0815/credentials/azure-devops-engineer"
+
     }
   ],
   publications: [

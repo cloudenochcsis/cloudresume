@@ -1,11 +1,19 @@
 # Cloud Resume
 
-A single-page application (SPA) to showcase a resume.
+A modern, single-page application to display a professional resume online.
+
+## Features
+- Responsive, clean UI
+- Dark/light mode
+- Built with React & TypeScript
+- Automated CI/CD with CircleCI
 
 
-## Deployment
 
-This project is set up with CircleCI for continuous integration and deployment. Any pushes to the `main` branch will trigger the CI/CD pipeline, which will run tests, build the application, and deploy it to the configured hosting service (Digital Ocean).
+CircleCI runs tests and deploys automatically on every push to `main`.
 
+## Tech Stack
+React, TypeScript, Tailwind CSS, Docker, CircleCI
 
-
+## License
+MIT
