@@ -103,29 +103,45 @@ jobs:
           name: Deploy to DigitalOcean
           command: |
             # Create deployment script
-            echo '#!/bin/bash' > deploy.sh
-            echo 'set -e' >> deploy.sh
-            echo 'echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin' >> deploy.sh
-            echo 'docker pull $DOCKER_IMAGE_FRONTEND:latest' >> deploy.sh
-            echo 'docker pull $DOCKER_IMAGE_API:latest' >> deploy.sh
-            echo 'mkdir -p /root/api' >> deploy.sh
-            echo 'echo "$MONGODB_URI" > /root/api/.env' >> deploy.sh
+            cat > deploy.sh << 'EOL'
+#!/bin/bash
+set -e
+
+# Docker login
+echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
+
+# Pull images
+docker pull "${DOCKER_IMAGE_FRONTEND}:latest"
+docker pull "${DOCKER_IMAGE_API}:latest"
+
+# Setup directories
+mkdir -p /root/api
+echo "${MONGODB_URI}" > /root/api/.env
+EOL
             
             # Create docker-compose override file
-            echo 'version: "3.8"' > docker-compose.override.yml
-            echo 'services:' >> docker-compose.override.yml
-            echo '  frontend:' >> docker-compose.override.yml
-            echo '    environment:' >> docker-compose.override.yml
-            echo '      - REACT_APP_COUNTER_API_URL=https://api.cloudenoch.com/api/counter' >> docker-compose.override.yml
-            echo '    image: ${DOCKER_IMAGE_FRONTEND}:latest' >> docker-compose.override.yml
-            echo '  api:' >> docker-compose.override.yml
-            echo '    environment:' >> docker-compose.override.yml
-            echo '      - MONGODB_URI=${MONGODB_URI}' >> docker-compose.override.yml
-            echo '    image: ${DOCKER_IMAGE_API}:latest' >> docker-compose.override.yml
+            cat > docker-compose.override.yml << 'EOL'
+version: "3.8"
+services:
+  frontend:
+    environment:
+      - REACT_APP_COUNTER_API_URL=https://api.cloudenoch.com/api/counter
+    image: ${DOCKER_IMAGE_FRONTEND}:latest
+  api:
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+    image: ${DOCKER_IMAGE_API}:latest
+EOL
             
-            # Add container management commands
-            echo 'docker-compose down' >> deploy.sh
-            echo 'docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d' >> deploy.sh
+            # Add container management commands to deploy.sh
+            cat >> deploy.sh << 'EOL'
+
+# Stop existing containers
+docker-compose down
+
+# Start new containers
+docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
+EOL
 
             # Ensure remote directories exist
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mkdir -p /root/api'
