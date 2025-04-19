@@ -53,6 +53,7 @@ jobs:
           path: ./api
           dockerfile: Dockerfile
           tag: latest
+          extra_build_args: --build-context=api=./api
       - docker/push:
           image: $DOCKER_IMAGE_FRONTEND
           tag: latest
