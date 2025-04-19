@@ -1,35 +1,36 @@
 import pytest
 from fastapi.testclient import TestClient
-from main import app, counter_collection
+from main import app
 from motor.motor_asyncio import AsyncIOMotorClient
+import sys
+
+# Mark this as a pytest module
+sys.modules['pytest'] = sys.modules[__name__]
 
 @pytest.fixture(autouse=True)
-def setup_test_db():
+async def setup_test_db():
     """Setup a test database before each test"""
     # Connect to test MongoDB
     client = AsyncIOMotorClient("mongodb://localhost:27017")
     db = client.test_db
     collection = db.visitorCounter
 
-    # Create a test client
-    test_client = TestClient(app)
+    # Reset counter before each test
+    await collection.delete_many({})
+    await collection.insert_one({"_id": "visitorCounter", "count": 0})
 
     # Update app's counter collection
-    global counter_collection
-    counter_collection = collection
+    import main
+    main.counter_collection = collection
 
-    # Reset counter before each test
-    collection.update_one(
-        {"_id": "visitorCounter"},
-        {"$set": {"count": 0}},
-        upsert=True
-    )
+    # Create a test client
+    test_client = TestClient(app)
 
     yield test_client
 
     # Cleanup
-    collection.delete_many({})
-    client.close()
+    await collection.delete_many({})
+    await client.close()
 
 def test_get_visitor_count(setup_test_db):
     """Test getting the visitor count"""

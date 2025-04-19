@@ -15,26 +15,34 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
-app = FastAPI()
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    global counter_collection
+    if not "pytest" in sys.modules:
+        try:
+            counter_collection = await setup_mongodb()
+        except Exception as e:
+            logger.error(f"Failed to connect to MongoDB: {e}")
+    yield
+    # Shutdown
+    if counter_collection and not "pytest" in sys.modules:
+        try:
+            client = counter_collection.database.client
+            await client.close()
+        except Exception as e:
+            logger.error(f"Failed to close MongoDB connection: {e}")
+
+app = FastAPI(lifespan=lifespan)
 
 # Configure CORS
-# Get allowed origins from environment or use defaults
-allowed_origins = [
-    "http://localhost:3001",      # Local development
-    "http://0.0.0.0:3001",        # Docker local frontend
-    "http://127.0.0.1:3001",      # Alternative local address
-    "https://cloudenoch.com",     # Production
-    "https://www.cloudenoch.com"  # Production with www
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://cloudenoch.com",
-        "https://www.cloudenoch.com"
-    ],
+    allow_origins=["*"],  # Allow all origins in test
     allow_credentials=True,
-    allow_methods=["GET"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
@@ -75,14 +83,7 @@ async def setup_mongodb():
 # Initialize MongoDB collection
 counter_collection = None
 
-@app.on_event("startup")
-async def startup_event():
-    global counter_collection
-    if not "pytest" in sys.modules:
-        try:
-            counter_collection = await setup_mongodb()
-        except Exception as e:
-            logger.error(f"Failed to connect to MongoDB: {e}")
+
 
 @app.get("/")
 def root():
@@ -92,11 +93,7 @@ def root():
 @app.get("/api/counter")
 async def get_visitor_count():
     if counter_collection is None:
-        if "pytest" in sys.modules:
-            # For testing, return a mock response
-            return {"count": 0}
-        else:
-            raise HTTPException(status_code=503, detail="Database not connected")
+        raise HTTPException(status_code=503, detail="Database not connected")
 
     try:
         result = await counter_collection.find_one_and_update(
