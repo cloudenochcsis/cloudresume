@@ -60,7 +60,7 @@ jobs:
           image: $DOCKER_IMAGE_API
           tag: latest
 
-  deploy:
+  deployment:
     docker:
       - image: cimg/base:stable
     steps:
@@ -192,7 +192,7 @@ workflows:
           filters:
             branches:
               only: main
-      - deploy:
+      - deployment:
           requires:
             - build-and-push-images
           filters:
