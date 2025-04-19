@@ -5,6 +5,10 @@ orbs:
   python: circleci/python@2.1
   docker: circleci/docker@2.1.1
 
+docker-auth: &docker-auth
+  username: $DOCKERHUB_USERNAME
+  password: $DOCKERHUB_PASSWORD
+
 jobs:
   frontend-test:
     docker:
@@ -47,14 +51,15 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - docker/check
-      - run:
-          name: Docker login
-          command: echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+      - docker/check:
+          docker-username: DOCKERHUB_USERNAME
+          docker-password: DOCKERHUB_PASSWORD
       - docker/build:
           image: $DOCKER_IMAGE_FRONTEND
           path: .
           tag: latest
+          docker-username: DOCKERHUB_USERNAME
+          docker-password: DOCKERHUB_PASSWORD
       - run:
           name: Build API Docker image
           command: |
@@ -63,9 +68,13 @@ jobs:
       - docker/push:
           image: $DOCKER_IMAGE_API
           tag: latest
+          docker-username: DOCKERHUB_USERNAME
+          docker-password: DOCKERHUB_PASSWORD
       - docker/push:
           image: $DOCKER_IMAGE_FRONTEND
           tag: latest
+          docker-username: DOCKERHUB_USERNAME
+          docker-password: DOCKERHUB_PASSWORD
 
   deployment:
     docker:
