@@ -50,7 +50,7 @@ jobs:
       - docker/check
       - run:
           name: Docker login
-          command: echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+          command: echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
       - docker/build:
           image: $DOCKER_IMAGE_FRONTEND
           path: .
@@ -102,7 +102,7 @@ jobs:
             # Create deployment script
             echo '#!/bin/bash' > deploy.sh
             echo 'set -e' >> deploy.sh
-            echo 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin' >> deploy.sh
+            echo 'echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin' >> deploy.sh
             echo 'docker pull $DOCKER_IMAGE_FRONTEND:latest' >> deploy.sh
             echo 'docker pull $DOCKER_IMAGE_API:latest' >> deploy.sh
             echo 'mkdir -p /root/api' >> deploy.sh
