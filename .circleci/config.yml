@@ -83,47 +83,36 @@ jobs:
       - run:
           name: Deploy to DigitalOcean
           command: |
-            # Create deployment script parts
-            cat > deploy-1.sh << 'EOF'
-            #!/bin/bash
-            set -e
-            EOF
-
-            # Add Docker login
-            echo 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin' >> deploy-1.sh
-
-            # Add Docker pull commands
-            echo 'docker pull $DOCKER_IMAGE_FRONTEND:latest' >> deploy-1.sh
-            echo 'docker pull $DOCKER_IMAGE_API:latest' >> deploy-1.sh
-
-            # Add environment setup
-            echo 'mkdir -p /root/api' >> deploy-1.sh
-            echo 'echo "MONGODB_URI=$MONGODB_URI" > /root/api/.env' >> deploy-1.sh
-
-            # Create override file content
-            cat > docker-compose.override.yml << 'EOF'
-            version: "3.8"
-            services:
-              frontend:
-                environment:
-                  - REACT_APP_COUNTER_API_URL=https://api.cloudenoch.com/api/counter
-                image: ${DOCKER_IMAGE_FRONTEND}:latest
-              api:
-                environment:
-                  - MONGODB_URI=${MONGODB_URI}
-                image: ${DOCKER_IMAGE_API}:latest
-            EOF
-
-            # Add container management
-            echo 'docker-compose down' >> deploy-1.sh
-            echo 'docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d' >> deploy-1.sh
+            # Create deployment script
+            echo '#!/bin/bash' > deploy.sh
+            echo 'set -e' >> deploy.sh
+            echo 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin' >> deploy.sh
+            echo 'docker pull $DOCKER_IMAGE_FRONTEND:latest' >> deploy.sh
+            echo 'docker pull $DOCKER_IMAGE_API:latest' >> deploy.sh
+            echo 'mkdir -p /root/api' >> deploy.sh
+            echo 'echo "$MONGODB_URI" > /root/api/.env' >> deploy.sh
+            
+            # Create docker-compose override file
+            echo 'version: "3.8"' > docker-compose.override.yml
+            echo 'services:' >> docker-compose.override.yml
+            echo '  frontend:' >> docker-compose.override.yml
+            echo '    environment:' >> docker-compose.override.yml
+            echo '      - REACT_APP_COUNTER_API_URL=https://api.cloudenoch.com/api/counter' >> docker-compose.override.yml
+            echo '    image: ${DOCKER_IMAGE_FRONTEND}:latest' >> docker-compose.override.yml
+            echo '  api:' >> docker-compose.override.yml
+            echo '    environment:' >> docker-compose.override.yml
+            echo '      - MONGODB_URI=${MONGODB_URI}' >> docker-compose.override.yml
+            echo '    image: ${DOCKER_IMAGE_API}:latest' >> docker-compose.override.yml
+            
+            # Add container management commands
+            echo 'docker-compose down' >> deploy.sh
+            echo 'docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d' >> deploy.sh
 
             # Ensure remote directories exist
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mkdir -p /root/api'
 
             # Copy deployment files
-            scp -o StrictHostKeyChecking=no deploy-1.sh docker-compose.yml docker-compose.override.yml nginx.prod.conf root@${DROPLET_IP}:/root/
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mv /root/deploy-1.sh /root/deploy.sh'
+            scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml docker-compose.override.yml nginx.prod.conf root@${DROPLET_IP}:/root/
             
             # Copy nginx configuration
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'cp /root/nginx.prod.conf /etc/nginx/sites-available/docker-apps.conf'
