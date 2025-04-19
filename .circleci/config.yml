@@ -65,66 +65,65 @@ jobs:
       - run:
           name: Install Docker on Server
           command: |
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'bash -s' << 'ENDSSH'
-            # Install Docker if not installed
-            if ! command -v docker &> /dev/null; then
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
+              if ! command -v docker &> /dev/null; then
                 echo "Installing Docker..."
                 curl -fsSL https://get.docker.com -o get-docker.sh
                 sh get-docker.sh
                 rm get-docker.sh
-            fi
+              fi
 
-            # Install Docker Compose if not installed
-            if ! command -v docker-compose &> /dev/null; then
+              if ! command -v docker-compose &> /dev/null; then
                 echo "Installing Docker Compose..."
                 curl -L "https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
                 chmod +x /usr/local/bin/docker-compose
-            fi
-            ENDSSH
+              fi
+            '
 
       - run:
           name: Deploy to DigitalOcean
           command: |
-            # Create deployment script
-            echo '#!/bin/bash
+            # Create deployment script parts
+            cat > deploy-1.sh << 'EOF'
+            #!/bin/bash
             set -e
+            EOF
 
-            # Login to Docker Hub
-            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+            # Add Docker login
+            echo 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin' >> deploy-1.sh
 
-            # Pull latest images
-            docker pull $DOCKER_IMAGE_FRONTEND:latest
-            docker pull $DOCKER_IMAGE_API:latest
+            # Add Docker pull commands
+            echo 'docker pull $DOCKER_IMAGE_FRONTEND:latest' >> deploy-1.sh
+            echo 'docker pull $DOCKER_IMAGE_API:latest' >> deploy-1.sh
 
-            # Create env files
-            echo "MONGODB_URI=$MONGODB_URI" > /root/api/.env
-            
-            # Create docker-compose.override.yml for production settings
-            cat > /root/docker-compose.override.yml << EOL
+            # Add environment setup
+            echo 'mkdir -p /root/api' >> deploy-1.sh
+            echo 'echo "MONGODB_URI=$MONGODB_URI" > /root/api/.env' >> deploy-1.sh
+
+            # Create override file content
+            cat > docker-compose.override.yml << 'EOF'
             version: "3.8"
             services:
               frontend:
                 environment:
                   - REACT_APP_COUNTER_API_URL=https://api.cloudenoch.com/api/counter
-                image: $DOCKER_IMAGE_FRONTEND:latest
+                image: ${DOCKER_IMAGE_FRONTEND}:latest
               api:
                 environment:
-                  - MONGODB_URI=$MONGODB_URI
-                image: $DOCKER_IMAGE_API:latest
-            EOL
+                  - MONGODB_URI=${MONGODB_URI}
+                image: ${DOCKER_IMAGE_API}:latest
+            EOF
 
-            # Stop and remove existing containers
-            docker-compose down
-
-            # Start new containers
-            docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
-            ' > deploy.sh
+            # Add container management
+            echo 'docker-compose down' >> deploy-1.sh
+            echo 'docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d' >> deploy-1.sh
 
             # Ensure remote directories exist
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mkdir -p /root/api'
 
             # Copy deployment files
-            scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml nginx.prod.conf root@${DROPLET_IP}:/root/
+            scp -o StrictHostKeyChecking=no deploy-1.sh docker-compose.yml docker-compose.override.yml nginx.prod.conf root@${DROPLET_IP}:/root/
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mv /root/deploy-1.sh /root/deploy.sh'
             
             # Copy nginx configuration
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'cp /root/nginx.prod.conf /etc/nginx/sites-available/docker-apps.conf'
