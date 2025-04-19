@@ -16,16 +16,31 @@ jobs:
       - run:
           name: Install test dependencies
           command: |
-            yarn add --dev @testing-library/react@^14.1.2 @testing-library/jest-dom@^6.1.5 @testing-library/user-event@^14.5.1 jest@^29.7.0 jest-environment-jsdom@^29.7.0 ts-jest@^29.1.1 identity-obj-proxy@^3.0.0 @types/jest@^29.5.11 jest-junit
+            yarn add --dev \
+              @testing-library/react@^14.1.2 \
+              @testing-library/jest-dom@^6.1.5 \
+              @testing-library/user-event@^14.5.1 \
+              jest@^29.7.0 \
+              jest-environment-jsdom@^29.7.0 \
+              ts-jest@^29.1.1 \
+              identity-obj-proxy@^3.0.0 \
+              @types/jest@^29.5.11 \
+              jest-junit \
+              @babel/core@^7.23.7 \
+              @babel/preset-env@^7.23.7 \
+              @babel/preset-react@^7.23.7 \
+              @babel/preset-typescript@^7.23.7 \
+              babel-jest@^29.7.0
       - run:
           name: Create test directories
           command: mkdir -p test-results/jest
       - run:
           name: Run frontend unit tests
-          command: yarn test --coverage --ci --reporters=default --reporters=jest-junit
+          command: yarn test
           environment:
             JEST_JUNIT_OUTPUT_DIR: ./test-results/jest
             JEST_JUNIT_OUTPUT_NAME: results.xml
+            CI: "true"
       - store_test_results:
           path: test-results
       - store_artifacts:

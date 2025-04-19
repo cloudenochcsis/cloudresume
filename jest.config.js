@@ -1,9 +1,15 @@
 module.exports = {
+  preset: 'ts-jest',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
-    '^.+\\.(js|jsx)$': 'babel-jest',
+    '^.+\\.(ts|tsx)$': ['ts-jest', {
+      tsconfig: 'tsconfig.json',
+      isolatedModules: true,
+    }],
+    '^.+\\.(js|jsx)$': ['babel-jest', {
+      presets: ['@babel/preset-env', '@babel/preset-react'],
+    }],
   },
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
@@ -15,5 +21,14 @@ module.exports = {
     '!src/**/*.d.ts',
     '!src/index.tsx',
     '!src/reportWebVitals.ts',
+  ],
+  reporters: [
+    'default',
+    ['jest-junit', {
+      outputDirectory: 'test-results/jest',
+      outputName: 'results.xml',
+      classNameTemplate: '{classname}',
+      titleTemplate: '{title}',
+    }],
   ],
 };
