@@ -41,6 +41,9 @@ jobs:
   build-and-push-images:
     docker:
       - image: cimg/python:3.10.13
+    environment:
+      DOCKER_IMAGE_FRONTEND: akpadetsi/cloudresume-frontend
+      DOCKER_IMAGE_API: akpadetsi/cloudresume-api
     steps:
       - checkout
       - setup_remote_docker
@@ -67,6 +70,9 @@ jobs:
   deployment:
     docker:
       - image: cimg/base:stable
+    environment:
+      DOCKER_IMAGE_FRONTEND: akpadetsi/cloudresume-frontend
+      DOCKER_IMAGE_API: akpadetsi/cloudresume-api
     steps:
       - add_ssh_keys:
           fingerprints:
