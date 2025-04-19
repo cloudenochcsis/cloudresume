@@ -167,7 +167,8 @@ jobs:
           name: Install test dependencies
           command: |
             cd api
-            pip install pytest-cov pytest-asyncio httpx motor pytest-junit
+            pip install -U pip
+            pip install pytest-cov pytest-asyncio httpx motor pytest-xunit2
       - run:
           name: Create test directories
           command: |
@@ -178,7 +179,7 @@ jobs:
           command: |
             cd api
             echo "MONGODB_URI=mongodb://localhost:27017/test" > .env
-            python -m pytest --junitxml=test-results/pytest/results.xml
+            python -m pytest --cov=. --cov-report=xml --junit-xml=test-results/pytest/results.xml
       - store_test_results:
           path: api/test-results
       - store_artifacts:
