@@ -13,6 +13,8 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: yarn
+          include-branch-in-cache-key: false
+          override-ci-command: yarn install
       - run:
           name: Create test directories
           command: mkdir -p test-results/jest
