@@ -6,7 +6,7 @@ orbs:
   docker: circleci/docker@2.1.1
 
 jobs:
-  build-and-test:
+  frontend-test:
     docker:
       - image: cimg/node:16.20
     steps:
@@ -23,8 +23,18 @@ jobs:
           name: Run linter
           command: yarn run eslint .
       - run:
-          name: Run tests
-          command: yarn test --passWithNoTests
+          name: Run frontend unit tests
+          command: yarn test --coverage
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./test-results/jest
+      - run:
+          name: Run TypeScript type check
+          command: yarn tsc --noEmit
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: coverage
+          destination: coverage-report
       - run:
           name: Build application
           command: yarn build
@@ -122,9 +132,10 @@ jobs:
             # Execute deployment
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'chmod +x /root/deploy.sh && /root/deploy.sh'
 
-  test-api:
+  api-test:
     docker:
       - image: cimg/python:3.10.13
+      - image: mongo:4.4
     steps:
       - checkout
       - python/install-packages:
@@ -132,22 +143,32 @@ jobs:
           args: -r requirements.txt
           app-dir: ./api
       - run:
+          name: Install test dependencies
+          command: |
+            cd api
+            pip install pytest-cov pytest-asyncio httpx
+      - run:
           name: Run API tests
           command: |
             cd api
-            echo "MONGODB_URI=$MONGODB_URI" > .env
-            python -m pytest
+            echo "MONGODB_URI=mongodb://localhost:27017/test" > .env
+            python -m pytest --cov=. --cov-report=xml --junitxml=test-results/pytest/results.xml
+      - store_test_results:
+          path: api/test-results
+      - store_artifacts:
+          path: api/coverage.xml
+          destination: coverage-report
 
 workflows:
   version: 2
   build-test-deploy:
     jobs:
-      - build-and-test
-      - test-api
+      - frontend-test
+      - api-test
       - build-and-push-images:
           requires:
-            - build-and-test
-            - test-api
+            - frontend-test
+            - api-test
           filters:
             branches:
               only: main
