@@ -3,6 +3,7 @@ import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { ResumeProvider } from './contexts/ResumeContext';
 import Header from './components/Header';
 import Main from './components/Main';
+import VisitorCounter from './components/VisitorCounter';
 import { Shield, Cloud, Server, Brain } from 'lucide-react';
 
 
@@ -60,6 +61,10 @@ const AppContent: React.FC = () => {
           skills={skills}
           researchAreas={researchAreas}
         />
+        <footer className="mt-8 pb-4 text-center">
+          <VisitorCounter className="mt-2" />
+          <p className="text-sm text-gray-500 mt-2">© {new Date().getFullYear()} Enoch</p>
+        </footer>
       </div>
     </div>
   );
