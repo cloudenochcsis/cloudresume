@@ -1,31 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 interface VisitorCounterProps {
   className?: string;
 }
 
-const VisitorCounter: React.FC<VisitorCounterProps> = ({ className }) => {
+const VisitorCounter: FC<VisitorCounterProps> = ({ className }) => {
   const [count, setCount] = useState<number | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchVisitorCount = async () => {
       try {
-        setLoading(true);
-        // Update this URL to your FastAPI endpoint when deployed
-        const apiUrl = process.env.REACT_APP_COUNTER_API_URL || 'http://localhost:8000/api/counter';
-        const response = await fetch(apiUrl);
-        
+        const response = await fetch(process.env.REACT_APP_COUNTER_API_URL || '/api/counter', {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+          },
+        });
+
         if (!response.ok) {
-          throw new Error('Failed to fetch visitor count');
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
+        if (typeof data.count !== 'number') {
+          throw new Error('Invalid response format');
+        }
+
         setCount(data.count);
       } catch (err) {
-        console.error('Error fetching visitor count:', err);
-        setError('Failed to load visitor count');
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load visitor count';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -35,11 +41,11 @@ const VisitorCounter: React.FC<VisitorCounterProps> = ({ className }) => {
   }, []);
 
   if (loading) {
-    return <div className={`${className} text-sm text-gray-400`}>Loading visitor count...</div>;
+    return <div className={className}>Loading visitor count...</div>;
   }
 
   if (error) {
-    return null; // Hide the component if there's an error
+    return <div className={className}>Error loading visitor count</div>;
   }
 
   return (

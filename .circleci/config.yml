@@ -3,27 +3,33 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.2
   python: circleci/python@2.1
+  docker: circleci/docker@2.1.1
 
 jobs:
-  build-and-test:
+  frontend-test:
     docker:
-      - image: cimg/node:16.20
+      - image: cimg/node:18.19
     steps:
       - checkout
       - node/install-packages:
           pkg-manager: yarn
+          include-branch-in-cache-key: false
+          override-ci-command: yarn install
       - run:
-          name: Check versions
-          command: |
-            node --version
-            npm --version
-            yarn --version
+          name: Create test directories
+          command: mkdir -p test-results/jest
       - run:
-          name: Run linter
-          command: yarn run eslint .
-      - run:
-          name: Run tests
-          command: yarn test --passWithNoTests
+          name: Run frontend unit tests
+          command: yarn test
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./test-results/jest
+            JEST_JUNIT_OUTPUT_NAME: results.xml
+            CI: "true"
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: coverage
+          destination: coverage-report
       - run:
           name: Build application
           command: yarn build
@@ -32,48 +38,162 @@ jobs:
           paths:
             - build
 
-  deploy:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - attach_workspace:
-          at: .
-      - add_ssh_keys:
-          fingerprints:
-            - "IrFlIKv6KdHjCdm+FroGYwh1FpSvaUDozW+QbOoZRfk"
-      - run:
-          name: Deploy to DigitalOcean
-          command: |
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'rm -rf /var/www/portfolio/*'
-            scp -r build/* root@${DROPLET_IP}:/var/www/portfolio/
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'sudo systemctl reload nginx'
-
-  test-api:
+  build-and-push-images:
     docker:
       - image: cimg/python:3.10.13
     steps:
       - checkout
+      - setup_remote_docker
+      - docker/build:
+          image: $DOCKER_IMAGE_FRONTEND
+          path: .
+          tag: latest
+      - docker/build:
+          image: $DOCKER_IMAGE_API
+          path: ./api
+          tag: latest
+      - docker/push:
+          image: $DOCKER_IMAGE_FRONTEND
+          tag: latest
+      - docker/push:
+          image: $DOCKER_IMAGE_API
+          tag: latest
+
+  deploy:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "IrFlIKv6KdHjCdm+FroGYwh1FpSvaUDozW+QbOoZRfk"
+      - checkout
+      - run:
+          name: Install Docker on Server
+          command: |
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
+              if ! command -v docker &> /dev/null; then
+                echo "Installing Docker..."
+                curl -fsSL https://get.docker.com -o get-docker.sh
+                sh get-docker.sh
+                rm get-docker.sh
+              fi
+
+              if ! command -v docker-compose &> /dev/null; then
+                echo "Installing Docker Compose..."
+                curl -L "https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+                chmod +x /usr/local/bin/docker-compose
+              fi
+            '
+
+      - run:
+          name: Deploy to DigitalOcean
+          command: |
+            # Create deployment script
+            echo '#!/bin/bash' > deploy.sh
+            echo 'set -e' >> deploy.sh
+            echo 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin' >> deploy.sh
+            echo 'docker pull $DOCKER_IMAGE_FRONTEND:latest' >> deploy.sh
+            echo 'docker pull $DOCKER_IMAGE_API:latest' >> deploy.sh
+            echo 'mkdir -p /root/api' >> deploy.sh
+            echo 'echo "$MONGODB_URI" > /root/api/.env' >> deploy.sh
+            
+            # Create docker-compose override file
+            echo 'version: "3.8"' > docker-compose.override.yml
+            echo 'services:' >> docker-compose.override.yml
+            echo '  frontend:' >> docker-compose.override.yml
+            echo '    environment:' >> docker-compose.override.yml
+            echo '      - REACT_APP_COUNTER_API_URL=https://api.cloudenoch.com/api/counter' >> docker-compose.override.yml
+            echo '    image: ${DOCKER_IMAGE_FRONTEND}:latest' >> docker-compose.override.yml
+            echo '  api:' >> docker-compose.override.yml
+            echo '    environment:' >> docker-compose.override.yml
+            echo '      - MONGODB_URI=${MONGODB_URI}' >> docker-compose.override.yml
+            echo '    image: ${DOCKER_IMAGE_API}:latest' >> docker-compose.override.yml
+            
+            # Add container management commands
+            echo 'docker-compose down' >> deploy.sh
+            echo 'docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d' >> deploy.sh
+
+            # Ensure remote directories exist
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mkdir -p /root/api'
+
+            # Copy deployment files
+            scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml docker-compose.override.yml nginx.prod.conf root@${DROPLET_IP}:/root/
+            
+            # Copy nginx configuration
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'cp /root/nginx.prod.conf /etc/nginx/sites-available/docker-apps.conf'
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'ln -sf /etc/nginx/sites-available/docker-apps.conf /etc/nginx/sites-enabled/'
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'nginx -t && systemctl reload nginx'
+            
+            # Execute deployment
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'chmod +x /root/deploy.sh && /root/deploy.sh'
+
+  api-test:
+    docker:
+      - image: cimg/python:3.10.13
+      - image: mongo:4.4
+        command: [mongod, --nojournal, --noauth]
+    steps:
+      - checkout
+      - run:
+          name: Wait for MongoDB
+          command: |
+            for i in {1..30}; do
+              if nc -z localhost 27017; then
+                echo "MongoDB is ready"
+                exit 0
+              fi
+              echo -n "."
+              sleep 1
+            done
+            echo "Failed waiting for MongoDB" && exit 1
       - python/install-packages:
           pkg-manager: pip
           args: -r requirements.txt
           app-dir: ./api
       - run:
+          name: Install netcat
+          command: sudo apt-get update && sudo apt-get install -y netcat-openbsd
+      - run:
+          name: Install test dependencies
+          command: |
+            cd api
+            pip install -U pip
+            pip install pytest pytest-cov pytest-asyncio httpx motor
+      - run:
+          name: Create test directories
+          command: |
+            cd api
+            mkdir -p test-results/pytest
+      - run:
           name: Run API tests
           command: |
             cd api
-            echo "MONGODB_URI=$MONGODB_URI" > .env
-            python -m pytest
+            # Set MongoDB URI to connect to the MongoDB service container
+            # In CircleCI, service containers are accessible via localhost
+            echo "MONGODB_URI=mongodb://localhost:27017/test" > .env
+            python -m pytest --cov=. --cov-report=xml --junitxml=test-results/pytest/results.xml
+      - store_test_results:
+          path: api/test-results
+      - store_artifacts:
+          path: api/coverage.xml
+          destination: coverage-report
 
 workflows:
   version: 2
   build-test-deploy:
     jobs:
-      - build-and-test
-      - test-api
+      - frontend-test
+      - api-test
+      - build-and-push-images:
+          requires:
+            - frontend-test
+            - api-test
+          filters:
+            branches:
+              only: main
       - deploy:
           requires:
-            - build-and-test
-            - test-api
+            - build-and-push-images
           filters:
             branches:
               only: main

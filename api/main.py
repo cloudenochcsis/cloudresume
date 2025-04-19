@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pymongo import MongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.server_api import ServerApi
 from pymongo.errors import ConnectionFailure
 import os
@@ -15,44 +15,66 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
-app = FastAPI()
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    global counter_collection
+    if not "pytest" in sys.modules:
+        try:
+            counter_collection = await setup_mongodb()
+        except Exception as e:
+            logger.error(f"Failed to connect to MongoDB: {e}")
+    yield
+    # Shutdown
+    if counter_collection and not "pytest" in sys.modules:
+        try:
+            client = counter_collection.database.client
+            await client.close()
+        except Exception as e:
+            logger.error(f"Failed to close MongoDB connection: {e}")
+
+app = FastAPI(lifespan=lifespan)
 
 # Configure CORS
-# Get allowed origins from environment or use defaults
-allowed_origins = [
-    os.getenv("FRONTEND_URL", "http://localhost:3001"),  # Local development
-    "https://cloudenoch.com",  # Production
-    "https://www.cloudenoch.com"  # Production with www
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=["*"],  # Allow all origins in test
     allow_credentials=True,
-    allow_methods=["GET"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # MongoDB setup
-def setup_mongodb():
+async def setup_mongodb():
     mongo_uri = os.getenv("MONGODB_URI")
     if not mongo_uri:
+        logger.error("MONGODB_URI environment variable is not set")
         raise ValueError("MONGODB_URI environment variable is not set")
 
     try:
-        client = MongoClient(
+        logger.info("Attempting to connect to MongoDB...")
+        client = AsyncIOMotorClient(
             mongo_uri,
             server_api=ServerApi('1'),
             tls=True,
             tlsAllowInvalidCertificates=True  # Only for development/testing
         )
-        # Verify the connection
-        client.admin.command('ping')
-        logger.info("Successfully connected to MongoDB")
         
         # Get database and collection
         db = client.resumeStats
-        return db.visitorCounter
+        collection = db.visitorCounter
+        
+        # Initialize the counter if it doesn't exist
+        await collection.update_one(
+            {"_id": "visitorCounter"},
+            {"$setOnInsert": {"count": 0}},
+            upsert=True
+        )
+        logger.info("Visitor counter collection initialized")
+        
+        return collection
         
     except Exception as e:
         logger.error(f"Failed to connect to MongoDB: {e}")
@@ -61,11 +83,7 @@ def setup_mongodb():
 # Initialize MongoDB collection
 counter_collection = None
 
-if not "pytest" in sys.modules:
-    try:
-        counter_collection = setup_mongodb()
-    except Exception as e:
-        logger.error(f"Failed to connect to MongoDB: {e}")
+
 
 @app.get("/")
 def root():
@@ -73,16 +91,12 @@ def root():
     return {"message": "Resume Visitor Counter API is running"}
 
 @app.get("/api/counter")
-def get_visitor_count():
+async def get_visitor_count():
     if counter_collection is None:
-        if "pytest" in sys.modules:
-            # For testing, return a mock response
-            return {"count": 0}
-        else:
-            raise HTTPException(status_code=503, detail="Database not connected")
+        raise HTTPException(status_code=503, detail="Database not connected")
 
     try:
-        result = counter_collection.find_one_and_update(
+        result = await counter_collection.find_one_and_update(
             {"_id": "visitorCounter"},
             {"$inc": {"count": 1}},
             upsert=True,
