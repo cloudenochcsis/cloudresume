@@ -105,11 +105,17 @@ jobs:
             # Create deployment script
             echo '#!/bin/bash' > deploy.sh
             echo 'set -e' >> deploy.sh
-            echo 'echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin' >> deploy.sh
-            echo 'docker pull $DOCKER_IMAGE_FRONTEND:latest' >> deploy.sh
-            echo 'docker pull $DOCKER_IMAGE_API:latest' >> deploy.sh
+            echo '' >> deploy.sh
+            echo '# Docker login' >> deploy.sh
+            echo 'echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin' >> deploy.sh
+            echo '' >> deploy.sh
+            echo '# Pull images' >> deploy.sh
+            echo 'docker pull "${DOCKER_IMAGE_FRONTEND}:latest"' >> deploy.sh
+            echo 'docker pull "${DOCKER_IMAGE_API}:latest"' >> deploy.sh
+            echo '' >> deploy.sh
+            echo '# Setup directories' >> deploy.sh
             echo 'mkdir -p /root/api' >> deploy.sh
-            echo 'echo "$MONGODB_URI" > /root/api/.env' >> deploy.sh
+            echo 'echo "${MONGODB_URI}" > /root/api/.env' >> deploy.sh
             
             # Create docker-compose override file
             echo 'version: "3.8"' > docker-compose.override.yml
@@ -124,7 +130,11 @@ jobs:
             echo '    image: ${DOCKER_IMAGE_API}:latest' >> docker-compose.override.yml
             
             # Add container management commands
+            echo '' >> deploy.sh
+            echo '# Stop existing containers' >> deploy.sh
             echo 'docker-compose down' >> deploy.sh
+            echo '' >> deploy.sh
+            echo '# Start new containers' >> deploy.sh
             echo 'docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d' >> deploy.sh
 
             # Ensure remote directories exist
