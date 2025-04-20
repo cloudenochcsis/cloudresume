@@ -115,22 +115,12 @@ jobs:
             echo 'mkdir -p /root/api' >> deploy.sh
             echo 'chmod 755 /root/api' >> deploy.sh
 
-            # Create .env file with proper escaping
-            echo 'cat > /root/api/.env << EOL' >> deploy.sh
-            echo 'MONGODB_URI='"'"'${MONGODB_URI}'"'"'' >> deploy.sh
-            echo 'EOL' >> deploy.sh
+            # Create .env file
+            echo 'printf "MONGODB_URI=%s\n" "$MONGODB_URI" > /root/api/.env' >> deploy.sh
             echo 'chmod 644 /root/api/.env' >> deploy.sh
 
             # Create docker-compose override file
-            echo 'cat > docker-compose.override.yml << EOL' >> deploy.sh
-            echo 'services:' >> deploy.sh
-            echo '  frontend:' >> deploy.sh
-            echo '    image: ${DOCKER_IMAGE_FRONTEND}:latest' >> deploy.sh
-            echo '  api:' >> deploy.sh
-            echo '    environment:' >> deploy.sh
-            echo '      - MONGODB_URI='"'"'${MONGODB_URI}'"'"'' >> deploy.sh
-            echo '    image: ${DOCKER_IMAGE_API}:latest' >> deploy.sh
-            echo 'EOL' >> deploy.sh
+            echo 'printf "services:\n  frontend:\n    image: %s:latest\n  api:\n    environment:\n      - MONGODB_URI=%s\n    image: %s:latest\n" "$DOCKER_IMAGE_FRONTEND" "$MONGODB_URI" "$DOCKER_IMAGE_API" > docker-compose.override.yml' >> deploy.sh
 
             echo '# Stop existing containers' >> deploy.sh
             echo 'docker-compose down || true' >> deploy.sh
