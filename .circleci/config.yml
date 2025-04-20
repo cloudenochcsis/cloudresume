@@ -123,7 +123,7 @@ jobs:
             echo '    image: ${DOCKER_IMAGE_FRONTEND}:latest' >> deploy.sh
             echo '  api:' >> deploy.sh
             echo '    environment:' >> deploy.sh
-            echo '      - MONGODB_URI='"${MONGODB_URI}" >> deploy.sh
+            echo "      - MONGODB_URI=${MONGODB_URI}" >> deploy.sh
             echo '    image: ${DOCKER_IMAGE_API}:latest' >> deploy.sh
             echo 'EOL' >> deploy.sh
 
