@@ -120,15 +120,7 @@ jobs:
             echo 'chmod 644 /root/api/.env' >> deploy.sh
 
             # Create docker-compose override file
-            echo 'cat > /root/docker-compose.override.yml << EOL' >> deploy.sh
-            echo 'services:' >> deploy.sh
-            echo '  frontend:' >> deploy.sh
-            echo '    image: ${DOCKER_IMAGE_FRONTEND}:latest' >> deploy.sh
-            echo '  api:' >> deploy.sh
-            echo '    environment:' >> deploy.sh
-            echo '      - MONGODB_URI=${MONGODB_URI}' >> deploy.sh
-            echo '    image: ${DOCKER_IMAGE_API}:latest' >> deploy.sh
-            echo 'EOL' >> deploy.sh
+            echo 'printf "services:\n  frontend:\n    image: %s:latest\n  api:\n    environment:\n      - MONGODB_URI=%s\n    image: %s:latest\n" "${DOCKER_IMAGE_FRONTEND}" "${MONGODB_URI}" "${DOCKER_IMAGE_API}" > /root/docker-compose.override.yml' >> deploy.sh
 
             echo '# Stop existing containers' >> deploy.sh
             echo 'cd /root && docker-compose down || true' >> deploy.sh
