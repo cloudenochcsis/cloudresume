@@ -115,25 +115,21 @@ jobs:
             echo 'mkdir -p /root/api' >> deploy.sh
             echo 'chmod 755 /root/api' >> deploy.sh
 
-            # Create temporary files locally with environment variables
-            echo "MONGODB_URI=\"${MONGODB_URI}\"" > api.env
-            cat > docker-compose.override.yml << EOL
-version: "3"
-services:
-  frontend:
-    image: ${DOCKER_IMAGE_FRONTEND}:latest
-  api:
-    environment:
-      - MONGODB_URI=${MONGODB_URI}
-    image: ${DOCKER_IMAGE_API}:latest
-EOL
+            # Create docker-compose override file with baked-in MongoDB URI
+            echo 'cat > /root/docker-compose.override.yml << "EOL"' >> deploy.sh
+            echo 'version: "3"' >> deploy.sh
+            echo 'services:' >> deploy.sh
+            echo '  frontend:' >> deploy.sh
+            echo '    image: ${DOCKER_IMAGE_FRONTEND}:latest' >> deploy.sh
+            echo '  api:' >> deploy.sh
+            echo '    environment:' >> deploy.sh
+            echo '      - MONGODB_URI='"${MONGODB_URI}" >> deploy.sh
+            echo '    image: ${DOCKER_IMAGE_API}:latest' >> deploy.sh
+            echo 'EOL' >> deploy.sh
 
-            # Copy the files to the remote server
-            scp -o StrictHostKeyChecking=no api.env root@${DROPLET_IP}:/root/api/.env
-            scp -o StrictHostKeyChecking=no docker-compose.override.yml root@${DROPLET_IP}:/root/docker-compose.override.yml
-
-            # Clean up local temporary files
-            rm api.env docker-compose.override.yml
+            # Create .env file with baked-in MongoDB URI
+            echo 'echo "MONGODB_URI='"${MONGODB_URI}"'" > /root/api/.env' >> deploy.sh
+            echo 'chmod 644 /root/api/.env' >> deploy.sh
 
             echo '# Stop existing containers' >> deploy.sh
             echo 'cd /root && docker-compose down || true' >> deploy.sh
