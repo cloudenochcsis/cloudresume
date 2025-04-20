@@ -152,13 +152,15 @@ jobs:
             echo 'chmod 755 /root/api' >> deploy.sh
             echo '' >> deploy.sh
             echo '# Create docker-compose override file' >> deploy.sh
-            echo 'echo "services:" > /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "  frontend:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "    image: '\''${DOCKER_IMAGE_FRONTEND}:latest'\''" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "  api:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "    environment:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo "echo '      MONGODB_URI: ${MONGODB_URI}' >> /root/docker-compose.override.yml" >> deploy.sh
-            echo 'echo "    image: '\''${DOCKER_IMAGE_API}:latest'\''" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'cat > /root/docker-compose.override.yml << EOF' >> deploy.sh
+            echo 'services:' >> deploy.sh
+            echo '  frontend:' >> deploy.sh
+            echo "    image: '${DOCKER_IMAGE_FRONTEND}:latest'" >> deploy.sh
+            echo '  api:' >> deploy.sh
+            echo '    environment:' >> deploy.sh
+            echo "      MONGODB_URI: ${MONGODB_URI}" >> deploy.sh
+            echo "    image: '${DOCKER_IMAGE_API}:latest'" >> deploy.sh
+            echo 'EOF' >> deploy.sh
             echo '' >> deploy.sh
             echo '# Create .env file' >> deploy.sh
             echo "echo 'MONGODB_URI=${MONGODB_URI}' > /root/api/.env" >> deploy.sh
