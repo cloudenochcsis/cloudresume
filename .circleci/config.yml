@@ -120,13 +120,21 @@ jobs:
             echo 'chmod 644 /root/api/.env' >> deploy.sh
 
             # Create docker-compose override file
-            echo 'printf "services:\n  frontend:\n    image: %s:latest\n  api:\n    environment:\n      - MONGODB_URI=%s\n    image: %s:latest\n" "$DOCKER_IMAGE_FRONTEND" "$MONGODB_URI" "$DOCKER_IMAGE_API" > docker-compose.override.yml' >> deploy.sh
+            echo 'cat > /root/docker-compose.override.yml << EOL' >> deploy.sh
+            echo 'services:' >> deploy.sh
+            echo '  frontend:' >> deploy.sh
+            echo '    image: ${DOCKER_IMAGE_FRONTEND}:latest' >> deploy.sh
+            echo '  api:' >> deploy.sh
+            echo '    environment:' >> deploy.sh
+            echo '      - MONGODB_URI=${MONGODB_URI}' >> deploy.sh
+            echo '    image: ${DOCKER_IMAGE_API}:latest' >> deploy.sh
+            echo 'EOL' >> deploy.sh
 
             echo '# Stop existing containers' >> deploy.sh
-            echo 'docker-compose down || true' >> deploy.sh
+            echo 'cd /root && docker-compose down || true' >> deploy.sh
             echo '' >> deploy.sh
             echo '# Start new containers' >> deploy.sh
-            echo 'docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d' >> deploy.sh
+            echo 'cd /root && docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d' >> deploy.sh
 
             chmod +x deploy.sh
 
@@ -134,7 +142,7 @@ jobs:
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mkdir -p /root/api'
 
             # Copy deployment files
-            scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml docker-compose.override.yml nginx.prod.conf root@${DROPLET_IP}:/root/
+            scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml nginx.prod.conf root@${DROPLET_IP}:/root/
             
             # Execute deployment with environment variables
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} \<< 'EOS'
