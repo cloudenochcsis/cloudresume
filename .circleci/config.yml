@@ -115,19 +115,25 @@ jobs:
             echo 'mkdir -p /root/api' >> deploy.sh
             echo 'chmod 755 /root/api' >> deploy.sh
 
-            # Create .env file with proper escaping
-            echo 'echo "MONGODB_URI=\"${MONGODB_URI}\"" > /root/api/.env' >> deploy.sh
-            echo 'chmod 644 /root/api/.env' >> deploy.sh
+            # Create temporary files locally with environment variables
+            echo "MONGODB_URI=\"${MONGODB_URI}\"" > api.env
+            cat > docker-compose.override.yml << EOL
+version: "3"
+services:
+  frontend:
+    image: ${DOCKER_IMAGE_FRONTEND}:latest
+  api:
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+    image: ${DOCKER_IMAGE_API}:latest
+EOL
 
-            # Create docker-compose override file
-            echo 'echo "version: \"3\"" > /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "services:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "  frontend:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "    image: ${DOCKER_IMAGE_FRONTEND}:latest" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "  api:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "    environment:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "      - MONGODB_URI=\"${MONGODB_URI}\"" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "    image: ${DOCKER_IMAGE_API}:latest" >> /root/docker-compose.override.yml' >> deploy.sh
+            # Copy the files to the remote server
+            scp -o StrictHostKeyChecking=no api.env root@${DROPLET_IP}:/root/api/.env
+            scp -o StrictHostKeyChecking=no docker-compose.override.yml root@${DROPLET_IP}:/root/docker-compose.override.yml
+
+            # Clean up local temporary files
+            rm api.env docker-compose.override.yml
 
             echo '# Stop existing containers' >> deploy.sh
             echo 'cd /root && docker-compose down || true' >> deploy.sh
@@ -143,13 +149,8 @@ jobs:
             # Copy deployment files
             scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml nginx.prod.conf root@${DROPLET_IP}:/root/
 
-            # Execute deployment with environment variables
+            # Execute deployment
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
-                export DOCKERHUB_USERNAME="'"${DOCKERHUB_USERNAME}"'" && \
-                export DOCKERHUB_PASSWORD="'"${DOCKERHUB_PASSWORD}"'" && \
-                export DOCKER_IMAGE_FRONTEND="'"${DOCKER_IMAGE_FRONTEND}"'" && \
-                export DOCKER_IMAGE_API="'"${DOCKER_IMAGE_API}"'" && \
-                export MONGODB_URI="'"${MONGODB_URI}"'" && \
                 echo "Starting deployment process..." && \
                 /root/deploy.sh && \
                 echo "Deployment script completed"
