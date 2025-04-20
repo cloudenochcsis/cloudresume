@@ -53,6 +53,18 @@ async def setup_mongodb():
         logger.error("MONGODB_URI environment variable is not set")
         raise ValueError("MONGODB_URI environment variable is not set")
 
+    # Log the MongoDB URI (with sensitive parts redacted)
+    redacted_uri = mongo_uri
+    if '@' in mongo_uri:
+        # Redact the password part of the URI
+        parts = mongo_uri.split('@')
+        if len(parts) == 2:
+            auth_part = parts[0]
+            if ':' in auth_part:
+                username = auth_part.split(':')[0]
+                redacted_uri = f"mongodb://{username}:****@{parts[1]}"
+    logger.info(f"Using MongoDB URI: {redacted_uri}")
+
     try:
         logger.info("Attempting to connect to MongoDB...")
         client = AsyncIOMotorClient(

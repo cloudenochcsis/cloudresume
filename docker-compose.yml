@@ -19,4 +19,5 @@ services:
       - ./api/.env
     environment:
       - FRONTEND_URL=https://cloudenoch.com
+      - MONGODB_URI=${MONGODB_URI}
     restart: always
