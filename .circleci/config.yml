@@ -140,8 +140,19 @@ jobs:
             # Ensure remote directories exist
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mkdir -p /root/api'
 
-            # Login to Docker (non-interactive)
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "echo \"$DOCKER_PASSWORD\" | docker login -u $DOCKER_USERNAME --password-stdin"
+            # Setup Docker auth config
+            mkdir -p docker_auth
+            echo "{
+              \"auths\": {
+                \"https://index.docker.io/v1/\": {
+                  \"auth\": \"$(echo -n $DOCKER_USERNAME:$DOCKER_PASSWORD | base64)\"                }
+              }
+            }" > docker_auth/config.json
+
+            # Copy Docker auth config to remote server
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mkdir -p /root/.docker'
+            scp -o StrictHostKeyChecking=no docker_auth/config.json root@${DROPLET_IP}:/root/.docker/
+            rm -rf docker_auth
 
             # Copy deployment files
             scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml nginx.prod.conf root@${DROPLET_IP}:/root/
