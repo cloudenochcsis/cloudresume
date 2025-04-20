@@ -33,42 +33,42 @@
           command: |
             # Create deployment script
             cat > deploy.sh << 'EOF'
-#!/bin/bash
-set -e
+            #!/bin/bash
+            set -e
 
-# Docker login
-echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            # Docker login
+            echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
-# Pull images
-docker pull "${DOCKER_IMAGE_FRONTEND}:latest"
-docker pull "${DOCKER_IMAGE_API}:latest"
+            # Pull images
+            docker pull "${DOCKER_IMAGE_FRONTEND}:latest"
+            docker pull "${DOCKER_IMAGE_API}:latest"
 
-# Setup directories
-mkdir -p /root/api
-chmod 755 /root/api
+            # Setup directories
+            mkdir -p /root/api
+            chmod 755 /root/api
 
-# Create docker-compose override file
-cat > /root/docker-compose.override.yml << EOL
-version: "3"
-services:
-  frontend:
-    image: ${DOCKER_IMAGE_FRONTEND}:latest
-  api:
-    environment:
-      - MONGODB_URI=${MONGODB_URI}
-    image: ${DOCKER_IMAGE_API}:latest
-EOL
+            # Create docker-compose override file
+            cat > /root/docker-compose.override.yml << EOL
+            version: "3"
+            services:
+              frontend:
+                image: ${DOCKER_IMAGE_FRONTEND}:latest
+              api:
+                environment:
+                  - MONGODB_URI=${MONGODB_URI}
+                image: ${DOCKER_IMAGE_API}:latest
+            EOL
 
-# Create .env file
-echo "MONGODB_URI=${MONGODB_URI}" > /root/api/.env
-chmod 644 /root/api/.env
+            # Create .env file
+            echo "MONGODB_URI=${MONGODB_URI}" > /root/api/.env
+            chmod 644 /root/api/.env
 
-# Stop existing containers
-cd /root && docker-compose down || true
+            # Stop existing containers
+            cd /root && docker-compose down || true
 
-# Start new containers
-cd /root && docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
-EOF
+            # Start new containers
+            cd /root && docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
+            EOF
 
             chmod +x deploy.sh
 
