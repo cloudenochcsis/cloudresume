@@ -76,6 +76,7 @@ jobs:
     environment:
       DOCKER_IMAGE_FRONTEND: akpadetsi/cloudresume-frontend
       DOCKER_IMAGE_API: akpadetsi/cloudresume-api
+      MONGODB_URI: ${MONGODB_URI}
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -102,40 +103,37 @@ jobs:
       - run:
           name: Deploy to DigitalOcean
           command: |
-            # Create deployment script
-            echo '#!/bin/bash' > deploy.sh
-            echo 'set -e' >> deploy.sh
-            echo '' >> deploy.sh
-            echo '# Docker login' >> deploy.sh
-            echo 'echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin' >> deploy.sh
-            echo '' >> deploy.sh
-            echo '# Pull images' >> deploy.sh
-            echo "docker pull \"\${DOCKER_IMAGE_FRONTEND}:latest\"" >> deploy.sh
-            echo "docker pull \"\${DOCKER_IMAGE_API}:latest\"" >> deploy.sh
-            echo '' >> deploy.sh
-            echo '# Setup directories' >> deploy.sh
-            echo 'mkdir -p /root/api' >> deploy.sh
-            echo "echo \"\${MONGODB_URI}\" > /root/api/.env" >> deploy.sh
-            
             # Create docker-compose override file
-            echo 'version: "3.8"' > docker-compose.override.yml
-            echo 'services:' >> docker-compose.override.yml
+            echo 'services:' > docker-compose.override.yml
             echo '  frontend:' >> docker-compose.override.yml
-            echo '    environment:' >> docker-compose.override.yml
-            echo '      - REACT_APP_COUNTER_API_URL=https://api.cloudenoch.com/api/counter' >> docker-compose.override.yml
-            echo "    image: \${DOCKER_IMAGE_FRONTEND}:latest" >> docker-compose.override.yml
+            echo '    image: ${DOCKER_IMAGE_FRONTEND}:latest' >> docker-compose.override.yml
             echo '  api:' >> docker-compose.override.yml
             echo '    environment:' >> docker-compose.override.yml
-            echo "      - MONGODB_URI=\${MONGODB_URI}" >> docker-compose.override.yml
-            echo "    image: \${DOCKER_IMAGE_API}:latest" >> docker-compose.override.yml
-            
-            # Add container management commands
-            echo '' >> deploy.sh
-            echo '# Stop existing containers' >> deploy.sh
-            echo 'docker-compose down' >> deploy.sh
-            echo '' >> deploy.sh
-            echo '# Start new containers' >> deploy.sh
-            echo 'docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d' >> deploy.sh
+            echo '      - MONGODB_URI=${MONGODB_URI}' >> docker-compose.override.yml
+            echo '    image: ${DOCKER_IMAGE_API}:latest' >> docker-compose.override.yml
+
+            # Create deployment script
+            cat > deploy.sh << 'EOS'
+            #!/bin/bash
+            set -e
+
+            # Docker login
+            echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+
+            # Pull images
+            docker pull "${DOCKER_IMAGE_FRONTEND}:latest"
+            docker pull "${DOCKER_IMAGE_API}:latest"
+
+            # Setup directories
+            mkdir -p /root/api
+            echo "MONGODB_URI=${MONGODB_URI}" > /root/api/.env
+
+            # Stop existing containers
+            docker-compose down || true
+
+            # Start new containers
+            docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
+            EOS
 
             # Ensure remote directories exist
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mkdir -p /root/api'
@@ -144,7 +142,7 @@ jobs:
             scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml docker-compose.override.yml nginx.prod.conf root@${DROPLET_IP}:/root/
             
             # Execute deployment with environment variables
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} \<< 'EOF'
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} << 'EOS'
             echo "Starting deployment process..."
             export DOCKERHUB_USERNAME="${DOCKERHUB_USERNAME}"
             export DOCKERHUB_PASSWORD="${DOCKERHUB_PASSWORD}"
@@ -156,25 +154,34 @@ jobs:
             echo "Executing deployment script..."
             /root/deploy.sh
             echo "Deployment script completed"
-            EOF
+            EOS
 
             # Wait for containers to be ready
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
               echo "Waiting for containers to be ready..."
-              for i in {1..30}; do
-                if docker compose ps | grep -q "Up"; then
-                  echo "Containers are ready"
+              for i in {1..60}; do
+                if docker compose ps | grep -q "Up" && curl -s http://localhost:8000/health >/dev/null; then
+                  echo "\nContainers are ready"
                   break
                 fi
+                if [ $i -eq 60 ]; then
+                  echo "\nTimeout waiting for containers"
+                  docker compose logs
+                  exit 1
+                fi
                 echo -n "."
-                sleep 2
+                sleep 5
               done
             '
 
-            # Copy nginx configuration
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'cp /root/nginx.prod.conf /etc/nginx/sites-available/docker-apps.conf'
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'ln -sf /etc/nginx/sites-available/docker-apps.conf /etc/nginx/sites-enabled/'
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'nginx -t && systemctl reload nginx'
+            # Copy and verify nginx configuration
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
+              cp /root/nginx.prod.conf /etc/nginx/sites-available/docker-apps.conf && \
+              ln -sf /etc/nginx/sites-available/docker-apps.conf /etc/nginx/sites-enabled/ && \
+              rm -f /etc/nginx/sites-enabled/default && \
+              nginx -t && \
+              systemctl reload nginx
+            '
 
   api-test:
     docker:
