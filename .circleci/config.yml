@@ -122,9 +122,11 @@ jobs:
             echo 'docker pull "${DOCKER_IMAGE_API}:latest"' >> deploy.sh
             echo '# Setup directories' >> deploy.sh
             echo 'mkdir -p /root/api' >> deploy.sh
+            echo 'chmod 755 /root/api' >> deploy.sh
 
             # Create .env file
-            echo "MONGODB_URI=${MONGODB_URI}" > /root/api/.env
+            echo 'echo "MONGODB_URI=${MONGODB_URI}" | sudo tee /root/api/.env' >> deploy.sh
+            echo 'chmod 644 /root/api/.env' >> deploy.sh
 
             echo '# Stop existing containers' >> deploy.sh
             echo 'docker-compose down || true' >> deploy.sh
