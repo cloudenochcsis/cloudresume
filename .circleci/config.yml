@@ -157,11 +157,11 @@ jobs:
             echo "echo \"    image: '${DOCKER_IMAGE_FRONTEND}:latest'\" >> /root/docker-compose.override.yml" >> deploy.sh
             echo 'echo "  api:" >> /root/docker-compose.override.yml' >> deploy.sh
             echo 'echo "    environment:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "      MONGODB_URI: ${MONGODB_URI}" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo "echo \"      MONGODB_URI: '${MONGODB_URI}'\" >> /root/docker-compose.override.yml" >> deploy.sh
             echo "echo \"    image: '${DOCKER_IMAGE_API}:latest'\" >> /root/docker-compose.override.yml" >> deploy.sh
             echo '' >> deploy.sh
             echo '# Create .env file' >> deploy.sh
-            echo 'echo "MONGODB_URI=${MONGODB_URI}" > /root/api/.env' >> deploy.sh
+            echo "echo \"MONGODB_URI='${MONGODB_URI}'\" > /root/api/.env" >> deploy.sh
             echo 'chmod 644 /root/api/.env' >> deploy.sh
             echo '' >> deploy.sh
             echo '# Verify environment files' >> deploy.sh
