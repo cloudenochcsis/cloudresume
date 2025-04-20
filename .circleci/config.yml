@@ -116,16 +116,14 @@ jobs:
             echo 'chmod 755 /root/api' >> deploy.sh
 
             # Create docker-compose override file with baked-in MongoDB URI
-            echo 'cat > /root/docker-compose.override.yml << EOF' >> deploy.sh
-            echo 'version: "3"' >> deploy.sh
-            echo 'services:' >> deploy.sh
-            echo '  frontend:' >> deploy.sh
-            echo '    image: ${DOCKER_IMAGE_FRONTEND}:latest' >> deploy.sh
-            echo '  api:' >> deploy.sh
-            echo '    environment:' >> deploy.sh
-            echo '      - MONGODB_URI='"${MONGODB_URI}" >> deploy.sh
-            echo '    image: ${DOCKER_IMAGE_API}:latest' >> deploy.sh
-            echo 'EOF' >> deploy.sh
+            echo 'echo "version: \"3\"" > /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "services:" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "  frontend:" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "    image: ${DOCKER_IMAGE_FRONTEND}:latest" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "  api:" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "    environment:" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "      - MONGODB_URI='"${MONGODB_URI}"'" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "    image: ${DOCKER_IMAGE_API}:latest" >> /root/docker-compose.override.yml' >> deploy.sh
 
             # Create .env file with baked-in MongoDB URI
             echo 'echo "MONGODB_URI='"${MONGODB_URI}"'" > /root/api/.env' >> deploy.sh
