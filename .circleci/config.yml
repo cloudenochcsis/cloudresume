@@ -184,15 +184,13 @@ jobs:
             chmod +x deploy.sh
 
             # Create docker-compose.override.yml directly
-            cat > docker-compose.override.yml << EOF
-services:
-  frontend:
-    image: '${DOCKER_IMAGE_FRONTEND}:latest'
-  api:
-    environment:
-      MONGODB_URI: $MONGODB_URI
-    image: '${DOCKER_IMAGE_API}:latest'
-EOF
+            echo 'services:' > docker-compose.override.yml
+            echo '  frontend:' >> docker-compose.override.yml
+            echo "    image: '${DOCKER_IMAGE_FRONTEND}:latest'" >> docker-compose.override.yml
+            echo '  api:' >> docker-compose.override.yml
+            echo '    environment:' >> docker-compose.override.yml
+            echo "      MONGODB_URI: $MONGODB_URI" >> docker-compose.override.yml
+            echo "    image: '${DOCKER_IMAGE_API}:latest'" >> docker-compose.override.yml
 
             # Copy deployment files
             scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml docker-compose.override.yml nginx.prod.conf root@${DROPLET_IP}:/root/
