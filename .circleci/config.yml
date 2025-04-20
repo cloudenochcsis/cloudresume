@@ -130,6 +130,12 @@ jobs:
       - run:
           name: Deploy to DigitalOcean
           command: |
+            # Verify environment variables are set
+            if [ -z "${MONGODB_URI}" ]; then
+              echo "Error: MONGODB_URI is not set"
+              exit 1
+            fi
+
             # Create deployment script
             echo '#!/bin/bash' > deploy.sh
             echo 'set -e' >> deploy.sh
