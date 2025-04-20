@@ -120,15 +120,7 @@ jobs:
             echo 'chmod 644 /root/api/.env' >> deploy.sh
 
             # Create docker-compose override file
-            echo 'cat > /root/docker-compose.override.yml << "EOF"' >> deploy.sh
-            echo 'services:' >> deploy.sh
-            echo '  frontend:' >> deploy.sh
-            echo '    image: ${DOCKER_IMAGE_FRONTEND}:latest' >> deploy.sh
-            echo '  api:' >> deploy.sh
-            echo '    environment:' >> deploy.sh
-            echo '      - MONGODB_URI=${MONGODB_URI}' >> deploy.sh
-            echo '    image: ${DOCKER_IMAGE_API}:latest' >> deploy.sh
-            echo 'EOF' >> deploy.sh
+            echo 'printf "services:\n  frontend:\n    image: %s:latest\n  api:\n    environment:\n      - MONGODB_URI=\"%s\"\n    image: %s:latest\n" "${DOCKER_IMAGE_FRONTEND}" "${MONGODB_URI}" "${DOCKER_IMAGE_API}" > /root/docker-compose.override.yml' >> deploy.sh
 
             echo '# Stop existing containers' >> deploy.sh
             echo 'cd /root && docker-compose down || true' >> deploy.sh
@@ -145,19 +137,16 @@ jobs:
             scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml nginx.prod.conf root@${DROPLET_IP}:/root/
 
             # Execute deployment with environment variables
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} \<< 'EOF'
-            echo "Starting deployment process..."
-            export DOCKERHUB_USERNAME="${DOCKERHUB_USERNAME}"
-            export DOCKERHUB_PASSWORD="${DOCKERHUB_PASSWORD}"
-            export DOCKER_IMAGE_FRONTEND="${DOCKER_IMAGE_FRONTEND}"
-            export DOCKER_IMAGE_API="${DOCKER_IMAGE_API}"
-            export MONGODB_URI="${MONGODB_URI}"
-            echo "Environment variables set"
-            chmod +x /root/deploy.sh
-            echo "Executing deployment script..."
-            /root/deploy.sh
-            echo "Deployment script completed"
-            EOF
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
+                export DOCKERHUB_USERNAME="'"${DOCKERHUB_USERNAME}"'" && \
+                export DOCKERHUB_PASSWORD="'"${DOCKERHUB_PASSWORD}"'" && \
+                export DOCKER_IMAGE_FRONTEND="'"${DOCKER_IMAGE_FRONTEND}"'" && \
+                export DOCKER_IMAGE_API="'"${DOCKER_IMAGE_API}"'" && \
+                export MONGODB_URI="'"${MONGODB_URI}"'" && \
+                echo "Starting deployment process..." && \
+                /root/deploy.sh && \
+                echo "Deployment script completed"
+            '
 
             # Wait for containers to be ready
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
