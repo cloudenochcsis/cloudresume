@@ -128,7 +128,7 @@ jobs:
             echo 'EOL' >> deploy.sh
 
             # Create .env file with baked-in MongoDB URI
-            echo 'echo "MONGODB_URI='"${MONGODB_URI}"'" > /root/api/.env' >> deploy.sh
+            echo "echo 'MONGODB_URI=${MONGODB_URI}' > /root/api/.env" >> deploy.sh
             echo 'chmod 644 /root/api/.env' >> deploy.sh
 
             echo '# Stop existing containers' >> deploy.sh
