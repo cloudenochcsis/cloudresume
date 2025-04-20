@@ -145,14 +145,14 @@ jobs:
             # Create docker-compose override file with baked-in MongoDB URI
             echo 'echo "services:" > /root/docker-compose.override.yml' >> deploy.sh
             echo 'echo "  frontend:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "    image: ${DOCKER_IMAGE_FRONTEND}:latest" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "    image: '"${DOCKER_IMAGE_FRONTEND}"':latest" >> /root/docker-compose.override.yml' >> deploy.sh
             echo 'echo "  api:" >> /root/docker-compose.override.yml' >> deploy.sh
             echo 'echo "    environment:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "      MONGODB_URI: ${MONGODB_URI}" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "    image: ${DOCKER_IMAGE_API}:latest" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "      MONGODB_URI: '"${MONGODB_URI}"'" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "    image: '"${DOCKER_IMAGE_API}"':latest" >> /root/docker-compose.override.yml' >> deploy.sh
 
             # Create .env file with baked-in MongoDB URI
-            echo 'echo "MONGODB_URI=${MONGODB_URI}" > /root/api/.env' >> deploy.sh
+            echo 'echo "MONGODB_URI='"${MONGODB_URI}"'" > /root/api/.env' >> deploy.sh
             echo 'chmod 644 /root/api/.env' >> deploy.sh
 
             echo '# Stop existing containers' >> deploy.sh
@@ -172,11 +172,8 @@ jobs:
                 echo 'Starting deployment process...' && \
                 export DOCKERHUB_USERNAME='${DOCKERHUB_USERNAME}' && \
                 export DOCKERHUB_PASSWORD='${DOCKERHUB_PASSWORD}' && \
-                export DOCKER_IMAGE_FRONTEND='${DOCKER_IMAGE_FRONTEND}' && \
-                export DOCKER_IMAGE_API='${DOCKER_IMAGE_API}' && \
-                export MONGODB_URI='${MONGODB_URI}' && \
                 cd /root && \
-                MONGODB_URI='${MONGODB_URI}' DOCKER_IMAGE_FRONTEND='${DOCKER_IMAGE_FRONTEND}' DOCKER_IMAGE_API='${DOCKER_IMAGE_API}' ./deploy.sh && \
+                ./deploy.sh && \
                 echo 'Deployment script completed'
               "; then
                 break
