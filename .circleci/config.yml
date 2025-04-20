@@ -173,10 +173,8 @@ jobs:
             for i in {1..3}; do
               if ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "
                 echo 'Starting deployment process...' && \
-                export DOCKERHUB_USERNAME='${DOCKERHUB_USERNAME}' && \
-                export DOCKERHUB_PASSWORD='${DOCKERHUB_PASSWORD}' && \
                 cd /root && \
-                ./deploy.sh && \
+                DOCKERHUB_USERNAME='${DOCKERHUB_USERNAME}' DOCKERHUB_PASSWORD='${DOCKERHUB_PASSWORD}' ./deploy.sh && \
                 echo 'Deployment script completed'
               "; then
                 break
