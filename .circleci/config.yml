@@ -116,21 +116,18 @@ jobs:
             echo 'chmod 755 /root/api' >> deploy.sh
 
             # Create .env file with proper escaping
-            echo 'cat > /root/api/.env << EOL
-MONGODB_URI="${MONGODB_URI}"
-EOL' >> deploy.sh
+            echo 'echo "MONGODB_URI=\"${MONGODB_URI}\"" > /root/api/.env' >> deploy.sh
             echo 'chmod 644 /root/api/.env' >> deploy.sh
 
-            # Create docker-compose override file with proper environment variable handling
-            echo 'cat > /root/docker-compose.override.yml << EOL
-services:
-  frontend:
-    image: ${DOCKER_IMAGE_FRONTEND}:latest
-  api:
-    environment:
-      - MONGODB_URI=${MONGODB_URI}
-    image: ${DOCKER_IMAGE_API}:latest
-EOL' >> deploy.sh
+            # Create docker-compose override file
+            echo 'echo "version: \"3\"" > /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "services:" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "  frontend:" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "    image: ${DOCKER_IMAGE_FRONTEND}:latest" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "  api:" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "    environment:" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "      - MONGODB_URI=\"${MONGODB_URI}\"" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "    image: ${DOCKER_IMAGE_API}:latest" >> /root/docker-compose.override.yml' >> deploy.sh
 
             echo '# Stop existing containers' >> deploy.sh
             echo 'cd /root && docker-compose down || true' >> deploy.sh
