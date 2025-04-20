@@ -150,15 +150,6 @@ jobs:
             echo 'mkdir -p /root/api' >> deploy.sh
             echo 'chmod 755 /root/api' >> deploy.sh
             echo '' >> deploy.sh
-            echo '# Create docker-compose override file' >> deploy.sh
-            echo 'echo "services:" > /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "  frontend:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo "echo \"    image: '${DOCKER_IMAGE_FRONTEND}:latest'\" >> /root/docker-compose.override.yml" >> deploy.sh
-            echo 'echo "  api:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "    environment:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo "echo \"      MONGODB_URI: $MONGODB_URI\" >> /root/docker-compose.override.yml" >> deploy.sh
-            echo "echo \"    image: '${DOCKER_IMAGE_API}:latest'\" >> /root/docker-compose.override.yml" >> deploy.sh
-            echo '' >> deploy.sh
             echo '# Create .env file' >> deploy.sh
             echo "echo 'MONGODB_URI=$MONGODB_URI' > /root/api/.env" >> deploy.sh
             echo 'chmod 644 /root/api/.env' >> deploy.sh
@@ -192,8 +183,19 @@ jobs:
 
             chmod +x deploy.sh
 
+            # Create docker-compose.override.yml directly
+            cat > docker-compose.override.yml << EOF
+services:
+  frontend:
+    image: '${DOCKER_IMAGE_FRONTEND}:latest'
+  api:
+    environment:
+      MONGODB_URI: $MONGODB_URI
+    image: '${DOCKER_IMAGE_API}:latest'
+EOF
+
             # Copy deployment files
-            scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml nginx.prod.conf root@${DROPLET_IP}:/root/
+            scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml docker-compose.override.yml nginx.prod.conf root@${DROPLET_IP}:/root/
 
             # Execute deployment with retries
             for i in {1..3}; do
