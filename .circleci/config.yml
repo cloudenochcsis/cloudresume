@@ -143,17 +143,16 @@ jobs:
             echo 'chmod 755 /root/api' >> deploy.sh
 
             # Create docker-compose override file with baked-in MongoDB URI
-            echo 'echo "version: \"3\"" > /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "services:" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "services:" > /root/docker-compose.override.yml' >> deploy.sh
             echo 'echo "  frontend:" >> /root/docker-compose.override.yml' >> deploy.sh
             echo 'echo "    image: ${DOCKER_IMAGE_FRONTEND}:latest" >> /root/docker-compose.override.yml' >> deploy.sh
             echo 'echo "  api:" >> /root/docker-compose.override.yml' >> deploy.sh
             echo 'echo "    environment:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "      - MONGODB_URI='"${MONGODB_URI}"'" >> /root/docker-compose.override.yml' >> deploy.sh
+            echo 'echo "      MONGODB_URI: ${MONGODB_URI}" >> /root/docker-compose.override.yml' >> deploy.sh
             echo 'echo "    image: ${DOCKER_IMAGE_API}:latest" >> /root/docker-compose.override.yml' >> deploy.sh
 
             # Create .env file with baked-in MongoDB URI
-            echo 'echo "MONGODB_URI='"${MONGODB_URI}"'" > /root/api/.env' >> deploy.sh
+            echo 'echo "MONGODB_URI=${MONGODB_URI}" > /root/api/.env' >> deploy.sh
             echo 'chmod 644 /root/api/.env' >> deploy.sh
 
             echo '# Stop existing containers' >> deploy.sh
@@ -176,7 +175,8 @@ jobs:
                 export DOCKER_IMAGE_FRONTEND='${DOCKER_IMAGE_FRONTEND}' && \
                 export DOCKER_IMAGE_API='${DOCKER_IMAGE_API}' && \
                 export MONGODB_URI='${MONGODB_URI}' && \
-                /root/deploy.sh && \
+                cd /root && \
+                MONGODB_URI='${MONGODB_URI}' DOCKER_IMAGE_FRONTEND='${DOCKER_IMAGE_FRONTEND}' DOCKER_IMAGE_API='${DOCKER_IMAGE_API}' ./deploy.sh && \
                 echo 'Deployment script completed'
               "; then
                 break
