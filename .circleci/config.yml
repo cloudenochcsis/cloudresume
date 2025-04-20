@@ -151,18 +151,39 @@ jobs:
             echo "echo \"    image: '${DOCKER_IMAGE_FRONTEND}:latest'\" >> /root/docker-compose.override.yml" >> deploy.sh
             echo 'echo "  api:" >> /root/docker-compose.override.yml' >> deploy.sh
             echo 'echo "    environment:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo "echo \"      - MONGODB_URI=${MONGODB_URI}\" >> /root/docker-compose.override.yml" >> deploy.sh
+            echo "echo \"      MONGODB_URI: ${MONGODB_URI}\" >> /root/docker-compose.override.yml" >> deploy.sh
             echo "echo \"    image: '${DOCKER_IMAGE_API}:latest'\" >> /root/docker-compose.override.yml" >> deploy.sh
             echo '' >> deploy.sh
             echo '# Create .env file' >> deploy.sh
             echo "echo \"MONGODB_URI=${MONGODB_URI}\" > /root/api/.env" >> deploy.sh
             echo 'chmod 644 /root/api/.env' >> deploy.sh
             echo '' >> deploy.sh
+            echo '# Verify environment files' >> deploy.sh
+            echo 'echo "Verifying environment configuration..."' >> deploy.sh
+            echo 'cat /root/docker-compose.override.yml' >> deploy.sh
+            echo 'cat /root/api/.env' >> deploy.sh
+            echo '' >> deploy.sh
             echo '# Stop existing containers' >> deploy.sh
             echo 'cd /root && docker-compose down || true' >> deploy.sh
             echo '' >> deploy.sh
             echo '# Start new containers' >> deploy.sh
             echo 'cd /root && docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d' >> deploy.sh
+            echo '' >> deploy.sh
+            echo '# Wait for containers to be ready' >> deploy.sh
+            echo 'echo "Waiting for containers to be ready..."' >> deploy.sh
+            echo 'for i in {1..60}; do' >> deploy.sh
+            echo '  if docker compose ps | grep -q "Up" && curl -s http://localhost:8000/health >/dev/null; then' >> deploy.sh
+            echo '    echo "Containers are ready"' >> deploy.sh
+            echo '    break' >> deploy.sh
+            echo '  fi' >> deploy.sh
+            echo '  if [ $i -eq 60 ]; then' >> deploy.sh
+            echo '    echo "Timeout waiting for containers"' >> deploy.sh
+            echo '    docker compose logs' >> deploy.sh
+            echo '    exit 1' >> deploy.sh
+            echo '  fi' >> deploy.sh
+            echo '  echo -n "."' >> deploy.sh
+            echo '  sleep 2' >> deploy.sh
+            echo 'done' >> deploy.sh
 
             chmod +x deploy.sh
 
