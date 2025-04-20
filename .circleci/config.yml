@@ -123,7 +123,6 @@ jobs:
     environment:
       DOCKER_IMAGE_FRONTEND: akpadetsi/cloudresume-frontend
       DOCKER_IMAGE_API: akpadetsi/cloudresume-api
-      MONGODB_URI: ${MONGODB_URI}
     steps:
       - setup-remote-server
       - checkout
@@ -131,7 +130,7 @@ jobs:
           name: Deploy to DigitalOcean
           command: |
             # Verify environment variables are set
-            if [ -z "${MONGODB_URI}" ]; then
+            if [ -z "$MONGODB_URI" ]; then
               echo "Error: MONGODB_URI is not set"
               exit 1
             fi
@@ -158,12 +157,12 @@ jobs:
             echo "    image: '${DOCKER_IMAGE_FRONTEND}:latest'" >> deploy.sh
             echo '  api:' >> deploy.sh
             echo '    environment:' >> deploy.sh
-            echo "      MONGODB_URI: ${MONGODB_URI}" >> deploy.sh
+            echo "      MONGODB_URI: $MONGODB_URI" >> deploy.sh
             echo "    image: '${DOCKER_IMAGE_API}:latest'" >> deploy.sh
             echo 'EOF' >> deploy.sh
             echo '' >> deploy.sh
             echo '# Create .env file' >> deploy.sh
-            echo "echo 'MONGODB_URI=${MONGODB_URI}' > /root/api/.env" >> deploy.sh
+            echo "echo 'MONGODB_URI=$MONGODB_URI' > /root/api/.env" >> deploy.sh
             echo 'chmod 644 /root/api/.env' >> deploy.sh
             echo '' >> deploy.sh
             echo '# Verify environment files' >> deploy.sh
