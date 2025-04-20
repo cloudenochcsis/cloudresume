@@ -130,36 +130,48 @@ jobs:
       - run:
           name: Deploy to DigitalOcean
           command: |
-            # Create deployment script
-            echo '#!/bin/bash' > deploy.sh
-            echo 'set -e' >> deploy.sh
-            echo '# Docker login' >> deploy.sh
-            echo 'echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin' >> deploy.sh
-            echo '# Pull images' >> deploy.sh
-            echo 'docker pull "${DOCKER_IMAGE_FRONTEND}:latest"' >> deploy.sh
-            echo 'docker pull "${DOCKER_IMAGE_API}:latest"' >> deploy.sh
-            echo '# Setup directories' >> deploy.sh
-            echo 'mkdir -p /root/api' >> deploy.sh
-            echo 'chmod 755 /root/api' >> deploy.sh
+            # Create deployment script with environment variables already substituted
+            cat > deploy.sh << 'EOF'
+#!/bin/bash
+set -e
 
-            # Create docker-compose override file with baked-in MongoDB URI
-            echo 'echo "services:" > /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "  frontend:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "    image: '"${DOCKER_IMAGE_FRONTEND}"':latest" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "  api:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "    environment:" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "      MONGODB_URI: '"${MONGODB_URI}"'" >> /root/docker-compose.override.yml' >> deploy.sh
-            echo 'echo "    image: '"${DOCKER_IMAGE_API}"':latest" >> /root/docker-compose.override.yml' >> deploy.sh
+# Docker login
+echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
-            # Create .env file with baked-in MongoDB URI
-            echo 'echo "MONGODB_URI='"${MONGODB_URI}"'" > /root/api/.env' >> deploy.sh
-            echo 'chmod 644 /root/api/.env' >> deploy.sh
+# Pull images
+docker pull "${DOCKER_IMAGE_FRONTEND}:latest"
+docker pull "${DOCKER_IMAGE_API}:latest"
 
-            echo '# Stop existing containers' >> deploy.sh
-            echo 'cd /root && docker-compose down || true' >> deploy.sh
-            echo '' >> deploy.sh
-            echo '# Start new containers' >> deploy.sh
-            echo 'cd /root && docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d' >> deploy.sh
+# Setup directories
+mkdir -p /root/api
+chmod 755 /root/api
+
+# Create docker-compose override file
+cat > /root/docker-compose.override.yml << 'EOL'
+services:
+  frontend:
+    image: ${DOCKER_IMAGE_FRONTEND}:latest
+  api:
+    environment:
+      MONGODB_URI: ${MONGODB_URI}
+    image: ${DOCKER_IMAGE_API}:latest
+EOL
+
+# Create .env file
+echo "MONGODB_URI=${MONGODB_URI}" > /root/api/.env
+chmod 644 /root/api/.env
+
+# Stop existing containers
+cd /root && docker-compose down || true
+
+# Start new containers
+cd /root && docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
+EOF
+
+            # Substitute environment variables in the deploy script
+            sed -i "s|\${DOCKER_IMAGE_FRONTEND}|${DOCKER_IMAGE_FRONTEND}|g" deploy.sh
+            sed -i "s|\${DOCKER_IMAGE_API}|${DOCKER_IMAGE_API}|g" deploy.sh
+            sed -i "s|\${MONGODB_URI}|${MONGODB_URI}|g" deploy.sh
 
             chmod +x deploy.sh
 
