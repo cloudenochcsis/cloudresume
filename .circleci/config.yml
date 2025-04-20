@@ -140,6 +140,9 @@ jobs:
             # Ensure remote directories exist
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mkdir -p /root/api'
 
+            # Login to Docker
+            echo "$DOCKER_PASSWORD" | ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'docker login -u $DOCKER_USERNAME --password-stdin'
+
             # Copy deployment files
             scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml nginx.prod.conf root@${DROPLET_IP}:/root/
 
