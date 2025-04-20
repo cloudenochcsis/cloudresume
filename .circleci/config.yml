@@ -67,7 +67,6 @@ jobs:
           pkg-manager: yarn
           include-branch-in-cache-key: false
           override-ci-command: yarn install
-          cache-key: "yarn-packages-{{ checksum \"yarn.lock\" }}"
       - run:
           name: Create test directories
           command: mkdir -p test-results/jest
@@ -230,7 +229,6 @@ jobs:
           pkg-manager: pip
           args: -r requirements.txt
           app-dir: ./api
-          cache-key: "pip-packages-{{ checksum \"api/requirements.txt\" }}"
       - run:
           name: Install netcat
           command: sudo apt-get update && sudo apt-get install -y netcat-openbsd
