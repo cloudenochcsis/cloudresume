@@ -115,12 +115,20 @@ jobs:
             echo 'mkdir -p /root/api' >> deploy.sh
             echo 'chmod 755 /root/api' >> deploy.sh
 
-            # Copy .env file instead of creating it
-            echo 'cp /root/api/.env /root/api/.env' >> deploy.sh
+            # Create .env file with proper escaping
+            echo 'echo "MONGODB_URI=\"$MONGODB_URI\"" > /root/api/.env' >> deploy.sh
             echo 'chmod 644 /root/api/.env' >> deploy.sh
 
             # Create docker-compose override file
-            echo 'printf "services:\n  frontend:\n    image: %s:latest\n  api:\n    environment:\n      - MONGODB_URI=%s\n    image: %s:latest\n" "${DOCKER_IMAGE_FRONTEND}" "${MONGODB_URI}" "${DOCKER_IMAGE_API}" > /root/docker-compose.override.yml' >> deploy.sh
+            echo 'cat > /root/docker-compose.override.yml << "EOF"' >> deploy.sh
+            echo 'services:' >> deploy.sh
+            echo '  frontend:' >> deploy.sh
+            echo '    image: ${DOCKER_IMAGE_FRONTEND}:latest' >> deploy.sh
+            echo '  api:' >> deploy.sh
+            echo '    environment:' >> deploy.sh
+            echo '      - MONGODB_URI=${MONGODB_URI}' >> deploy.sh
+            echo '    image: ${DOCKER_IMAGE_API}:latest' >> deploy.sh
+            echo 'EOF' >> deploy.sh
 
             echo '# Stop existing containers' >> deploy.sh
             echo 'cd /root && docker-compose down || true' >> deploy.sh
@@ -133,11 +141,11 @@ jobs:
             # Ensure remote directories exist
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mkdir -p /root/api'
 
-            # Copy deployment files including the .env file
-            scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml nginx.prod.conf api/.env root@${DROPLET_IP}:/root/
-            
+            # Copy deployment files
+            scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml nginx.prod.conf root@${DROPLET_IP}:/root/
+
             # Execute deployment with environment variables
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} \<< 'EOS'
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} \<< 'EOF'
             echo "Starting deployment process..."
             export DOCKERHUB_USERNAME="${DOCKERHUB_USERNAME}"
             export DOCKERHUB_PASSWORD="${DOCKERHUB_PASSWORD}"
@@ -149,7 +157,7 @@ jobs:
             echo "Executing deployment script..."
             /root/deploy.sh
             echo "Deployment script completed"
-            EOS
+            EOF
 
             # Wait for containers to be ready
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
