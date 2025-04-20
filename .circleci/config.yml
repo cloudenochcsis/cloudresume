@@ -115,8 +115,8 @@ jobs:
             echo 'mkdir -p /root/api' >> deploy.sh
             echo 'chmod 755 /root/api' >> deploy.sh
 
-            # Create .env file
-            echo 'printf "MONGODB_URI=%s\n" "$MONGODB_URI" > /root/api/.env' >> deploy.sh
+            # Copy .env file instead of creating it
+            echo 'cp /root/api/.env /root/api/.env' >> deploy.sh
             echo 'chmod 644 /root/api/.env' >> deploy.sh
 
             # Create docker-compose override file
@@ -133,8 +133,8 @@ jobs:
             # Ensure remote directories exist
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mkdir -p /root/api'
 
-            # Copy deployment files
-            scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml nginx.prod.conf root@${DROPLET_IP}:/root/
+            # Copy deployment files including the .env file
+            scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml nginx.prod.conf api/.env root@${DROPLET_IP}:/root/
             
             # Execute deployment with environment variables
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} \<< 'EOS'
