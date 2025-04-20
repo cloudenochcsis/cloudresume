@@ -19,18 +19,5 @@ services:
       - ./api/.env
     environment:
       - FRONTEND_URL=https://cloudenoch.com
-      - MONGODB_URI=mongodb://mongodb:27017/resumeStats
-    depends_on:
-      - mongodb
+      - MONGODB_URI=${MONGODB_URI}
     restart: always
-
-  mongodb:
-    image: mongo:4.4
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
-    restart: always
-
-volumes:
-  mongodb_data:
