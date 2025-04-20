@@ -44,7 +44,7 @@ jobs:
           name: Deploy to DigitalOcean
           command: |
             # Create deployment script
-            cat > deploy.sh << 'EOF'
+            cat > deploy.sh \<< 'EOF'
             #!/bin/bash
             set -e
 
@@ -60,7 +60,7 @@ jobs:
             chmod 755 /root/api
 
             # Create docker-compose override file
-            cat > /root/docker-compose.override.yml << EOL
+            cat > /root/docker-compose.override.yml \<< EOL
             version: "3"
             services:
               frontend:
