@@ -144,7 +144,7 @@ jobs:
             scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml docker-compose.override.yml nginx.prod.conf root@${DROPLET_IP}:/root/
             
             # Execute deployment with environment variables
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} << 'EOF'
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} \<< 'EOF'
             export DOCKERHUB_USERNAME="${DOCKERHUB_USERNAME}"
             export DOCKERHUB_PASSWORD="${DOCKERHUB_PASSWORD}"
             export DOCKER_IMAGE_FRONTEND="${DOCKER_IMAGE_FRONTEND}"
