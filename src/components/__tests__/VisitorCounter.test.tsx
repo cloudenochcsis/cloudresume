@@ -1,4 +1,4 @@
-import { render, screen, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import VisitorCounter from '../VisitorCounter';
 
 describe('VisitorCounter', () => {
@@ -18,11 +18,8 @@ describe('VisitorCounter', () => {
       json: () => Promise.resolve({ count: mockCount }),
     });
 
-    await act(async () => {
-      render(<VisitorCounter />);
-    });
-
-    expect(screen.getByText(mockCount.toString())).toBeInTheDocument();
+    render(<VisitorCounter />);
+    expect(await screen.findByText(mockCount.toString())).toBeInTheDocument();
     expect(screen.getByText(/visitors/i)).toBeInTheDocument();
   });
 
@@ -32,11 +29,8 @@ describe('VisitorCounter', () => {
       status: 500,
     });
 
-    await act(async () => {
-      render(<VisitorCounter />);
-    });
-
-    expect(screen.getByText(/Error loading visitor count/i)).toBeInTheDocument();
+    render(<VisitorCounter />);
+    expect(await screen.findByText(/Error loading visitor count/i)).toBeInTheDocument();
   });
 
   it('displays error message when response has invalid format', async () => {
@@ -45,10 +39,7 @@ describe('VisitorCounter', () => {
       json: () => Promise.resolve({ invalidKey: 'invalid' }),
     });
 
-    await act(async () => {
-      render(<VisitorCounter />);
-    });
-
-    expect(screen.getByText(/Error loading visitor count/i)).toBeInTheDocument();
+    render(<VisitorCounter />);
+    expect(await screen.findByText(/Error loading visitor count/i)).toBeInTheDocument();
   });
 });
