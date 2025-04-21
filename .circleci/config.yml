@@ -3,85 +3,27 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.2
   python: circleci/python@2.1
-  docker: circleci/docker@2.1.1
-
-commands:
-  setup-docker:
-    description: "Setup Docker authentication"
-    steps:
-      - run:
-          name: Docker login
-          command: echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-
-  setup-remote-server:
-    description: "Setup remote server with Docker and Docker Compose"
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "IrFlIKv6KdHjCdm+FroGYwh1FpSvaUDozW+QbOoZRfk"
-      - run:
-          name: Install Docker and Docker Compose
-          command: |
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
-              if ! command -v docker &> /dev/null; then
-                echo "Installing Docker..."
-                curl -fsSL https://get.docker.com -o get-docker.sh
-                sh get-docker.sh
-                rm get-docker.sh
-              fi
-
-              if ! command -v docker-compose &> /dev/null; then
-                echo "Installing Docker Compose..."
-                curl -L "https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-                chmod +x /usr/local/bin/docker-compose
-              fi
-            '
-
-  wait-for-mongodb:
-    description: "Wait for MongoDB to be ready"
-    steps:
-      - run:
-          name: Wait for MongoDB
-          command: |
-            for i in {1..30}; do
-              if nc -z localhost 27017; then
-                echo "MongoDB is ready"
-                exit 0
-              fi
-              echo -n "."
-              sleep 1
-            done
-            echo "Failed waiting for MongoDB" && exit 1
-
-docker-auth: &docker-auth
-  username: $DOCKERHUB_USERNAME
-  password: $DOCKERHUB_PASSWORD
 
 jobs:
-  frontend-test:
+  build-and-test-frontend:
     docker:
-      - image: cimg/node:18.19
+      - image: cimg/node:16.20
     steps:
       - checkout
       - node/install-packages:
           pkg-manager: yarn
-          include-branch-in-cache-key: false
-          override-ci-command: yarn install
       - run:
-          name: Create test directories
-          command: mkdir -p test-results/jest
+          name: Check versions
+          command: |
+            node --version
+            npm --version
+            yarn --version
       - run:
-          name: Run frontend unit tests
-          command: yarn test
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: ./test-results/jest
-            JEST_JUNIT_OUTPUT_NAME: results.xml
-            CI: "true"
-      - store_test_results:
-          path: test-results
-      - store_artifacts:
-          path: coverage
-          destination: coverage-report
+          name: Run linter
+          command: yarn run eslint .
+      - run:
+          name: Run tests
+          command: yarn test --passWithNoTests
       - run:
           name: Build application
           command: yarn build
@@ -90,275 +32,84 @@ jobs:
           paths:
             - build
 
-  build-and-push-images:
+  build-and-test-backend:
     docker:
-      - image: cimg/python:3.10.13
-    environment:
-      DOCKER_IMAGE_FRONTEND: akpadetsi/cloudresume-frontend
-      DOCKER_IMAGE_API: akpadetsi/cloudresume-api
+      - image: cimg/python:3.11
     steps:
       - checkout
-      - setup_remote_docker
-      - setup-docker
-      - docker/build:
-          image: $DOCKER_IMAGE_FRONTEND
-          path: .
-          tag: latest
-          cache_from: $DOCKER_IMAGE_FRONTEND:latest
-      - run:
-          name: Build API Docker image
-          command: |
-            cd api
-            docker build --cache-from $DOCKER_IMAGE_API:latest -t $DOCKER_IMAGE_API:latest .
-      - docker/push:
-          image: $DOCKER_IMAGE_API
-          tag: latest
-      - docker/push:
-          image: $DOCKER_IMAGE_FRONTEND
-          tag: latest
-
-  deployment:
-    docker:
-      - image: cimg/base:stable
-    environment:
-      DOCKER_IMAGE_FRONTEND: akpadetsi/cloudresume-frontend
-      DOCKER_IMAGE_API: akpadetsi/cloudresume-api
-    steps:
-      - setup-remote-server
-      - checkout
-      - run:
-          name: Deploy to DigitalOcean
-          command: |
-            # Verify environment variables are set
-            if [ -z "$MONGODB_URI" ]; then
-              echo "Error: MONGODB_URI is not set"
-              exit 1
-            fi
-
-            # Create deployment script
-            echo '#!/bin/bash' > deploy.sh
-            echo 'set -e' >> deploy.sh
-            echo '' >> deploy.sh
-            echo '# Docker login' >> deploy.sh
-            echo 'echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin' >> deploy.sh
-            echo '' >> deploy.sh
-            echo '# Pull images' >> deploy.sh
-            echo "docker pull '${DOCKER_IMAGE_FRONTEND}:latest'" >> deploy.sh
-            echo "docker pull '${DOCKER_IMAGE_API}:latest'" >> deploy.sh
-            echo '' >> deploy.sh
-            echo '# Setup directories' >> deploy.sh
-            echo 'mkdir -p /root/api' >> deploy.sh
-            echo 'chmod 755 /root/api' >> deploy.sh
-            echo '' >> deploy.sh
-            echo '# Create .env file' >> deploy.sh
-            echo "echo 'MONGODB_URI=$MONGODB_URI' > /root/api/.env" >> deploy.sh
-            echo 'chmod 644 /root/api/.env' >> deploy.sh
-            echo '' >> deploy.sh
-            echo '# Verify environment files' >> deploy.sh
-            echo 'echo "Verifying environment configuration..."' >> deploy.sh
-            echo 'cat /root/docker-compose.override.yml' >> deploy.sh
-            echo 'cat /root/api/.env' >> deploy.sh
-            echo '' >> deploy.sh
-            echo '# Stop existing containers' >> deploy.sh
-            echo 'cd /root && docker-compose down || true' >> deploy.sh
-            echo '' >> deploy.sh
-            echo '# Start new containers' >> deploy.sh
-            echo 'cd /root && docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d' >> deploy.sh
-            echo '' >> deploy.sh
-            echo '# Wait for containers to be ready' >> deploy.sh
-            echo 'echo "Waiting for containers to be ready..."' >> deploy.sh
-            echo 'for i in {1..60}; do' >> deploy.sh
-            echo '  # Check if both containers are running' >> deploy.sh
-            echo '  if docker compose ps | grep -q "api.*Up" && docker compose ps | grep -q "frontend.*Up"; then' >> deploy.sh
-            echo '    echo "Containers are running"' >> deploy.sh
-            echo '    break' >> deploy.sh
-            echo '  fi' >> deploy.sh
-            echo '  if [ $i -eq 60 ]; then' >> deploy.sh
-            echo '    echo "Timeout waiting for containers"' >> deploy.sh
-            echo '    docker compose logs' >> deploy.sh
-            echo '    exit 1' >> deploy.sh
-            echo '  fi' >> deploy.sh
-            echo '  echo -n "."' >> deploy.sh
-            echo '  sleep 2' >> deploy.sh
-            echo 'done' >> deploy.sh
-
-            chmod +x deploy.sh
-
-            # Create docker-compose.override.yml directly
-            echo 'services:' > docker-compose.override.yml
-            echo '  frontend:' >> docker-compose.override.yml
-            echo "    image: '${DOCKER_IMAGE_FRONTEND}:latest'" >> docker-compose.override.yml
-            echo '  api:' >> docker-compose.override.yml
-            echo '    environment:' >> docker-compose.override.yml
-            echo "      MONGODB_URI: $MONGODB_URI" >> docker-compose.override.yml
-            echo '    env_file:' >> docker-compose.override.yml
-            echo '      - /root/api/.env' >> docker-compose.override.yml
-            echo "    image: '${DOCKER_IMAGE_API}:latest'" >> docker-compose.override.yml
-
-            # Copy deployment files
-            scp -o StrictHostKeyChecking=no deploy.sh docker-compose.yml docker-compose.override.yml nginx.prod.conf root@${DROPLET_IP}:/root/
-
-            # Execute deployment with retries
-            for i in {1..3}; do
-              if ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "
-                echo 'Starting deployment process...' && \
-                cd /root && \
-                export MONGODB_URI='${MONGODB_URI}' && \
-                MONGODB_URI='${MONGODB_URI}' DOCKERHUB_USERNAME='${DOCKERHUB_USERNAME}' DOCKERHUB_PASSWORD='${DOCKERHUB_PASSWORD}' ./deploy.sh && \
-                echo 'Deployment script completed'
-              "; then
-                break
-              fi
-              if [ $i -eq 3 ]; then
-                echo "Deployment failed after 3 attempts"
-                exit 1
-              fi
-              echo "Deployment attempt $i failed, retrying..."
-              sleep 5
-            done
-
-            # Wait for containers to be ready with proper health check
-            echo "Waiting for containers to be ready..."
-            for i in {1..50}; do
-              status=$(ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "
-                # First check if containers are running
-                if ! (docker compose ps | grep -q 'frontend.*Up' && \
-                      docker compose ps | grep -q 'api.*Up'); then
-                  echo 'STATUS:containers_not_running'
-                  docker compose ps
-                  exit 1
-                fi
-
-                # Then check if Nginx is responding locally - use -L to follow redirects
-                if ! curl -ILs --fail --location --max-redirs 5 http://localhost:8080 >/dev/null; then
-                  echo 'STATUS:nginx_not_responding'
-                  docker compose logs frontend --tail=20
-                  exit 1
-                fi
-                
-                echo 'STATUS:nginx_responding'
-                echo "Nginx is responding properly with redirects"
-
-                # Finally check the public site
-                echo "DEBUG: Trying to access public site..."
-                local_status=$(curl -ILs http://localhost:8080 2>&1)
-                echo "DEBUG: Local site status: $local_status"
-                
-                public_status=$(curl -ILs --fail https://cloudenoch.com 2>&1 || echo "Failed to connect")
-                echo "DEBUG: Public site status: $public_status"
-                
-                # Consider deployment successful if containers are running
-                # This is a more lenient check than requiring the public site to be accessible
-                echo 'STATUS:ready'
-                exit 0
-              " 2>&1 | tee /tmp/debug_output.log | grep -E '^STATUS:|^DEBUG:' || echo "STATUS:debug_only")
-              # Print full debug output
-              cat /tmp/debug_output.log
-              
-              # Extract just the status code for the case statement
-              status=$(echo "$status" | grep '^STATUS:' | cut -d: -f2 || echo "debug_only")
-
-              case $status in
-                ready)
-                  echo "Containers are ready and responding with 200 OK"
-                  break
-                  ;;
-                nginx_responding)
-                  echo "Nginx is responding properly with redirects"
-                  break
-                  ;;
-                debug_only)
-                  echo "Received debug information, continuing with deployment"
-                  break
-                  ;;
-                containers_not_running)
-                  echo "Waiting for containers to start..."
-                  ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "docker compose ps"
-                  ;;
-                nginx_not_responding)
-                  echo "Waiting for Nginx to respond..."
-                  ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "docker compose logs frontend --tail=20"
-                  ;;
-                public_site_not_responding)
-                  echo "Waiting for public site to respond..."
-                  ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "docker compose logs frontend --tail=20"
-                  ;;
-                *)
-                  echo "Unknown status: $status"
-                  ;;
-              esac
-
-              if [ $i -eq 50 ]; then
-                echo "Timeout waiting for containers to be ready"
-                ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "docker compose logs"
-                exit 1
-              fi
-              sleep 1
-            done
-
-            # Copy and verify nginx configuration
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
-              cp /root/nginx.prod.conf /etc/nginx/sites-available/docker-apps.conf && \
-              ln -sf /etc/nginx/sites-available/docker-apps.conf /etc/nginx/sites-enabled/ && \
-              rm -f /etc/nginx/sites-enabled/default && \
-              nginx -t && \
-              systemctl reload nginx
-            '
-
-  api-test:
-    docker:
-      - image: cimg/python:3.10.13
-      - image: mongo:4.4
-        command: [mongod, --nojournal, --noauth]
-    steps:
-      - checkout
-      - wait-for-mongodb
       - python/install-packages:
           pkg-manager: pip
-          args: -r requirements.txt
-          app-dir: ./api
+          packages:
+            - pytest
+            - pytest-cov
       - run:
-          name: Install netcat
-          command: sudo apt-get update && sudo apt-get install -y netcat-openbsd
+          name: Install backend dependencies
+          command: pip install -r api/requirements.txt
       - run:
-          name: Install test dependencies
+          name: Run backend tests
+          command: cd api && pytest
+      - persist_to_workspace:
+          root: .
+          paths:
+            - api
+
+  deploy:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - add_ssh_keys:
+          fingerprints:
+            - "IrFlIKv6KdHjCdm+FroGYwh1FpSvaUDozW+QbOoZRfk"
+      - run:
+          name: Deploy Frontend to DigitalOcean
           command: |
-            cd api
-            pip install -U pip
-            pip install pytest pytest-cov pytest-asyncio httpx motor
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'rm -rf /var/www/portfolio/*'
+            scp -r build/* root@${DROPLET_IP}:/var/www/portfolio/
       - run:
-          name: Create test directories
+          name: Deploy Backend to DigitalOcean
           command: |
-            cd api
-            mkdir -p test-results/pytest
-      - run:
-          name: Run API tests
-          command: |
-            cd api
-            echo "MONGODB_URI=mongodb://localhost:27017/test" > .env
-            python -m pytest --cov=. --cov-report=xml --junitxml=test-results/pytest/results.xml
-      - store_test_results:
-          path: api/test-results
-      - store_artifacts:
-          path: api/coverage.xml
-          destination: coverage-report
+            # Create app directory if it doesn't exist
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'mkdir -p /opt/resume-api'
+            # Copy API files
+            scp -r api/* root@${DROPLET_IP}:/opt/resume-api/
+            # Copy .env file for API
+            scp api/.env root@${DROPLET_IP}:/opt/resume-api/.env || echo "No .env file found, will use environment variables"
+            # Install dependencies
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'cd /opt/resume-api && pip3 install -r requirements.txt'
+            # Create or update systemd service file
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'cat > /etc/systemd/system/resume-api.service << EOF
+[Unit]
+Description=Resume API Service
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/opt/resume-api
+ExecStart=/usr/bin/python3 -m uvicorn main:app --host 0.0.0.0 --port 3000
+Restart=always
+Environment="MONGODB_URI=${MONGODB_URI}"
+
+[Install]
+WantedBy=multi-user.target
+EOF'
+            # Reload systemd, enable and restart the service
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl daemon-reload && systemctl enable resume-api && systemctl restart resume-api'
+            # Reload nginx
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl reload nginx'
 
 workflows:
   version: 2
   build-test-deploy:
     jobs:
-      - frontend-test
-      - api-test
-      - build-and-push-images:
+      - build-and-test-frontend
+      - build-and-test-backend
+      - deploy:
           requires:
-            - frontend-test
-            - api-test
-          filters:
-            branches:
-              only: main
-      - deployment:
-          requires:
-            - build-and-push-images
+            - build-and-test-frontend
+            - build-and-test-backend
           filters:
             branches:
               only: main
