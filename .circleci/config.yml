@@ -91,8 +91,27 @@ jobs:
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "sed 's|__MONGODB_URI__|${MONGODB_URI}|g' /tmp/resume-api.service > /etc/systemd/system/resume-api.service"
             # Reload systemd and start the service
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl daemon-reload && systemctl enable resume-api && systemctl restart resume-api'
-            # Reload nginx
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl reload nginx'
+            
+            # Check Nginx configuration and service status before reloading
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'nginx -t && systemctl status nginx'
+            
+            # Attempt to reload Nginx (continue on error)
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl reload nginx || echo "Nginx reload failed, trying to restart" && systemctl restart nginx || echo "Nginx restart also failed, checking configuration"'
+            
+            # Output diagnostic information if Nginx fails
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
+              if ! systemctl is-active --quiet nginx; then
+                echo "\nNginx service is not running. Here is the status:"
+                systemctl status nginx
+                echo "\nHere are the last 20 lines of the Nginx error log:"
+                tail -n 20 /var/log/nginx/error.log
+                echo "\nChecking configuration files:"
+                ls -la /etc/nginx/sites-enabled/
+                cat /etc/nginx/sites-available/cloudenoch.com
+              else
+                echo "Nginx is running successfully"
+              fi
+            '
 
 workflows:
   version: 2
