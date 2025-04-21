@@ -79,7 +79,8 @@ jobs:
             # Install dependencies
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'cd /opt/resume-api && pip3 install -r requirements.txt'
             # Create or update systemd service file
-            scp .circleci/resume-api.service root@${DROPLET_IP}:/etc/systemd/system/resume-api.service
+            scp .circleci/resume-api.service root@${DROPLET_IP}:/tmp/resume-api.service
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "sed 's|__MONGODB_URI__|${MONGODB_URI}|g' /tmp/resume-api.service > /etc/systemd/system/resume-api.service"
             # Reload systemd and start the service
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl daemon-reload && systemctl enable resume-api && systemctl restart resume-api'
             # Reload nginx
