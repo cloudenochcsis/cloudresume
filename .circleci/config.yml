@@ -218,37 +218,53 @@ jobs:
             # Wait for containers to be ready with proper health check
             echo "Waiting for containers to be ready..."
             for i in {1..50}; do
-              if ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "
+              status=$(ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "
                 # First check if containers are running
                 if ! (docker compose ps | grep -q 'frontend.*Up' && \
                       docker compose ps | grep -q 'api.*Up'); then
-                  echo 'Waiting for containers to start...'
+                  echo 'containers_not_running'
                   exit 1
                 fi
 
                 # Then check if Nginx is responding locally
                 if ! curl -IL --silent --fail http://localhost:80 >/dev/null; then
-                  echo 'Waiting for Nginx to respond...'
+                  echo 'nginx_not_responding'
                   exit 1
                 fi
 
                 # Finally check the public site
                 if curl -IL --silent --fail https://cloudenoch.com | grep -q '200 OK'; then
-                  echo 'Containers are ready'
+                  echo 'ready'
                   exit 0
                 fi
-                echo 'Waiting for public site to respond...'
+                echo 'public_site_not_responding'
                 exit 1
-              "; then
-                echo "Containers are ready and responding with 200 OK"
-                break
-              fi
+              " 2>&1)
+
+              case $status in
+                *ready*)
+                  echo "Containers are ready and responding with 200 OK"
+                  break
+                  ;;
+                *containers_not_running*)
+                  echo -n "Waiting for containers to start... "
+                  ;;
+                *nginx_not_responding*)
+                  echo -n "Waiting for Nginx to respond... "
+                  ;;
+                *public_site_not_responding*)
+                  echo -n "Waiting for public site to respond... "
+                  ;;
+                *)
+                  echo -n "Unknown status: $status "
+                  ;;
+              esac
+
               if [ $i -eq 50 ]; then
                 echo "Timeout waiting for containers to be ready"
                 ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "docker compose logs"
                 exit 1
               fi
-              echo -n "."
               sleep 1
             done
 
