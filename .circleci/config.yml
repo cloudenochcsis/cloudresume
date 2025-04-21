@@ -88,8 +88,8 @@ jobs:
             '
             # Create or update systemd service file
             scp .circleci/resume-api.service root@${DROPLET_IP}:/tmp/resume-api.service
-            # Use awk instead of sed for better handling of special characters in the MongoDB URI
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "awk -v uri=\"$MONGODB_URI\" '{gsub(/__MONGODB_URI__/, uri)}1' /tmp/resume-api.service > /etc/systemd/system/resume-api.service"
+            # Use awk for MongoDB URI replacement with proper quote handling
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'awk -v uri="'"${MONGODB_URI}"'" '"'"'{gsub(/__MONGODB_URI__/, uri)}1'"'"' /tmp/resume-api.service | sudo tee /etc/systemd/system/resume-api.service > /dev/null"
             # Reload systemd and start the service
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl daemon-reload && systemctl enable resume-api && systemctl restart resume-api'
             
