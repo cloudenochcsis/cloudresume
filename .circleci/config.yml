@@ -168,8 +168,9 @@ jobs:
             echo '# Wait for containers to be ready' >> deploy.sh
             echo 'echo "Waiting for containers to be ready..."' >> deploy.sh
             echo 'for i in {1..60}; do' >> deploy.sh
-            echo '  if docker compose ps | grep -q "Up" && curl -s http://localhost:8000/ >/dev/null; then' >> deploy.sh
-            echo '    echo "Containers are ready"' >> deploy.sh
+            echo '  # Check if both containers are running' >> deploy.sh
+            echo '  if docker compose ps | grep -q "api.*Up" && docker compose ps | grep -q "frontend.*Up"; then' >> deploy.sh
+            echo '    echo "Containers are running"' >> deploy.sh
             echo '    break' >> deploy.sh
             echo '  fi' >> deploy.sh
             echo '  if [ $i -eq 60 ]; then' >> deploy.sh
