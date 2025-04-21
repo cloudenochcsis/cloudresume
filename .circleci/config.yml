@@ -88,30 +88,42 @@ jobs:
             '
             # Create or update systemd service file
             scp .circleci/resume-api.service root@${DROPLET_IP}:/tmp/resume-api.service
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "sed 's|__MONGODB_URI__|${MONGODB_URI}|g' /tmp/resume-api.service > /etc/systemd/system/resume-api.service"
+            # Use awk instead of sed for better handling of special characters in the MongoDB URI
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "awk -v uri=\"$MONGODB_URI\" '{gsub(/__MONGODB_URI__/, uri)}1' /tmp/resume-api.service > /etc/systemd/system/resume-api.service"
             # Reload systemd and start the service
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl daemon-reload && systemctl enable resume-api && systemctl restart resume-api'
             
-            # Update Nginx configuration if needed for the correct backend location
+            # Check Nginx configuration and ensure it's correctly set up for the API
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
-              # Check existing Nginx configuration
               echo "Current Nginx config files:" 
               ls -la /etc/nginx/sites-enabled/
               
-              # Check and display the current Nginx configuration
+              # Check and display the current cloudenoch.com configuration
               echo "\nCurrent cloudenoch.com Nginx configuration:"
               cat /etc/nginx/sites-available/cloudenoch.com
               
-              # Check if the configuration needs updating (if it has any reference to Docker service "api")
-              if grep -q "proxy_pass http://api:" /etc/nginx/sites-available/cloudenoch.com; then
-                echo "\nDetected Docker reference in Nginx config, updating..."
-                # Make a backup
+              # Check if the API location block exists and points to the correct port (3000)
+              if ! grep -q "location /api" /etc/nginx/sites-available/cloudenoch.com; then
+                echo "\nAPI location block not found in Nginx config, adding it..."
+                # Make a backup first
                 cp /etc/nginx/sites-available/cloudenoch.com /etc/nginx/sites-available/cloudenoch.com.bak
-                # Update the reference from "api" hostname to "localhost"
-                sed -i "s/proxy_pass http:\/\/api:/proxy_pass http:\/\/localhost:/g" /etc/nginx/sites-available/cloudenoch.com
+                
+                # Add the API location block to the configuration (inside both server blocks if they exist)
+                sed -i "/location \/ {/i\\n    location \/api\/ {\n        proxy_pass http:\/\/localhost:3000\/;\n        proxy_http_version 1.1;\n        proxy_set_header Upgrade \$http_upgrade;\n        proxy_set_header Connection \'upgrade\';\n        proxy_set_header Host \$host;\n        proxy_cache_bypass \$http_upgrade;\n    }\n" /etc/nginx/sites-available/cloudenoch.com
+                
+                echo "Added API location block to Nginx configuration"
+              elif grep -q "proxy_pass http://api:" /etc/nginx/sites-available/cloudenoch.com; then
+                echo "\nFound Docker reference in API location block, updating to use localhost:3000..."
+                cp /etc/nginx/sites-available/cloudenoch.com /etc/nginx/sites-available/cloudenoch.com.bak
+                sed -i "s/proxy_pass http:\/\/api:[0-9]\+/proxy_pass http:\/\/localhost:3000/g" /etc/nginx/sites-available/cloudenoch.com
                 echo "Updated cloudenoch.com to use localhost instead of Docker service name"
+              elif ! grep -q "proxy_pass http://localhost:3000" /etc/nginx/sites-available/cloudenoch.com; then
+                echo "\nAPI location block found but points to wrong port, updating to port 3000..."
+                cp /etc/nginx/sites-available/cloudenoch.com /etc/nginx/sites-available/cloudenoch.com.bak
+                sed -i "s/proxy_pass http:\/\/localhost:[0-9]\+/proxy_pass http:\/\/localhost:3000/g" /etc/nginx/sites-available/cloudenoch.com
+                echo "Updated API location block to use port 3000"
               else
-                echo "\nNginx configuration already looks correct, no Docker references found."
+                echo "\nNginx configuration looks correct, API location block properly configured."
               fi
             '
             
