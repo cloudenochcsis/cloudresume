@@ -77,7 +77,7 @@ jobs:
             # Copy .env file for API
             scp api/.env root@${DROPLET_IP}:/opt/resume-api/.env || echo "No .env file found, will use environment variables"
             # Install dependencies
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'cd /opt/resume-api && pip3 install -r requirements.txt'
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'cd /opt/resume-api && pip install -r requirements.txt'
             # Create or update systemd service file
             scp .circleci/resume-api.service root@${DROPLET_IP}:/etc/systemd/system/resume-api.service
             # Reload systemd and start the service
