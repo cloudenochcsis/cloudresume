@@ -37,14 +37,11 @@ jobs:
       - image: cimg/python:3.11
     steps:
       - checkout
-      - python/install-packages:
-          pkg-manager: pip
-          packages:
-            - pytest
-            - pytest-cov
       - run:
-          name: Install backend dependencies
-          command: pip install -r api/requirements.txt
+          name: Install Python dependencies
+          command: |
+            pip install pytest pytest-cov
+            pip install -r api/requirements.txt
       - run:
           name: Run backend tests
           command: cd api && pytest
