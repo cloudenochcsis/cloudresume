@@ -19,5 +19,5 @@ services:
       - ./api/.env
     environment:
       - FRONTEND_URL=https://cloudenoch.com
-      - MONGODB_URI=${MONGODB_URI}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb+srv:default@cluster0.3oo7kyd.mongodb.net/resumeStats?retryWrites=true&w=majority}
     restart: always
