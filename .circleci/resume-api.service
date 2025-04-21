@@ -1,0 +1,12 @@
+[Unit]
+Description=Resume API Service
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/opt/resume-api
+ExecStart=/usr/bin/python3 /opt/resume-api/app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target 
