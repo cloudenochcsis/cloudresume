@@ -13,8 +13,8 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Create SSL directory and copy certificates
 RUN mkdir -p /etc/nginx/ssl
-COPY ssl/fullchain.pem /etc/nginx/ssl/
-COPY ssl/privkey.pem /etc/nginx/ssl/
+COPY ssl/cloudenoch_com.ca-bundle /etc/nginx/ssl/fullchain.pem
+COPY ssl/cloudenoch_com.p7b /etc/nginx/ssl/privkey.pem
 
 EXPOSE 80 443
 CMD ["nginx", "-g", "daemon off;"]
