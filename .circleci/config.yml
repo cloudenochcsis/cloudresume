@@ -220,7 +220,7 @@ jobs:
             for i in {1..50}; do
               if ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "
                 if docker compose ps | grep -q 'Up' && \
-                   curl -IL http://localhost:8000/ 2>/dev/null | grep -q '200 OK'; then
+                   curl -IL --silent --fail https://cloudenoch.com | grep -q '200 OK'; then
                   echo 'Containers are ready'
                   exit 0
                 fi
