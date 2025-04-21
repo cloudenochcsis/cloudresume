@@ -80,7 +80,7 @@ jobs:
             # Install dependencies
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'cd /opt/resume-api && pip3 install -r requirements.txt'
             # Create or update systemd service file
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'cat > /etc/systemd/system/resume-api.service << EOF
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "cat > /etc/systemd/system/resume-api.service << 'EOT'
 [Unit]
 Description=Resume API Service
 After=network.target
@@ -90,11 +90,11 @@ User=root
 WorkingDirectory=/opt/resume-api
 ExecStart=/usr/bin/python3 -m uvicorn main:app --host 0.0.0.0 --port 3000
 Restart=always
-Environment="MONGODB_URI=${MONGODB_URI}"
+Environment=\"MONGODB_URI=${MONGODB_URI}\"
 
 [Install]
 WantedBy=multi-user.target
-EOF'
+EOT"
             # Reload systemd, enable and restart the service
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl daemon-reload && systemctl enable resume-api && systemctl restart resume-api'
             # Reload nginx
