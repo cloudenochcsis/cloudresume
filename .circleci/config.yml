@@ -215,23 +215,28 @@ jobs:
               sleep 5
             done
 
-            # Wait for containers to be ready with timeout
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
-              echo "Waiting for containers to be ready..."
-              for i in {1..60}; do
-                if docker compose ps | grep -q "Up" && curl -s http://localhost:8000/ >/dev/null; then
-                  echo "\nContainers are ready"
-                  break
+            # Wait for containers to be ready with proper health check
+            echo "Waiting for containers to be ready..."
+            for i in {1..50}; do
+              if ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "
+                if docker compose ps | grep -q 'Up' && \
+                   curl -IL http://localhost:8000/ 2>/dev/null | grep -q '200 OK'; then
+                  echo 'Containers are ready'
+                  exit 0
                 fi
-                if [ $i -eq 60 ]; then
-                  echo "\nTimeout waiting for containers"
-                  docker compose logs
-                  exit 1
-                fi
-                echo -n "."
-                sleep 2
-              done
-            '
+                exit 1
+              "; then
+                echo "Containers are ready and responding with 200 OK"
+                break
+              fi
+              if [ $i -eq 50 ]; then
+                echo "Timeout waiting for containers to be ready"
+                ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} "docker compose logs"
+                exit 1
+              fi
+              echo -n "."
+              sleep 1
+            done
 
             # Copy and verify nginx configuration
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
