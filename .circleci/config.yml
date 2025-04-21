@@ -88,14 +88,13 @@ After=network.target
 [Service]
 User=root
 WorkingDirectory=/opt/resume-api
-ExecStart=/usr/bin/python3 -m uvicorn main:app --host 0.0.0.0 --port 3000
+ExecStart=/usr/bin/python3 /opt/resume-api/app.py
 Restart=always
-Environment=\"MONGODB_URI=${MONGODB_URI}\"
 
 [Install]
 WantedBy=multi-user.target
 EOT"
-            # Reload systemd, enable and restart the service
+            # Reload systemd and start the service
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl daemon-reload && systemctl enable resume-api && systemctl restart resume-api'
             # Reload nginx
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl reload nginx'
