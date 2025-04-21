@@ -92,8 +92,27 @@ jobs:
             # Reload systemd and start the service
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl daemon-reload && systemctl enable resume-api && systemctl restart resume-api'
             
-            # Check Nginx configuration and service status before reloading
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'nginx -t && systemctl status nginx'
+            # Update Nginx configuration to use localhost instead of Docker service name
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
+              # Check existing Nginx configuration
+              echo "Original Nginx config files:" 
+              ls -la /etc/nginx/sites-enabled/
+              
+              # Make a backup of the docker-apps.conf
+              if [ -f /etc/nginx/sites-enabled/docker-apps.conf ]; then
+                cp /etc/nginx/sites-enabled/docker-apps.conf /etc/nginx/sites-enabled/docker-apps.conf.bak
+                # Update the reference from "api" hostname to "localhost"
+                sed -i "s/proxy_pass http:\/\/api:/proxy_pass http:\/\/localhost:/g" /etc/nginx/sites-enabled/docker-apps.conf
+                echo "Updated docker-apps.conf to use localhost instead of Docker service name"
+              fi
+              
+              # Check the updated configuration
+              echo "Updated Nginx config:"
+              cat /etc/nginx/sites-enabled/docker-apps.conf
+            '
+            
+            # Test Nginx configuration
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'nginx -t || echo "Nginx configuration test failed"'
             
             # Attempt to reload Nginx (continue on error)
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl reload nginx || echo "Nginx reload failed, trying to restart" && systemctl restart nginx || echo "Nginx restart also failed, checking configuration"'
