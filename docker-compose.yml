@@ -4,10 +4,17 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:80"
+      - "80:80"
     restart: always
     depends_on:
-      - api
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:80/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   api:
     build:
@@ -19,5 +26,11 @@ services:
       - ./api/.env
     environment:
       - FRONTEND_URL=https://cloudenoch.com
-      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb+srv:default@cluster0.3oo7kyd.mongodb.net/resumeStats?retryWrites=true&w=majority}
+      - MONGODB_URI=${MONGODB_URI}
     restart: always
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
