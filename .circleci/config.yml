@@ -36,6 +36,7 @@ jobs:
   build-and-test-backend:
     docker:
       - image: cimg/python:3.11
+      - image: mongo:6.0
     steps:
       - checkout
       - run:
