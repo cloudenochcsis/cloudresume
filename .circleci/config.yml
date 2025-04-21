@@ -190,6 +190,8 @@ jobs:
             echo '  api:' >> docker-compose.override.yml
             echo '    environment:' >> docker-compose.override.yml
             echo "      MONGODB_URI: $MONGODB_URI" >> docker-compose.override.yml
+            echo '    env_file:' >> docker-compose.override.yml
+            echo '      - /root/api/.env' >> docker-compose.override.yml
             echo "    image: '${DOCKER_IMAGE_API}:latest'" >> docker-compose.override.yml
 
             # Copy deployment files
