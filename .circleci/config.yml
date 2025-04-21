@@ -92,23 +92,27 @@ jobs:
             # Reload systemd and start the service
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl daemon-reload && systemctl enable resume-api && systemctl restart resume-api'
             
-            # Update Nginx configuration to use localhost instead of Docker service name
+            # Update Nginx configuration if needed for the correct backend location
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
               # Check existing Nginx configuration
-              echo "Original Nginx config files:" 
+              echo "Current Nginx config files:" 
               ls -la /etc/nginx/sites-enabled/
               
-              # Make a backup of the docker-apps.conf
-              if [ -f /etc/nginx/sites-enabled/docker-apps.conf ]; then
-                cp /etc/nginx/sites-enabled/docker-apps.conf /etc/nginx/sites-enabled/docker-apps.conf.bak
-                # Update the reference from "api" hostname to "localhost"
-                sed -i "s/proxy_pass http:\/\/api:/proxy_pass http:\/\/localhost:/g" /etc/nginx/sites-enabled/docker-apps.conf
-                echo "Updated docker-apps.conf to use localhost instead of Docker service name"
-              fi
+              # Check and display the current Nginx configuration
+              echo "\nCurrent cloudenoch.com Nginx configuration:"
+              cat /etc/nginx/sites-available/cloudenoch.com
               
-              # Check the updated configuration
-              echo "Updated Nginx config:"
-              cat /etc/nginx/sites-enabled/docker-apps.conf
+              # Check if the configuration needs updating (if it has any reference to Docker service "api")
+              if grep -q "proxy_pass http://api:" /etc/nginx/sites-available/cloudenoch.com; then
+                echo "\nDetected Docker reference in Nginx config, updating..."
+                # Make a backup
+                cp /etc/nginx/sites-available/cloudenoch.com /etc/nginx/sites-available/cloudenoch.com.bak
+                # Update the reference from "api" hostname to "localhost"
+                sed -i "s/proxy_pass http:\/\/api:/proxy_pass http:\/\/localhost:/g" /etc/nginx/sites-available/cloudenoch.com
+                echo "Updated cloudenoch.com to use localhost instead of Docker service name"
+              else
+                echo "\nNginx configuration already looks correct, no Docker references found."
+              fi
             '
             
             # Test Nginx configuration
