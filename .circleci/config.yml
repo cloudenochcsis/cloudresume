@@ -222,41 +222,41 @@ jobs:
                 # First check if containers are running
                 if ! (docker compose ps | grep -q 'frontend.*Up' && \
                       docker compose ps | grep -q 'api.*Up'); then
-                  echo 'containers_not_running'
+                  echo 'STATUS:containers_not_running'
                   exit 1
                 fi
 
                 # Then check if Nginx is responding locally
                 if ! curl -IL --silent --fail http://localhost:80 >/dev/null; then
-                  echo 'nginx_not_responding'
+                  echo 'STATUS:nginx_not_responding'
                   exit 1
                 fi
 
                 # Finally check the public site
                 if curl -IL --silent --fail https://cloudenoch.com | grep -q '200 OK'; then
-                  echo 'ready'
+                  echo 'STATUS:ready'
                   exit 0
                 fi
-                echo 'public_site_not_responding'
+                echo 'STATUS:public_site_not_responding'
                 exit 1
-              " 2>&1)
+              " 2>&1 | grep '^STATUS:' | cut -d: -f2)
 
               case $status in
-                *ready*)
+                ready)
                   echo "Containers are ready and responding with 200 OK"
                   break
                   ;;
-                *containers_not_running*)
+                containers_not_running)
                   echo -n "Waiting for containers to start... "
                   ;;
-                *nginx_not_responding*)
+                nginx_not_responding)
                   echo -n "Waiting for Nginx to respond... "
                   ;;
-                *public_site_not_responding*)
+                public_site_not_responding)
                   echo -n "Waiting for public site to respond... "
                   ;;
                 *)
-                  echo -n "Unknown status: $status "
+                  echo -n "Unknown status... "
                   ;;
               esac
 
