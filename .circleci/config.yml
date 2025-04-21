@@ -229,7 +229,7 @@ jobs:
                 fi
 
                 # Then check if Nginx is responding locally
-                if ! curl -ILs --fail http://localhost:80 >/dev/null; then
+                if ! curl -ILs --fail http://localhost:8080 >/dev/null; then
                   echo 'STATUS:nginx_not_responding'
                   docker compose logs frontend --tail=20
                   exit 1
