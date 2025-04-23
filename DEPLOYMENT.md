@@ -3,7 +3,7 @@
 ## Prerequisites
 
 1.  **DigitalOcean Droplet** (Ubuntu recommended)
-2.  **Domain name** (e.g., cloudenoch.com) pointed to your Droplet’s IP
+2.  **Domain name** (e.g., your_domain.com) pointed to your Droplet’s IP
 3.  **MongoDB Atlas** account and connection string
 4.  **SSL certificates** for your domain (optional but recommended)
 5.  **GitHub repository** with your application code
@@ -99,11 +99,11 @@ Special characters in the MongoDB URI can break deployments if injected directly
 
 1.  **Configure Nginx to serve the frontend and reverse proxy API:**
     -   Place your React build files in `/var/www/portfolio/`
-    -   Update `/etc/nginx/sites-available/cloudenoch.com` with:
+    -   Update `/etc/nginx/sites-available/your_domain.com` with:
         ```nginx
         server {
             listen 80;
-            server_name cloudenoch.com www.cloudenoch.com;
+            server_name your_domain.com www.your_domain.com;
 
             root /var/www/portfolio;
             index index.html;
@@ -124,7 +124,7 @@ Special characters in the MongoDB URI can break deployments if injected directly
         ```
     -   Enable the config and reload Nginx:
         ```bash
-        ln -s /etc/nginx/sites-available/cloudenoch.com /etc/nginx/sites-enabled/
+        ln -s /etc/nginx/sites-available/your_domain.com /etc/nginx/sites-enabled/
         nginx -t
         systemctl reload nginx
         ```
