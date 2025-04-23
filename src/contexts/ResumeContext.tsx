@@ -113,7 +113,7 @@ const resumeData: ResumeData = {
       name: "AWS Certified Solutions Architect – Associate",
       issuer: "Amazon Web Services",
       date: "2023",
-      link: "https://www.credly.com/badges/59645601-fc1c-42a8-b95b-4fbf3c499ef6/linked_in_profile"
+      link: "https://www.credly.com/badges/193050a7-1625-4d8e-b77d-26d2fe8dd1e2/linked_in_profile"
     },
     {
       name: "Azure Certified Administrator",
@@ -125,7 +125,7 @@ const resumeData: ResumeData = {
       name: "Terraform Certified Associate",
       issuer: "HashiCorp",
       date: "2023",
-      link: "https://www.credly.com/badges/193050a7-1625-4d8e-b77d-26d2fe8dd1e2/linked_in_profile"
+      link: "https://www.credly.com/badges/59645601-fc1c-42a8-b95b-4fbf3c499ef6/linked_in_profile"
     },
     {
       name: "Azure DevOps Engineer",
