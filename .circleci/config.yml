@@ -86,13 +86,11 @@ jobs:
               . venv/bin/activate && \
               pip install -r requirements.txt
             '
-            # Create or update systemd service file
+            # Create the environment file for systemd
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'echo "MONGODB_URI='"${MONGODB_URI}"'" | sudo tee /opt/resume-api/api.env > /dev/null'
+            # Copy the systemd service file (now uses EnvironmentFile)
             scp .circleci/resume-api.service root@${DROPLET_IP}:/tmp/resume-api.service
-            # Use awk for MongoDB URI replacement with proper quote handling
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
-              export MONGODB_URI_VAR="'"${MONGODB_URI}"'" && \
-              awk '\''{gsub(/__MONGODB_URI__/, ENVIRON["MONGODB_URI_VAR"])}1'\'' /tmp/resume-api.service | sudo tee /etc/systemd/system/resume-api.service > /dev/null
-            '
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'sudo mv /tmp/resume-api.service /etc/systemd/system/resume-api.service'
             # Reload systemd and start the service
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl daemon-reload && systemctl enable resume-api && systemctl restart resume-api'
             
