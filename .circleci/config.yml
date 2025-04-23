@@ -96,60 +96,9 @@ jobs:
             # Reload systemd and start the service
             ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl daemon-reload && systemctl enable resume-api && systemctl restart resume-api'
             
-            # Check Nginx configuration and ensure it's correctly set up for the API
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
-              echo "Current Nginx config files:" 
-              ls -la /etc/nginx/sites-enabled/
-              
-              # Check and display the current cloudenoch.com configuration
-              echo "\nCurrent cloudenoch.com Nginx configuration:"
-              cat /etc/nginx/sites-available/cloudenoch.com
-              
-              # Check if the API location block exists and points to the correct port (3000)
-              if ! grep -q "location /api" /etc/nginx/sites-available/cloudenoch.com; then
-                echo "\nAPI location block not found in Nginx config, adding it..."
-                # Make a backup first
-                cp /etc/nginx/sites-available/cloudenoch.com /etc/nginx/sites-available/cloudenoch.com.bak
-                
-                # Add the API location block to the configuration (inside both server blocks if they exist)
-                sed -i "/location \/ {/i\\n    location \/api\/ {\n        proxy_pass http:\/\/localhost:3000\/;\n        proxy_http_version 1.1;\n        proxy_set_header Upgrade \$http_upgrade;\n        proxy_set_header Connection \'upgrade\';\n        proxy_set_header Host \$host;\n        proxy_cache_bypass \$http_upgrade;\n    }\n" /etc/nginx/sites-available/cloudenoch.com
-                
-                echo "Added API location block to Nginx configuration"
-              elif grep -q "proxy_pass http://api:" /etc/nginx/sites-available/cloudenoch.com; then
-                echo "\nFound Docker reference in API location block, updating to use localhost:3000..."
-                cp /etc/nginx/sites-available/cloudenoch.com /etc/nginx/sites-available/cloudenoch.com.bak
-                sed -i "s/proxy_pass http:\/\/api:[0-9]\+/proxy_pass http:\/\/localhost:3000/g" /etc/nginx/sites-available/cloudenoch.com
-                echo "Updated cloudenoch.com to use localhost instead of Docker service name"
-              elif ! grep -q "proxy_pass http://localhost:3000" /etc/nginx/sites-available/cloudenoch.com; then
-                echo "\nAPI location block found but points to wrong port, updating to port 3000..."
-                cp /etc/nginx/sites-available/cloudenoch.com /etc/nginx/sites-available/cloudenoch.com.bak
-                sed -i "s/proxy_pass http:\/\/localhost:[0-9]\+/proxy_pass http:\/\/localhost:3000/g" /etc/nginx/sites-available/cloudenoch.com
-                echo "Updated API location block to use port 3000"
-              else
-                echo "\nNginx configuration looks correct, API location block properly configured."
-              fi
-            '
-            
-            # Test Nginx configuration
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'nginx -t || echo "Nginx configuration test failed"'
-            
-            # Attempt to reload Nginx (continue on error)
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'systemctl reload nginx || echo "Nginx reload failed, trying to restart" && systemctl restart nginx || echo "Nginx restart also failed, checking configuration"'
-            
-            # Output diagnostic information if Nginx fails
-            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} '
-              if ! systemctl is-active --quiet nginx; then
-                echo "\nNginx service is not running. Here is the status:"
-                systemctl status nginx
-                echo "\nHere are the last 20 lines of the Nginx error log:"
-                tail -n 20 /var/log/nginx/error.log
-                echo "\nChecking configuration files:"
-                ls -la /etc/nginx/sites-enabled/
-                cat /etc/nginx/sites-available/cloudenoch.com
-              else
-                echo "Nginx is running successfully"
-              fi
-            '
+            # Configure Nginx using the dedicated script
+            scp .circleci/configure_nginx.sh root@${DROPLET_IP}:/tmp/configure_nginx.sh
+            ssh -o StrictHostKeyChecking=no root@${DROPLET_IP} 'chmod +x /tmp/configure_nginx.sh && /tmp/configure_nginx.sh'
 
 workflows:
   version: 2
