@@ -1,20 +1,14 @@
-# Production Deployment Guide
+# Production Deployment Guide (Systemd & CircleCI)
 
 ## Prerequisites
-1. A Digital Ocean account
-2. Domain name (cloudenoch.com) configured in Digital Ocean's DNS
-3. MongoDB Atlas account with connection string
-4. SSL certificates for your domain
 
-## Deployment Steps
+1. **DigitalOcean Droplet** (Ubuntu recommended)
+2. **Domain name** (e.g., cloudenoch.com) pointed to your Droplet’s IP
+3. **MongoDB Atlas** account and connection string
+4. **SSL certificates** for your domain (optional but recommended)
+5. **GitHub repository** with your application code
+6. **CircleCI** project connected to your repository
 
-### 1. Set up SSL Certificates
-Create an `ssl` directory and add your SSL certificates:
-```bash
-mkdir ssl
-# Add your SSL certificates:
-# - ssl/cloudenoch.com.crt
-# - ssl/cloudenoch.com.key
 ```
 
 ### 2. Environment Setup
@@ -59,3 +53,35 @@ docker-compose logs -f
 2. Verify MongoDB connection
 3. Check CORS settings if API requests fail
 4. Verify SSL certificate configuration
+
+---
+
+## Handling MongoDB URI with Special Characters (Systemd Deployment)
+
+When deploying the backend API with systemd, it’s important to handle the MongoDB connection string (URI) safely, especially if it contains special characters like `&`.
+
+**Recommended Approach:**
+
+1. **Use an Environment File:**  
+   Instead of putting the MongoDB URI directly in the systemd service file, store it in a separate environment file (e.g., `/opt/resume-api/api.env`).
+
+2. **Example `api.env`:**
+   ```
+   MONGODB_URI="your_full_mongodb_connection_string"
+   ```
+
+3. **Reference the Environment File in systemd:**  
+   In your `resume-api.service` file, use:
+   ```
+   EnvironmentFile=/opt/resume-api/api.env
+   ```
+
+4. **Automate with CI/CD:**  
+   During deployment (e.g., via CircleCI), create or update the `api.env` file on the server with the correct URI from your CI/CD environment variables.  
+   Example deployment step:
+   ```bash
+   echo "MONGODB_URI=\"$MONGODB_URI\"" | sudo tee /opt/resume-api/api.env > /dev/null
+   ```
+
+**Why?**  
+This method ensures the URI is not corrupted by shell or YAML parsing, and systemd reads it exactly as intended.
