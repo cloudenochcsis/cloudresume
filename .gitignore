@@ -98,7 +98,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-
 # Dependency directories
 node_modules/
 
@@ -111,3 +110,22 @@ package-lock.json
 # Yarn debug log
 yarn-debug.log*
 yarn-error.log*
+
+# Python specific
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment folders
+venv/
+.venv/
+env/
+.env/
+ENV/
+.ENV/
+env.bak/
+venv.bak/
+
+# Pytest cache
+.pytest_cache/
