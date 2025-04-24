@@ -100,16 +100,21 @@ const CertificationCard: React.FC<{ certification: any; index: number }> = ({ ce
           <span className="text-gray-500 dark:text-gray-400 ml-2">({certification.date})</span>
         </div>
       </div>
-      {certification.link && (
+      {certification.link ? (
         <a 
-          href={certification.link} 
-          className="text-primary-600 dark:text-primary-400 hover:underline text-sm flex items-center"
+          href={certification.link}
+          className="text-primary-600 dark:text-primary-400 hover:underline text-sm inline-flex items-center flex-shrink-0 ml-4"
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={`Verify ${certification.name} certification`}
         >
+          <ExternalLink className="h-4 w-4 mr-1" />
           Verify
-          <ExternalLink className="h-3 w-3 ml-1" />
         </a>
+      ) : (
+        <span className="text-sm text-gray-400 dark:text-gray-500 italic flex-shrink-0 ml-4">
+          Coming Soon
+        </span>
       )}
     </div>
   </div>
