@@ -128,11 +128,14 @@ const resumeData: ResumeData = {
       link: "https://www.credly.com/badges/59645601-fc1c-42a8-b95b-4fbf3c499ef6/linked_in_profile"
     },
     {
-      name: "Azure DevOps Engineer",
+      name: "Azure DevOps Engineer Expert",
       issuer: "Microsoft",
-      date: "2025",
-      link: "https://learn.microsoft.com/en-us/users/enochayivor-0815/credentials/azure-devops-engineer"
-
+      date: "2025"
+    },
+    {
+      name: "Certified Kubernetes Administrator (CKA)",
+      issuer: "Cloud Native Computing Foundation",
+      date: "2025"
     }
   ],
   publications: [
