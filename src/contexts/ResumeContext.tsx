@@ -86,13 +86,6 @@ const resumeData: ResumeData = {
   ],
   education: [
     {
-      degree: "PhD in Information Systems",
-      institution: "Baylor University",
-      location: "Waco, TX",
-      period: "2022 - Present",
-      description: "Research focus on AI-driven security automation and advanced threat detection systems"
-    },
-    {
       degree: "M.S. in Computer Science",
       institution: "University of Texas at El Paso",
       location: "El Paso, TX",
