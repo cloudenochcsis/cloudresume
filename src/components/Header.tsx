@@ -5,7 +5,7 @@ import { Sun, Moon, MapPin, Download, Menu, X } from 'lucide-react';
 import useIntersectionObserver from '../hooks/useIntersectionObserver';
 
 const Header: React.FC = () => {
-  const { name, title, location } = useResume();
+  const { name, title } = useResume();
   const { theme, toggleTheme } = useTheme();
   const headerRef = useRef<HTMLDivElement>(null);
   const isIntersecting = useIntersectionObserver(headerRef, { threshold: 0.1 });
@@ -158,10 +158,6 @@ const Header: React.FC = () => {
             <div className="flex-1">
               <h1 className="text-4xl sm:text-5xl font-bold mb-2 tracking-tight">{name}</h1>
               <p className="text-xl sm:text-2xl font-light tracking-wide mb-4">{title}</p>
-              <div className="flex items-center text-white/90">
-                <MapPin className="h-4 w-4 mr-1" />
-                <p className="text-sm">{location}</p>
-              </div>
             </div>
           </div>
         </div>

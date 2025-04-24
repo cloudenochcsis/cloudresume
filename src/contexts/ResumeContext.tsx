@@ -45,7 +45,6 @@ interface ResumeData {
   name: string;
   title: string;
   about: string;
-  location: string;
   experiences: Experience[];
   education: Education[];
   certifications: Certification[];
@@ -56,7 +55,6 @@ interface ResumeData {
 const resumeData: ResumeData = {
   name: "Enoch",
   title: "Information Security | Infrastructure Engineer | PhD Researcher",
-  location: "Cape Town, SA",
   about: "As a passionate Information Technology professional, I bring extensive experience in Cloud Infrastructure and Security to the table. My current focus is on pushing the boundaries of cybersecurity through my PhD research, where I'm exploring innovative ways to leverage Artificial Intelligence in enhancing Information Security practices.",
   experiences: [
     {

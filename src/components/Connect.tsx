@@ -22,12 +22,6 @@ const socialLinks: SocialLink[] = [
     color: "hover:bg-blue-600" 
   },
   { 
-    href: "https://twitter.com/CloudEnochCSIS", 
-    icon: Twitter, 
-    label: "Twitter",
-    color: "hover:bg-blue-400"
-  },
-  { 
     href: "mailto:cloudenochcsis@gmail.com", 
     icon: Mail, 
     label: "Email",
