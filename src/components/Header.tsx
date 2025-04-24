@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useResume } from '../contexts/ResumeContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { Sun, Moon, MapPin, Download, Menu, X } from 'lucide-react';
+import { Sun, Moon, Download, Menu, X } from 'lucide-react';
 import useIntersectionObserver from '../hooks/useIntersectionObserver';
 
 const Header: React.FC = () => {
