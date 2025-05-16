@@ -86,6 +86,13 @@ const resumeData: ResumeData = {
   ],
   education: [
     {
+      degree: "Doctoral Researcher",
+      institution: "Baylor University",
+      location: "Waco, TX",
+      period: "2022 - Present",
+      description: "Doctoral research investigating the transformative potential of Artificial Intelligence and Cloud Computing to architect and secure next-generation information systems, with a focus on intelligent threat detection, automated security orchestration, and resilient cloud infrastructures."
+    },
+    {
       degree: "M.S. in Computer Science",
       institution: "University of Texas at El Paso",
       location: "El Paso, TX",
