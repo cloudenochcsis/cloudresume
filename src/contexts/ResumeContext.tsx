@@ -90,7 +90,7 @@ const resumeData: ResumeData = {
       institution: "Baylor University",
       location: "Waco, TX",
       period: "2022 - Present",
-      description: "Doctoral research investigating the transformative potential of Artificial Intelligence and Cloud Computing to architect and secure next-generation information systems, with a focus on intelligent threat detection, automated security orchestration, and resilient cloud infrastructures."
+      description: "Research focus on AI-driven security automation and advanced threat detection systems"
     },
     {
       degree: "M.S. in Computer Science",
