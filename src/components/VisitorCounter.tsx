@@ -30,8 +30,7 @@ const VisitorCounter: FC<VisitorCounterProps> = ({ className }) => {
 
         setCount(data.count);
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to load visitor count';
-        setError(errorMessage);
+        setError(err instanceof Error ? err.message : 'Failed to fetch visitor count');
       } finally {
         setLoading(false);
       }
@@ -40,23 +39,20 @@ const VisitorCounter: FC<VisitorCounterProps> = ({ className }) => {
     fetchVisitorCount();
   }, []);
 
-  if (loading) {
-    return <div className={className}>Loading visitor count...</div>;
-  }
-
-  if (error) {
-    return <div className={className}>Error loading visitor count</div>;
-  }
-
   return (
-    <div className={className}>
-      <p className="text-sm text-gray-600 flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-          <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-        </svg>
-        <span className="font-semibold">{count?.toLocaleString()}</span> visitors
-      </p>
+    <div className={`text-center ${className}`}>
+      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 backdrop-blur-xl border border-white/10">
+        <span className="material-symbols-outlined text-[#0da6f2]">visibility</span>
+        {loading ? (
+          <span className="text-gray-300">Loading visitors...</span>
+        ) : error ? (
+          <span className="text-gray-400">Visitor count unavailable</span>
+        ) : (
+          <span className="text-white font-medium">
+            {count?.toLocaleString()} {count === 1 ? 'visitor' : 'visitors'}
+          </span>
+        )}
+      </div>
     </div>
   );
 };

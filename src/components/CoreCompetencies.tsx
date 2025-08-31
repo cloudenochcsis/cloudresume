@@ -17,7 +17,7 @@ const CoreCompetencyCard: React.FC<{ competency: CoreCompetency; index: number }
       }}
     >
       <div className="primary-gradient inline-flex p-3 rounded-lg mb-4">
-        <Icon className="h-6 w-6 text-white" />
+        {Icon && <Icon className="h-6 w-6 text-white" />}
       </div>
       <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">{competency.label}</h3>
       <p className="text-gray-600 dark:text-gray-300 text-sm">
