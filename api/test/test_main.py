@@ -46,7 +46,7 @@ async def setup_test_db():
 @pytest.mark.asyncio
 async def test_get_visitor_count(setup_test_db):
     """Test getting the visitor count"""
-    client = await anext(setup_test_db)
+    client = setup_test_db
     response = client.get("/api/counter")
     assert response.status_code == 200
     data = response.json()
@@ -57,7 +57,7 @@ async def test_get_visitor_count(setup_test_db):
 @pytest.mark.asyncio
 async def test_multiple_visits(setup_test_db):
     """Test that multiple visits increment the counter"""
-    client = await anext(setup_test_db)
+    client = setup_test_db
     # First visit
     response1 = client.get("/api/counter")
     count1 = response1.json()["count"]
@@ -71,7 +71,7 @@ async def test_multiple_visits(setup_test_db):
 @pytest.mark.asyncio
 async def test_cors_headers(setup_test_db):
     """Test that CORS headers are present"""
-    client = await anext(setup_test_db)
+    client = setup_test_db
     response = client.get("/api/counter")
     assert response.headers.get("access-control-allow-origin")
     assert response.headers.get("access-control-allow-credentials")
