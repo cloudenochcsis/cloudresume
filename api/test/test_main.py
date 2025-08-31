@@ -43,6 +43,7 @@ async def setup_test_db():
         except Exception:
             pass
 
+@pytest.mark.asyncio
 async def test_get_visitor_count(setup_test_db):
     """Test getting the visitor count"""
     client = await anext(setup_test_db)
@@ -53,6 +54,7 @@ async def test_get_visitor_count(setup_test_db):
     assert isinstance(data["count"], int)
     assert data["count"] == 1  # First visit should increment counter to 1
 
+@pytest.mark.asyncio
 async def test_multiple_visits(setup_test_db):
     """Test that multiple visits increment the counter"""
     client = await anext(setup_test_db)
@@ -66,6 +68,7 @@ async def test_multiple_visits(setup_test_db):
     
     assert count2 == count1 + 1
 
+@pytest.mark.asyncio
 async def test_cors_headers(setup_test_db):
     """Test that CORS headers are present"""
     client = await anext(setup_test_db)
