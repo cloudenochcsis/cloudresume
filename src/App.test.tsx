@@ -20,6 +20,9 @@ jest.mock('./components/Main', () => ({
     <div data-testid="research-areas">{researchAreas.length}</div>
   </div>
 ));
+jest.mock('./components/VisitorCounter', () => ({ className }: { className?: string }) => (
+  <div data-testid="mock-visitor-counter" className={className}>Mock Visitor Counter</div>
+));
 jest.mock('./contexts/ThemeContext', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="theme-provider">{children}</div>,
   useTheme: () => ({ theme: 'light', animationPreference: 'full' }),
@@ -41,9 +44,9 @@ describe('App Component', () => {
 
   test('passes correct props to Main component', () => {
     render(<App />);
-    expect(screen.getByTestId('core-competencies')).toHaveTextContent('4');
-    expect(screen.getByTestId('skills')).toHaveTextContent('14');
-    expect(screen.getByTestId('research-areas')).toHaveTextContent('4');
+    expect(screen.getByTestId('core-competencies')).toHaveTextContent('12');
+    expect(screen.getByTestId('skills')).toHaveTextContent('12');
+    expect(screen.getByTestId('research-areas')).toHaveTextContent('3');
   });
 
   test('applies correct CSS classes', () => {
@@ -52,21 +55,20 @@ describe('App Component', () => {
     const innerDiv = screen.getByTestId('app-inner-div');
     
     const expectedOuterClasses = [
+      'relative',
+      'flex',
+      'size-full',
       'min-h-screen',
-      'transition-colors',
-      'duration-300',
-      'bg-gray-50',
-      'pt-8',
-      'pb-16',
-      'px-4',
-      'sm:px-6',
-      'lg:px-8'
+      'flex-col',
+      'dark',
+      'group/design-root',
+      'overflow-x-hidden'
     ];
 
     expectedOuterClasses.forEach(className => {
       expect(outerDiv).toHaveClass(className);
     });
 
-    expect(innerDiv).toHaveClass('max-w-5xl', 'mx-auto');
+    expect(innerDiv).toHaveClass('layout-content-container', 'flex', 'flex-col', 'max-w-5xl', 'flex-1', 'px-4');
   });
 });

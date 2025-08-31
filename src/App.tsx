@@ -54,11 +54,13 @@ const AppContent: React.FC = () => {
   }, [animationPreference]);
 
   return (
-    <div className="relative flex size-full min-h-screen flex-col dark group/design-root overflow-x-hidden" 
-         style={{
-           backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0)',
-           backgroundSize: '20px 20px'
-         }}>
+    <div 
+      data-testid="app-outer-div"
+      className="relative flex size-full min-h-screen flex-col dark group/design-root overflow-x-hidden" 
+      style={{
+        backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0)',
+        backgroundSize: '20px 20px'
+      }}>
       
       {/* Background gradient effects */}
       <div className="absolute inset-0 z-0 opacity-10">
@@ -70,7 +72,7 @@ const AppContent: React.FC = () => {
       
       <div className="layout-container flex h-full grow flex-col z-10">
         <div className="flex flex-1 justify-center py-5">
-          <div className="layout-content-container flex flex-col max-w-5xl flex-1 px-4">
+          <div data-testid="app-inner-div" className="layout-content-container flex flex-col max-w-5xl flex-1 px-4">
             <Main 
               coreCompetencies={coreCompetencies}
               skills={skills}

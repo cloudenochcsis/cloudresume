@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import VisitorCounter from '../VisitorCounter';
 
 describe('VisitorCounter', () => {
@@ -8,7 +8,7 @@ describe('VisitorCounter', () => {
 
   it('renders loading state initially', () => {
     render(<VisitorCounter />);
-    expect(screen.getByText(/Loading visitor count/i)).toBeInTheDocument();
+    expect(screen.getByText(/Loading visitors/i)).toBeInTheDocument();
   });
 
   it('displays visitor count when API call succeeds', async () => {
@@ -18,8 +18,10 @@ describe('VisitorCounter', () => {
       json: () => Promise.resolve({ count: mockCount }),
     });
 
-    render(<VisitorCounter />);
-    expect(await screen.findByText(mockCount.toString())).toBeInTheDocument();
+    await act(async () => {
+      render(<VisitorCounter />);
+    });
+    expect(await screen.findByText(/42/)).toBeInTheDocument();
     expect(screen.getByText(/visitors/i)).toBeInTheDocument();
   });
 
@@ -29,8 +31,10 @@ describe('VisitorCounter', () => {
       status: 500,
     });
 
-    render(<VisitorCounter />);
-    expect(await screen.findByText(/Error loading visitor count/i)).toBeInTheDocument();
+    await act(async () => {
+      render(<VisitorCounter />);
+    });
+    expect(await screen.findByText(/Visitor count unavailable/i)).toBeInTheDocument();
   });
 
   it('displays error message when response has invalid format', async () => {
@@ -39,7 +43,9 @@ describe('VisitorCounter', () => {
       json: () => Promise.resolve({ invalidKey: 'invalid' }),
     });
 
-    render(<VisitorCounter />);
-    expect(await screen.findByText(/Error loading visitor count/i)).toBeInTheDocument();
+    await act(async () => {
+      render(<VisitorCounter />);
+    });
+    expect(await screen.findByText(/Visitor count unavailable/i)).toBeInTheDocument();
   });
 });
