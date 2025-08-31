@@ -1,77 +1,55 @@
 import pytest
-import pytest_asyncio
-import os
+from unittest.mock import AsyncMock, patch
 from fastapi.testclient import TestClient
 from main import app
-from motor.motor_asyncio import AsyncIOMotorClient
-import sys
 
-# Mark this as a pytest module
-sys.modules['pytest'] = sys.modules[__name__]
+@pytest.fixture
+def test_client():
+    """Create a test client with mocked MongoDB"""
+    return TestClient(app)
 
-@pytest_asyncio.fixture(autouse=True)
-async def setup_test_db():
-    """Setup a test database before each test"""
-    # Connect to test MongoDB
-    # Always use local MongoDB for tests
-    client = AsyncIOMotorClient("mongodb://localhost:27017", serverSelectionTimeoutMS=5000)
-    db = client.test_db
-    collection = db.visitorCounter
+@pytest.fixture
+def mock_counter_collection():
+    """Mock the MongoDB collection for testing"""
+    mock_collection = AsyncMock()
+    
+    # Mock find_one_and_update to return incrementing counts
+    call_count = 0
+    def mock_update(*args, **kwargs):
+        nonlocal call_count
+        call_count += 1
+        return {"_id": "visitorCounter", "count": call_count}
+    
+    mock_collection.find_one_and_update.side_effect = mock_update
+    return mock_collection
 
-    try:
-        # Reset counter before each test
-        await collection.delete_many({})
-        await collection.insert_one({"_id": "visitorCounter", "count": 0})
-
-        # Update app's counter collection
-        import main
-        main.counter_collection = collection
-
-        # Create a test client
-        test_client = TestClient(app)
-
-        yield test_client
-
-    finally:
-        # Cleanup
-        try:
-            await collection.delete_many({})
-        except Exception:
-            pass
-        try:
-            await client.close()
-        except Exception:
-            pass
-
-@pytest.mark.asyncio
-async def test_get_visitor_count(setup_test_db):
+def test_get_visitor_count(test_client, mock_counter_collection):
     """Test getting the visitor count"""
-    client = setup_test_db
-    response = client.get("/api/counter")
-    assert response.status_code == 200
-    data = response.json()
-    assert "count" in data
-    assert isinstance(data["count"], int)
-    assert data["count"] == 1  # First visit should increment counter to 1
+    with patch('main.counter_collection', mock_counter_collection):
+        response = test_client.get("/api/counter")
+        assert response.status_code == 200
+        data = response.json()
+        assert "count" in data
+        assert isinstance(data["count"], int)
+        assert data["count"] == 1  # First visit should increment counter to 1
 
-@pytest.mark.asyncio
-async def test_multiple_visits(setup_test_db):
+def test_multiple_visits(test_client, mock_counter_collection):
     """Test that multiple visits increment the counter"""
-    client = setup_test_db
-    # First visit
-    response1 = client.get("/api/counter")
-    count1 = response1.json()["count"]
-    
-    # Second visit
-    response2 = client.get("/api/counter")
-    count2 = response2.json()["count"]
-    
-    assert count2 == count1 + 1
+    with patch('main.counter_collection', mock_counter_collection):
+        # First visit
+        response1 = test_client.get("/api/counter")
+        count1 = response1.json()["count"]
+        
+        # Second visit
+        response2 = test_client.get("/api/counter")
+        count2 = response2.json()["count"]
+        
+        assert count2 == count1 + 1
 
-@pytest.mark.asyncio
-async def test_cors_headers(setup_test_db):
+def test_cors_headers(test_client, mock_counter_collection):
     """Test that CORS headers are present"""
-    client = setup_test_db
-    response = client.get("/api/counter")
-    assert response.headers.get("access-control-allow-origin")
-    assert response.headers.get("access-control-allow-credentials")
+    with patch('main.counter_collection', mock_counter_collection):
+        response = test_client.get("/api/counter")
+        assert response.status_code == 200
+        assert response.headers.get("access-control-allow-origin") == "*"
+        assert response.headers.get("access-control-allow-credentials") == "true"
