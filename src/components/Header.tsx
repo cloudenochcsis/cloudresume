@@ -10,9 +10,12 @@ const Header: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
-              <a href="#" className="text-2xl font-bold text-white hover:text-gray-300 transition-colors duration-200">
+              <button 
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="text-2xl font-bold text-white hover:text-gray-300 transition-colors duration-200 bg-transparent border-none cursor-pointer"
+              >
                 Enoch .A
-              </a>
+              </button>
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
