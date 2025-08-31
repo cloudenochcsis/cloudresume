@@ -1,11 +1,8 @@
-# Global test configuration for mocking fetch in tests
+# Global test configuration
 import pytest
-from unittest.mock import Mock
 
-# Mock fetch globally for all tests
+# Setup global test environment
 @pytest.fixture(autouse=True)
-def mock_fetch(monkeypatch):
-    """Mock fetch for all tests"""
-    mock = Mock()
-    monkeypatch.setattr("builtins.fetch", mock)
-    return mock
+def setup_test_env():
+    """Setup test environment"""
+    pass
