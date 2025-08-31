@@ -1,4 +1,4 @@
-import { render, screen, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import VisitorCounter from '../VisitorCounter';
 
 describe('VisitorCounter', () => {
@@ -18,9 +18,7 @@ describe('VisitorCounter', () => {
       json: () => Promise.resolve({ count: mockCount }),
     });
 
-    await act(async () => {
-      render(<VisitorCounter />);
-    });
+    render(<VisitorCounter />);
     expect(await screen.findByText(/42/)).toBeInTheDocument();
     expect(screen.getByText(/visitors/i)).toBeInTheDocument();
   });
@@ -31,9 +29,7 @@ describe('VisitorCounter', () => {
       status: 500,
     });
 
-    await act(async () => {
-      render(<VisitorCounter />);
-    });
+    render(<VisitorCounter />);
     expect(await screen.findByText(/Visitor count unavailable/i)).toBeInTheDocument();
   });
 
@@ -43,9 +39,7 @@ describe('VisitorCounter', () => {
       json: () => Promise.resolve({ invalidKey: 'invalid' }),
     });
 
-    await act(async () => {
-      render(<VisitorCounter />);
-    });
+    render(<VisitorCounter />);
     expect(await screen.findByText(/Visitor count unavailable/i)).toBeInTheDocument();
   });
 });
