@@ -103,7 +103,7 @@ const Header: React.FC = () => {
                 animationTimingFunction: 'steps(40, end)',
                 animationFillMode: 'forwards'
               }}>
-            & Cloud DevOps Engineer
+            & Cloud Infrastructure Engineer
           </h2>
         </div>
         <a className="mt-8 flex items-center gap-2 min-w-[84px] max-w-[480px] cursor-pointer justify-center overflow-hidden rounded-lg h-12 px-6 bg-[#0da6f2] text-white text-base font-bold tracking-[0.015em] transition-all duration-300 hover:bg-[#0a8cd1] hover:scale-105" href="#projects">
