@@ -1,4 +1,5 @@
 import pytest
+import pytest_asyncio
 import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 from main import app
@@ -9,7 +10,7 @@ def event_loop():
     yield loop
     loop.close()
 
-@pytest.fixture(autouse=True)
+@pytest_asyncio.fixture(autouse=True)
 async def setup_test_db():
     """Setup a test database before each test"""
     # Use a separate test database
