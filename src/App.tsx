@@ -84,7 +84,7 @@ const AppContent: React.FC = () => {
               {/* Divider */}
               <div className="flex items-center justify-center gap-3 mb-12">
                 <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-white/10"></div>
-                <span className="text-gray-600 text-sm font-mono">// connect</span>
+                <span className="text-gray-600 text-sm font-mono">{"// connect"}</span>
                 <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-white/10"></div>
               </div>
 
