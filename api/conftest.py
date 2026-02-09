@@ -33,4 +33,4 @@ async def setup_test_db():
 
     # Cleanup after test
     await test_collection.delete_many({})
-    await test_client.close()
+    test_client.close()
