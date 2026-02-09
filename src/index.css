@@ -2,27 +2,18 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
 
 @keyframes typing {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
+  from { width: 0; }
+  to { width: 100%; }
 }
 
 @keyframes blink-caret {
-  from,
-  to {
-    border-color: transparent;
-  }
-  50% {
-    border-color: #0da6f2;
-  }
+  from, to { border-color: transparent; }
+  50% { border-color: #0da6f2; }
 }
 
 .typing-effect {
@@ -30,7 +21,7 @@
   border-right: 0.15em solid #0da6f2;
   white-space: nowrap;
   margin: 0 auto;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.05em;
   animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
 }
 
@@ -43,10 +34,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: #0D1117;
   color: white;
+  line-height: 1.6;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
@@ -56,9 +48,15 @@ code {
   transition-duration: 0.01ms !important;
 }
 
-/* Custom scrollbar */
+/* ── Selection colour ── */
+::selection {
+  background: rgba(13, 166, 242, 0.3);
+  color: #fff;
+}
+
+/* ── Custom scrollbar ── */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -66,10 +64,17 @@ code {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0da6f2;
-  border-radius: 4px;
+  background: rgba(13, 166, 242, 0.4);
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #0a8cd1;
+  background: rgba(13, 166, 242, 0.7);
+}
+
+/* ── Focus visible styles ── */
+*:focus-visible {
+  outline: 2px solid #0da6f2;
+  outline-offset: 2px;
+  border-radius: 4px;
 }

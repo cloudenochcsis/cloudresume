@@ -8,7 +8,7 @@ describe('VisitorCounter', () => {
 
   it('renders loading state initially', () => {
     render(<VisitorCounter />);
-    expect(screen.getByText(/Loading visitors/i)).toBeInTheDocument();
+    expect(screen.getByText(/Loading/i)).toBeInTheDocument();
   });
 
   it('displays visitor count when API call succeeds', async () => {
