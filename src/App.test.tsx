@@ -44,8 +44,8 @@ describe('App Component', () => {
 
   test('passes correct props to Main component', () => {
     render(<App />);
-    expect(screen.getByTestId('core-competencies')).toHaveTextContent('12');
-    expect(screen.getByTestId('skills')).toHaveTextContent('12');
+    expect(screen.getByTestId('core-competencies')).toHaveTextContent('13');
+    expect(screen.getByTestId('skills')).toHaveTextContent('13');
     expect(screen.getByTestId('research-areas')).toHaveTextContent('3');
   });
 

@@ -7,6 +7,7 @@ describe('VisitorCounter', () => {
   });
 
   it('renders loading state initially', () => {
+    (fetch as jest.Mock).mockReturnValueOnce(new Promise(() => {}));
     render(<VisitorCounter />);
     expect(screen.getByText(/Loading/i)).toBeInTheDocument();
   });
