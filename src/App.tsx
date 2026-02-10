@@ -19,6 +19,7 @@ const coreCompetencies: CoreCompetency[] = [
   { label: "DevOps" },
   { label: "Automation" },
   { label: "Infrastructure as Code" },
+  { label: "Kubernetes" },
   { label: "Containerization" },
   { label: "Orchestration" },
   { label: "CI/CD" },
@@ -31,7 +32,7 @@ const coreCompetencies: CoreCompetency[] = [
 
 const skills: Skill[] = [
   "Cloud Computing", "DevOps", "Automation", "Infrastructure as Code", 
-  "Containerization", "Orchestration", "CI/CD", "Monitoring", 
+  "Kubernetes", "Containerization", "Orchestration", "CI/CD", "Monitoring", 
   "Logging", "Security", "Scalability", "Resilience"
 ];
 
