@@ -60,7 +60,6 @@ describe('App Component', () => {
       'size-full',
       'min-h-screen',
       'flex-col',
-      'dark',
       'group/design-root',
       'overflow-x-hidden'
     ];

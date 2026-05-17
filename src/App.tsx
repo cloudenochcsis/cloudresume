@@ -43,7 +43,7 @@ const researchAreas: ResearchArea[] = [
 ];
 
 const AppContent: React.FC = () => {
-  const { animationPreference } = useTheme();
+  const { animationPreference, theme } = useTheme();
   
   // Add class to body for reduced animations
   useEffect(() => {
@@ -57,7 +57,7 @@ const AppContent: React.FC = () => {
   return (
     <div 
       data-testid="app-outer-div"
-      className="relative flex size-full min-h-screen flex-col dark group/design-root overflow-x-hidden" 
+      className={`relative flex size-full min-h-screen flex-col ${theme === 'dark' ? 'dark' : ''} group/design-root overflow-x-hidden`}
       style={{
         backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)',
         backgroundSize: '24px 24px'

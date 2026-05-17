@@ -9,6 +9,11 @@ def test_read_root():
     assert "message" in response.json()
     assert response.json()["message"] == "Resume Visitor Counter API is running"
 
+def test_health_check():
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+
 def test_visitor_counter():
     # In test mode, we should get a mock response
     response = client.get("/api/counter")

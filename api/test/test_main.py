@@ -33,6 +33,12 @@ def test_get_visitor_count(test_client, mock_counter_collection):
         assert isinstance(data["count"], int)
         assert data["count"] == 1  # First visit should increment counter to 1
 
+def test_health_check(test_client):
+    """Test health check endpoint used by container health checks"""
+    response = test_client.get("/health")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+
 def test_multiple_visits(test_client, mock_counter_collection):
     """Test that multiple visits increment the counter"""
     with patch('main.counter_collection', mock_counter_collection):
