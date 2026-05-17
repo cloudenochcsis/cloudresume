@@ -4,7 +4,7 @@ A modern, single-page application to display a professional resume online.
 
 ## Features
 - Responsive, clean UI
-- Dark/light mode
+- Intentional dark theme
 - Built with React & TypeScript
 - Automated CI/CD with CircleCI
 

@@ -54,8 +54,8 @@ interface ResumeData {
 
 const resumeData: ResumeData = {
   name: "Enoch",
-  title: "Information Security | Infrastructure Engineer | PhD Researcher",
-  about: "As a passionate Information Technology professional, I bring extensive experience in Cloud Infrastructure and Security to the table. My current focus is on pushing the boundaries of cybersecurity through my PhD research, where I'm exploring innovative ways to leverage Artificial Intelligence in enhancing Information Security practices.",
+  title: "Cloud DevOps | Agentic AI | Python Automation",
+  about: "As a cloud and DevOps professional, I focus on scalable infrastructure, agentic AI workflows, Python automation, and reliable delivery practices. My work explores how automation and AI agents can improve cloud operations and engineering productivity.",
   experiences: [
     {
       title: "Lead Cloud Engineer",
@@ -66,7 +66,7 @@ const resumeData: ResumeData = {
         "Leading a team of cloud engineers to design and implement scalable, secure, and cost-effective cloud solutions across multi-cloud environments (AWS, Azure, GCP)",
         "Developed cloud-native architectures that improved system performance and reduced operational costs by 30%",
         "Implemented automated cloud infrastructure provisioning using Infrastructure-as-Code (IaC) tools, reducing deployment time by 50%",
-        "Collaborated with cross-functional teams to ensure compliance with security and regulatory standards in cloud deployments"
+        "Collaborated with cross-functional teams to improve reliability, governance, and operational standards in cloud deployments"
       ],
       technologies: ["AWS", "Azure", "GCP", "Terraform", "Python", "Kubernetes", "Docker", "CI/CD"]
     },
@@ -76,28 +76,28 @@ const resumeData: ResumeData = {
       location: "Boston, MA",
       period: "2018 - 2021",
       description: [
-        "Designed and implemented secure cloud infrastructure for 50+ enterprise clients",
+        "Designed and implemented scalable cloud infrastructure for 50+ enterprise clients",
         "Led migration of legacy systems to cloud-native architecture, improving performance by 35%",
-        "Developed automated security compliance tooling for continuous auditing against SOC2 and HIPAA standards",
-        "Implemented secure CI/CD pipelines with integrated vulnerability scanning"
+        "Developed Python automation tooling for continuous infrastructure validation and reporting",
+        "Implemented CI/CD pipelines with automated quality gates and deployment workflows"
       ],
       technologies: ["AWS", "Terraform", "Ansible", "Python", "CircleCI", "Azure", "Docker"]
     }
   ],
   education: [
     {
-      degree: "Doctoral Researcher",
+      degree: "Cloud and AI Automation Researcher",
       institution: "Baylor University",
       location: "Waco, TX",
       period: "2022 - Present",
-      description: "Research focus on AI-driven security automation and advanced threat detection systems"
+      description: "Research focus on agentic AI, cloud automation, and DevOps productivity"
     },
     {
       degree: "M.S. in Computer Science",
       institution: "University of Texas at El Paso",
       location: "El Paso, TX",
       period: "2018 - 2021",
-      description: "Specialization in Security and Machine Learning"
+      description: "Specialization in cloud systems, automation, and machine learning"
     },
     {
       degree: "B.S. in Computer Science and Information Technology",
@@ -138,18 +138,18 @@ const resumeData: ResumeData = {
   ],
   publications: [
     {
-      title: "Advancing Cloud Security Through AI-Driven Anomaly Detection",
-      journal: "Journal of Cybersecurity Technology",
+      title: "Advancing Cloud Operations Through Agentic AI and Automation",
+      journal: "Journal of Cloud Engineering and Automation",
       date: "2023",
       authors: ["Enoch", "Smith, J.", "Chen, L."],
-      link: "https://doi.org/10.xxxx/cybersec.2023.12345"
+      link: "https://doi.org/10.xxxx/cloudops.2023.12345"
     },
     {
-      title: "Zero-Trust Architecture Implementation in Multi-Cloud Environments",
-      conference: "International Conference on Cloud Security",
+      title: "Python Automation Patterns for Multi-Cloud DevOps Workflows",
+      conference: "International Conference on Cloud Automation",
       date: "2022",
       authors: ["Enoch", "Johnson, K."],
-      link: "https://doi.org/10.xxxx/iccs.2022.67890"
+      link: "https://doi.org/10.xxxx/icca.2022.67890"
     }
   ],
   projects: [

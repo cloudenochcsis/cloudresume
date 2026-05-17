@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import Header from '../Header';
 import { ThemeProvider } from '../../contexts/ThemeContext';
 
@@ -27,15 +27,11 @@ describe('Header', () => {
     document.documentElement.className = '';
   });
 
-  it('renders a theme toggle that switches between light and dark modes', () => {
+  it('positions the hero around cloud, DevOps, agentic AI, Python, and automation', () => {
     renderHeader();
 
-    const toggle = screen.getByRole('button', { name: /switch to dark mode/i });
-    expect(document.documentElement).not.toHaveClass('dark');
-
-    fireEvent.click(toggle);
-
-    expect(document.documentElement).toHaveClass('dark');
-    expect(screen.getByRole('button', { name: /switch to light mode/i })).toBeInTheDocument();
+    expect(screen.getByText(/Cloud DevOps Engineer/i)).toBeInTheDocument();
+    expect(screen.getByText(/Agentic AI, Python & Automation/i)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /switch to (light|dark) mode/i })).not.toBeInTheDocument();
   });
 });

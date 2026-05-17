@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useTheme } from '../contexts/ThemeContext';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { theme, toggleTheme } = useTheme();
-  const isDark = theme === 'dark';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -27,7 +24,7 @@ const Header: React.FC = () => {
                 <span className="gradient-text">E.A</span>
               </button>
             </div>
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-1">
                 {['About', 'Skills', 'Projects', 'Contact'].map((item) => (
                   <a
@@ -39,22 +36,6 @@ const Header: React.FC = () => {
                   </a>
                 ))}
               </div>
-              <button
-                type="button"
-                onClick={toggleTheme}
-                aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-gray-300 transition-all duration-200 hover:border-[#0da6f2]/30 hover:text-white"
-              >
-                {isDark ? (
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1.5m0 15V21m9-9h-1.5M4.5 12H3m15.364-6.364-1.061 1.061M6.697 17.303l-1.061 1.061m12.728 0-1.061-1.061M6.697 6.697 5.636 5.636M16.5 12a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0z" />
-                  </svg>
-                ) : (
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A8.25 8.25 0 1 1 11.21 3 6.75 6.75 0 0 0 21 12.79z" />
-                  </svg>
-                )}
-              </button>
             </div>
             {/* Mobile menu button */}
             <div className="md:hidden">
@@ -87,17 +68,6 @@ const Header: React.FC = () => {
                     {item}
                   </a>
                 ))}
-                <button
-                  type="button"
-                  onClick={() => {
-                    toggleTheme();
-                    setIsMenuOpen(false);
-                  }}
-                  aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-                  className="flex w-full items-center gap-2 text-gray-400 hover:text-white hover:bg-white/5 px-3 py-2.5 rounded-lg text-base font-medium transition-all duration-200"
-                >
-                  <span>{isDark ? 'Light mode' : 'Dark mode'}</span>
-                </button>
               </div>
             </div>
           )}
@@ -127,7 +97,7 @@ const Header: React.FC = () => {
                 animationTimingFunction: 'steps(30, end)',
                 animationFillMode: 'forwards'
               }}>
-            Doctoral Researcher
+            Cloud DevOps Engineer
           </h2>
         </div>
         <div className="h-12">
@@ -139,7 +109,7 @@ const Header: React.FC = () => {
                 animationTimingFunction: 'steps(40, end)',
                 animationFillMode: 'forwards'
               }}>
-            & Cloud Infrastructure Engineer
+            Agentic AI, Python & Automation
           </h2>
         </div>
         <a 

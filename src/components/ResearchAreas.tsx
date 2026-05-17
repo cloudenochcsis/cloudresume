@@ -1,6 +1,6 @@
 import React from 'react';
 import { ResearchArea } from '../App';
-import { ArrowRight, Brain, Search, Shield, Code } from 'lucide-react';
+import { ArrowRight, Brain, Search, Code } from 'lucide-react';
 
 interface Props {
   areas: ResearchArea[];
@@ -12,9 +12,7 @@ const getIconForResearchArea = (area: string): React.ElementType => {
   
   if (lowerArea.includes('ai') || lowerArea.includes('artificial intelligence') || lowerArea.includes('machine learning')) {
     return Brain;
-  } else if (lowerArea.includes('security') || lowerArea.includes('threat') || lowerArea.includes('protection')) {
-    return Shield;
-  } else if (lowerArea.includes('detect') || lowerArea.includes('vulnerab') || lowerArea.includes('assess')) {
+  } else if (lowerArea.includes('automation') || lowerArea.includes('workflow') || lowerArea.includes('python')) {
     return Search;
   } else {
     return Code;
@@ -61,19 +59,18 @@ const ResearchAreaCard: React.FC<{ area: ResearchArea; index: number }> = ({ are
 // Helper function to provide more detailed descriptions for each research area
 const getResearchDescription = (area: string): string => {
   const descriptions: Record<string, string> = {
-    "AI-driven threat detection systems": "Developing neural networks capable of identifying patterns associated with novel attack vectors in real-time network traffic.",
-    "Automated vulnerability assessment": "Building autonomous systems that continuously probe for security weaknesses and prioritize remediation efforts.",
-    "Adaptive security frameworks": "Creating security systems that evolve in response to emerging threats through reinforcement learning techniques.",
-    "Machine learning for anomaly detection in network traffic": "Implementing unsupervised learning algorithms to detect unusual patterns that may indicate security breaches."
+    "Agentic AI for DevOps": "Exploring AI agents that can assist with deployments, infrastructure operations, and engineering workflows.",
+    "Python Automation Platforms": "Building Python-based automation patterns for repeatable cloud and DevOps tasks.",
+    "Cloud Infrastructure Optimization": "Improving cloud platforms for scalability, reliability, cost efficiency, and operational clarity."
   };
   
-  return descriptions[area] || "Innovative research combining AI and information security to address evolving cyber threats.";
+  return descriptions[area] || "Applied research combining cloud engineering, agentic AI, Python, and automation for modern DevOps workflows.";
 };
 
 const ResearchAreas: React.FC<Props> = ({ areas }) => (
   <div>
     <p className="text-gray-700 dark:text-gray-300 mb-6 text-lg leading-relaxed">
-      My doctoral research is at the cutting edge of Artificial Intelligence applications in Information Security. I'm exploring how advanced machine learning techniques can enhance cybersecurity practices and develop more resilient systems.
+      My research and engineering work focuses on cloud infrastructure, DevOps automation, agentic AI, and Python-based tooling for resilient systems.
     </p>
     
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
