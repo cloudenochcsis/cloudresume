@@ -29,10 +29,10 @@ const CoreCompetencyCard: React.FC<{ competency: CoreCompetency; index: number }
 
 const getDescriptionForCompetency = (label: string): string => {
   const descriptions: Record<string, string> = {
-    "Information Security": "Expertise in protecting digital information systems from unauthorized access and ensuring data integrity.",
+    "Agentic AI": "Building AI-assisted workflows that help automate cloud operations and engineering tasks.",
     "Cloud/DevOps": "Experience designing, deploying, and managing cloud infrastructure with modern DevOps methodologies.",
     "SRE": "Site Reliability Engineering practices to build and maintain highly available and scalable systems.",
-    "AI Research": "Advancing the field through innovative research in artificial intelligence applied to security challenges."
+    "Python Automation": "Creating Python tooling for repeatable infrastructure, deployment, and operations workflows."
   };
   
   return descriptions[label] || "";

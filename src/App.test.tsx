@@ -44,8 +44,8 @@ describe('App Component', () => {
 
   test('passes correct props to Main component', () => {
     render(<App />);
-    expect(screen.getByTestId('core-competencies')).toHaveTextContent('13');
-    expect(screen.getByTestId('skills')).toHaveTextContent('13');
+    expect(screen.getByTestId('core-competencies')).toHaveTextContent('14');
+    expect(screen.getByTestId('skills')).toHaveTextContent('14');
     expect(screen.getByTestId('research-areas')).toHaveTextContent('3');
   });
 
@@ -60,6 +60,7 @@ describe('App Component', () => {
       'size-full',
       'min-h-screen',
       'flex-col',
+      'dark',
       'group/design-root',
       'overflow-x-hidden'
     ];

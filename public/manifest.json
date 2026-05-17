@@ -1,6 +1,6 @@
 {
   "short_name": "Enoch Resume",
-  "name": "Enoch - Information Security | Infrastructure Engineer | PhD Researcher",
+  "name": "Enoch - Cloud DevOps | Agentic AI | Python Automation",
   "icons": [
     {
       "src": "favicon.ico",
@@ -21,5 +21,5 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#0D1117"
 }

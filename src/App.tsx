@@ -17,6 +17,8 @@ export type ResearchArea = string;
 const coreCompetencies: CoreCompetency[] = [
   { label: "Cloud Computing" },
   { label: "DevOps" },
+  { label: "Agentic AI" },
+  { label: "Python" },
   { label: "Automation" },
   { label: "Infrastructure as Code" },
   { label: "Kubernetes" },
@@ -25,25 +27,24 @@ const coreCompetencies: CoreCompetency[] = [
   { label: "CI/CD" },
   { label: "Monitoring" },
   { label: "Logging" },
-  { label: "Security" },
   { label: "Scalability" },
   { label: "Resilience" }
 ];
 
 const skills: Skill[] = [
-  "Cloud Computing", "DevOps", "Automation", "Infrastructure as Code", 
+  "Cloud Computing", "DevOps", "Agentic AI", "Python", "Automation", "Infrastructure as Code",
   "Kubernetes", "Containerization", "Orchestration", "CI/CD", "Monitoring", 
-  "Logging", "Security", "Scalability", "Resilience"
+  "Logging", "Scalability", "Resilience"
 ];
 
 const researchAreas: ResearchArea[] = [
   "Cloud Infrastructure Optimization",
-  "Automated Deployment Pipeline", 
-  "Research on Cloud Scalability"
+  "Agentic AI for DevOps",
+  "Python Automation Platforms"
 ];
 
 const AppContent: React.FC = () => {
-  const { animationPreference, theme } = useTheme();
+  const { animationPreference } = useTheme();
   
   // Add class to body for reduced animations
   useEffect(() => {
@@ -57,7 +58,7 @@ const AppContent: React.FC = () => {
   return (
     <div 
       data-testid="app-outer-div"
-      className={`relative flex size-full min-h-screen flex-col ${theme === 'dark' ? 'dark' : ''} group/design-root overflow-x-hidden`}
+      className="relative flex size-full min-h-screen flex-col dark group/design-root overflow-x-hidden"
       style={{
         backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)',
         backgroundSize: '24px 24px'
@@ -90,7 +91,7 @@ const AppContent: React.FC = () => {
               </div>
 
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">Let's Connect</h3>
-              <p className="text-gray-500 mb-8 max-w-md mx-auto text-sm">Interested in cloud infrastructure, DevOps, or research collaboration? Let's talk.</p>
+              <p className="text-gray-500 mb-8 max-w-md mx-auto text-sm">Interested in cloud infrastructure, DevOps, agentic AI, or Python automation? Let's talk.</p>
               
               <div className="flex justify-center flex-wrap gap-4 mb-10">
                 {[

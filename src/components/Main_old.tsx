@@ -208,8 +208,8 @@ const ProjectCard: React.FC<{ project: any; index: number }> = ({ project, index
 
 // Define categorized skills
 const categorizedSkills = {
-  "Security": [
-    "Information Security", "Cybersecurity", "Network Security", "Incident Response", "Security Automation"
+  "Agentic AI & Automation": [
+    "Agentic AI", "Python Automation", "Workflow Automation", "AI-assisted Operations", "Platform Automation"
   ],
   "Cloud & Infrastructure": [
     "Cloud Computing (AWS, Azure, GCP, Heroku)", "DevOps", "Site Reliability Engineering", "Terraform", "Docker", "Kubernetes"

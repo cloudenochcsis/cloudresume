@@ -11,6 +11,8 @@ interface MainProps {
 const skillIcons: Record<string, string> = {
   "Cloud Computing": "☁️",
   "DevOps": "🔄",
+  "Agentic AI": "🤖",
+  "Python": "🐍",
   "Automation": "⚙️",
   "Infrastructure as Code": "📝",
   "Containerization": "📦",
@@ -18,7 +20,6 @@ const skillIcons: Record<string, string> = {
   "CI/CD": "🚀",
   "Monitoring": "📊",
   "Logging": "📋",
-  "Security": "🔒",
   "Scalability": "📈",
   "Resilience": "🛡️",
 };
@@ -53,13 +54,13 @@ const projects = [
     cta: "View Project",
   },
   {
-    title: "Information Security Awareness",
-    description: "Published research on information security awareness in International Journal of Information and Computer Security (IJICS).",
-    url: "https://dl.acm.org/doi/abs/10.1504/ijics.2024.143938",
-    tags: ["Research", "InfoSec", "Publication"],
+    title: "Agentic AI Automation Platform",
+    description: "Building agentic AI workflows and Python automation patterns for cloud operations, DevOps productivity, and repeatable infrastructure tasks.",
+    url: "https://github.com/cloudenochcsis",
+    tags: ["Agentic AI", "Python", "Automation"],
     gradient: "from-purple-500/20 via-violet-500/20 to-fuchsia-500/20",
-    icon: "📄",
-    cta: "View Research",
+    icon: "🤖",
+    cta: "View Work",
   },
 ];
 
@@ -98,9 +99,8 @@ const Main: React.FC<MainProps> = ({ coreCompetencies, skills, researchAreas }) 
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white">About Me</h2>
         </div>
         <p className="text-gray-400 text-base md:text-lg leading-relaxed">
-          I am a Doctoral Researcher specializing in cloud computing and DevOps methodologies. My research focuses on optimizing cloud infrastructure for scalability and
-          resilience. I also work as a Cloud DevOps Engineer, implementing and managing cloud solutions for various clients. My expertise spans across cloud platforms,
-          automation tools, and software development practices.
+          I am a Cloud DevOps Engineer focused on cloud infrastructure, DevOps, agentic AI, Python, and automation. I design scalable cloud platforms, build repeatable
+          automation workflows, and explore how AI agents can improve infrastructure operations, deployment reliability, and engineering productivity.
         </p>
         {/* Quick stats */}
         <div className="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-white/5">
