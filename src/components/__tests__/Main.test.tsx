@@ -1,16 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import Main from '../Main';
-import { CoreCompetency, ResearchArea, Skill } from '../../App';
+import { CoreCompetency } from '../../App';
 
 const coreCompetencies: CoreCompetency[] = [
-  { label: 'Cloud Architecture' },
-  { label: 'DevOps Engineering' },
-  { label: 'Agentic AI' },
-  { label: 'Python Automation' },
+  { label: 'Terraform' },
+  { label: 'Kubernetes' },
+  { label: 'ArgoCD' },
 ];
-
-const skills: Skill[] = [];
-const researchAreas: ResearchArea[] = [];
 
 describe('Main', () => {
   beforeEach(() => {
@@ -20,11 +16,14 @@ describe('Main', () => {
     }));
   });
 
-  it('describes a cloud, DevOps, agentic AI, Python, and automation focus', () => {
-    render(<Main coreCompetencies={coreCompetencies} skills={skills} researchAreas={researchAreas} />);
+  it('renders About, the skills chips, and Projects', () => {
+    render(<Main coreCompetencies={coreCompetencies} />);
 
     expect(screen.getByText(/Kubernetes platforms with GitOps delivery/i)).toBeInTheDocument();
+    // 'Terraform'/'ArgoCD' also appear as project tags, so use getAllByText
+    expect(screen.getAllByText('Terraform').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('ArgoCD').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText(/OpenTelemetry DevOps Platform/i)).toBeInTheDocument();
-    expect(screen.queryByText(/Information Security Awareness/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Agentic AI Automation Platform/i)).not.toBeInTheDocument();
   });
 });

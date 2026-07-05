@@ -1,23 +1,13 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import App, { CoreCompetency, Skill, ResearchArea } from './App';
+import App, { CoreCompetency } from './App';
 
 // Mock the components and contexts
 jest.mock('./components/Header', () => () => <div data-testid="mock-header">Header</div>);
-jest.mock('./components/Main', () => ({ 
-  coreCompetencies, 
-  skills, 
-  researchAreas 
-}: { 
-  coreCompetencies: CoreCompetency[], 
-  skills: Skill[], 
-  researchAreas: ResearchArea[] 
-}) => (
+jest.mock('./components/Main', () => ({ coreCompetencies }: { coreCompetencies: CoreCompetency[] }) => (
   <div data-testid="mock-main">
     Main Component
     <div data-testid="core-competencies">{coreCompetencies.length}</div>
-    <div data-testid="skills">{skills.length}</div>
-    <div data-testid="research-areas">{researchAreas.length}</div>
   </div>
 ));
 jest.mock('./components/VisitorCounter', () => ({ className }: { className?: string }) => (
@@ -44,9 +34,7 @@ describe('App Component', () => {
 
   test('passes correct props to Main component', () => {
     render(<App />);
-    expect(screen.getByTestId('core-competencies')).toHaveTextContent('14');
-    expect(screen.getByTestId('skills')).toHaveTextContent('14');
-    expect(screen.getByTestId('research-areas')).toHaveTextContent('3');
+    expect(screen.getByTestId('core-competencies')).toHaveTextContent('12');
   });
 
   test('applies correct CSS classes', () => {

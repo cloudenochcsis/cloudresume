@@ -2,33 +2,29 @@ import React from 'react';
 import About from './About';
 import Projects from './Projects';
 import { useReveal } from '../hooks/useReveal';
-import { CoreCompetency, Skill, ResearchArea } from '../App';
+import { CoreCompetency } from '../App';
 
 interface MainProps {
   coreCompetencies: CoreCompetency[];
-  skills: Skill[];
-  researchAreas: ResearchArea[];
 }
 
-// Skill icons mapping
 const skillIcons: Record<string, string> = {
-  "Cloud Computing": "☁️",
-  "DevOps": "🔄",
-  "Agentic AI": "🤖",
-  "Python": "🐍",
-  "Automation": "⚙️",
-  "Infrastructure as Code": "📝",
-  "Containerization": "📦",
-  "Orchestration": "🎯",
-  "CI/CD": "🚀",
-  "Monitoring": "📊",
-  "Logging": "📋",
-  "Scalability": "📈",
-  "Resilience": "🛡️",
+  AWS: '☁️',
+  Azure: '🌐',
+  GCP: '🌩️',
+  Terraform: '🏗️',
+  Kubernetes: '☸️',
+  ArgoCD: '🔄',
+  Docker: '📦',
+  'CI/CD': '🚀',
+  Python: '🐍',
+  OpenTelemetry: '📡',
+  Grafana: '📊',
+  'Agentic AI': '🤖',
 };
 
 
-const Main: React.FC<MainProps> = ({ coreCompetencies, skills, researchAreas }) => {
+const Main: React.FC<MainProps> = ({ coreCompetencies }) => {
   const skillsSection = useReveal();
 
   return (

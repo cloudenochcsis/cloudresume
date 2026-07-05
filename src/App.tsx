@@ -6,41 +6,25 @@ import Main from './components/Main';
 import VisitorCounter from './components/VisitorCounter';
 
 // Types
-export type Skill = string;
 export type CoreCompetency = {
   icon?: React.ElementType;
   label: string;
 };
-export type ResearchArea = string;
 
-// Updated data for the new design
+// Concrete tools and competencies
 const coreCompetencies: CoreCompetency[] = [
-  { label: "Cloud Computing" },
-  { label: "DevOps" },
-  { label: "Agentic AI" },
-  { label: "Python" },
-  { label: "Automation" },
-  { label: "Infrastructure as Code" },
-  { label: "Kubernetes" },
-  { label: "Containerization" },
-  { label: "Orchestration" },
-  { label: "CI/CD" },
-  { label: "Monitoring" },
-  { label: "Logging" },
-  { label: "Scalability" },
-  { label: "Resilience" }
-];
-
-const skills: Skill[] = [
-  "Cloud Computing", "DevOps", "Agentic AI", "Python", "Automation", "Infrastructure as Code",
-  "Kubernetes", "Containerization", "Orchestration", "CI/CD", "Monitoring", 
-  "Logging", "Scalability", "Resilience"
-];
-
-const researchAreas: ResearchArea[] = [
-  "Cloud Infrastructure Optimization",
-  "Agentic AI for DevOps",
-  "Python Automation Platforms"
+  { label: 'AWS' },
+  { label: 'Azure' },
+  { label: 'GCP' },
+  { label: 'Terraform' },
+  { label: 'Kubernetes' },
+  { label: 'ArgoCD' },
+  { label: 'Docker' },
+  { label: 'CI/CD' },
+  { label: 'Python' },
+  { label: 'OpenTelemetry' },
+  { label: 'Grafana' },
+  { label: 'Agentic AI' },
 ];
 
 const AppContent: React.FC = () => {
@@ -76,11 +60,7 @@ const AppContent: React.FC = () => {
       <div className="layout-container flex h-full grow flex-col z-10">
         <div className="flex flex-1 justify-center py-5">
           <div data-testid="app-inner-div" className="layout-content-container flex flex-col max-w-5xl flex-1 px-4">
-            <Main 
-              coreCompetencies={coreCompetencies}
-              skills={skills}
-              researchAreas={researchAreas}
-            />
+            <Main coreCompetencies={coreCompetencies} />
             
             <footer className="text-center pt-16 pb-10 mt-20" id="contact">
               {/* Divider */}
