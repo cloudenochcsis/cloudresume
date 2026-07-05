@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
-import { ResumeProvider } from './contexts/ResumeContext';
 import Header from './components/Header';
 import Main from './components/Main';
 import Contact from './components/Contact';
@@ -73,9 +72,7 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <ThemeProvider>
-      <ResumeProvider>
-        <AppContent />
-      </ResumeProvider>
+      <AppContent />
     </ThemeProvider>
   );
 };

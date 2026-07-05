@@ -15,15 +15,11 @@ jest.mock('./contexts/ThemeContext', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="theme-provider">{children}</div>,
   useTheme: () => ({ theme: 'light', animationPreference: 'full' }),
 }));
-jest.mock('./contexts/ResumeContext', () => ({
-  ResumeProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="resume-provider">{children}</div>,
-}));
 
 describe('App Component', () => {
   test('renders without crashing', () => {
     render(<App />);
     expect(screen.getByTestId('theme-provider')).toBeInTheDocument();
-    expect(screen.getByTestId('resume-provider')).toBeInTheDocument();
     expect(screen.getByTestId('app-outer-div')).toBeInTheDocument();
     expect(screen.getByTestId('app-inner-div')).toBeInTheDocument();
     expect(screen.getByTestId('mock-header')).toBeInTheDocument();
