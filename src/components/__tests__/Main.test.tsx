@@ -24,7 +24,7 @@ describe('Main', () => {
     render(<Main coreCompetencies={coreCompetencies} skills={skills} researchAreas={researchAreas} />);
 
     expect(screen.getByText(/Kubernetes platforms with GitOps delivery/i)).toBeInTheDocument();
-    expect(screen.getByText(/Agentic AI Automation Platform/i)).toBeInTheDocument();
+    expect(screen.getByText(/OpenTelemetry DevOps Platform/i)).toBeInTheDocument();
     expect(screen.queryByText(/Information Security Awareness/i)).not.toBeInTheDocument();
   });
 });
