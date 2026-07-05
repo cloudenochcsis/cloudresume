@@ -1,4 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React from 'react';
+import About from './About';
+import { useReveal } from '../hooks/useReveal';
 import { CoreCompetency, Skill, ResearchArea } from '../App';
 
 interface MainProps {
@@ -64,58 +66,13 @@ const projects = [
   },
 ];
 
-// Hook for section reveal animation
-function useReveal() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
-      { threshold: 0.12 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-  return { ref, visible };
-}
-
 const Main: React.FC<MainProps> = ({ coreCompetencies, skills, researchAreas }) => {
-  const about = useReveal();
   const skillsSection = useReveal();
   const projectsSection = useReveal();
 
   return (
     <>
-      {/* About Section */}
-      <div
-        ref={about.ref}
-        className={`reveal ${about.visible ? 'visible' : ''} scroll-mt-20 my-16 p-8 md:p-10 rounded-2xl glass-card glow-blue-hover transition-all duration-500`}
-        id="about"
-      >
-        <div className="flex items-center gap-3 mb-6">
-          <div className="h-8 w-1 rounded-full bg-gradient-to-b from-[#0da6f2] to-[#a855f7]"></div>
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white">About Me</h2>
-        </div>
-        <p className="text-gray-400 text-base md:text-lg leading-relaxed">
-          I am a Cloud DevOps Engineer focused on cloud infrastructure, DevOps, agentic AI, Python, and automation. I design scalable cloud platforms, build repeatable
-          automation workflows, and explore how AI agents can improve infrastructure operations, deployment reliability, and engineering productivity.
-        </p>
-        {/* Quick stats */}
-        <div className="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-white/5">
-          {[
-            { value: "5+", label: "Years Experience" },
-            { value: "10+", label: "Projects Delivered" },
-            { value: "1", label: "Published Paper" },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="text-2xl md:text-3xl font-bold gradient-text">{stat.value}</div>
-              <div className="text-xs md:text-sm text-gray-500 mt-1">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <About />
 
       {/* Skills Section */}
       <div

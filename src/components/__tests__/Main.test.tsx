@@ -23,7 +23,7 @@ describe('Main', () => {
   it('describes a cloud, DevOps, agentic AI, Python, and automation focus', () => {
     render(<Main coreCompetencies={coreCompetencies} skills={skills} researchAreas={researchAreas} />);
 
-    expect(screen.getByText(/cloud infrastructure, DevOps, agentic AI, Python, and automation/i)).toBeInTheDocument();
+    expect(screen.getByText(/Kubernetes platforms with GitOps delivery/i)).toBeInTheDocument();
     expect(screen.getByText(/Agentic AI Automation Platform/i)).toBeInTheDocument();
     expect(screen.queryByText(/Information Security Awareness/i)).not.toBeInTheDocument();
   });
