@@ -112,15 +112,26 @@ const Header: React.FC = () => {
             Agentic AI, Python & Automation
           </h2>
         </div>
-        <a 
-          className="relative mt-10 flex items-center gap-2 cursor-pointer justify-center rounded-xl h-12 px-8 bg-[#0da6f2] text-white text-sm font-semibold tracking-wide transition-all duration-300 hover:bg-[#0a8cd1] hover:scale-[1.03] hover:shadow-lg hover:shadow-[#0da6f2]/20 pulse-ring" 
-          href="#projects"
-        >
-          <span>View My Work</span>
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </a>
+        <div className="mt-10 flex flex-col sm:flex-row items-center gap-4">
+          <a
+            className="flex items-center gap-2 cursor-pointer justify-center rounded-xl h-12 px-8 bg-[#0da6f2] text-white text-sm font-semibold tracking-wide transition-all duration-300 hover:bg-[#0a8cd1] hover:scale-[1.03] hover:shadow-lg hover:shadow-[#0da6f2]/20 pulse-ring"
+            href="mailto:cloudenochcsis@gmail.com?subject=Opportunity%20for%20Enoch"
+          >
+            <span>Get in touch</span>
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </a>
+          <a
+            className="flex items-center gap-2 cursor-pointer justify-center rounded-xl h-12 px-8 glass-card text-gray-300 text-sm font-semibold tracking-wide transition-all duration-300 hover:text-white hover:border-[#0da6f2]/30 hover:scale-[1.03]"
+            href="#projects"
+          >
+            <span>View work</span>
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </a>
+        </div>
 
         {/* Scroll indicator */}
         <div className="absolute bottom-8 animate-bounce opacity-30">

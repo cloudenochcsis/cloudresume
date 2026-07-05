@@ -34,4 +34,15 @@ describe('Header', () => {
     expect(screen.getByText(/Agentic AI, Python & Automation/i)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /switch to (light|dark) mode/i })).not.toBeInTheDocument();
   });
+
+  it('offers a direct email CTA and a work anchor in the hero', () => {
+    renderHeader();
+
+    const emailCta = screen.getByRole('link', { name: /get in touch/i });
+    expect(emailCta).toHaveAttribute(
+      'href',
+      'mailto:cloudenochcsis@gmail.com?subject=Opportunity%20for%20Enoch'
+    );
+    expect(screen.getByRole('link', { name: /view work/i })).toHaveAttribute('href', '#projects');
+  });
 });
