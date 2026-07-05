@@ -10,9 +10,7 @@ jest.mock('./components/Main', () => ({ coreCompetencies }: { coreCompetencies: 
     <div data-testid="core-competencies">{coreCompetencies.length}</div>
   </div>
 ));
-jest.mock('./components/VisitorCounter', () => ({ className }: { className?: string }) => (
-  <div data-testid="mock-visitor-counter" className={className}>Mock Visitor Counter</div>
-));
+jest.mock('./components/Contact', () => () => <div data-testid="mock-contact">Contact</div>);
 jest.mock('./contexts/ThemeContext', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="theme-provider">{children}</div>,
   useTheme: () => ({ theme: 'light', animationPreference: 'full' }),
