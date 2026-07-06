@@ -6,7 +6,6 @@ import Contact from './components/Contact';
 
 // Types
 export type CoreCompetency = {
-  icon?: React.ElementType;
   label: string;
 };
 

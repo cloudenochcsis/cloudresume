@@ -33,5 +33,6 @@ describe('Contact', () => {
       'https://www.linkedin.com/in/enoch-a-b00766138/'
     );
     expect(screen.getByRole('link', { name: /blog/i })).toHaveAttribute('href', 'https://cloudenoch.hashnode.dev/');
+    expect(screen.getByTestId('mock-visitor-counter')).toBeInTheDocument();
   });
 });

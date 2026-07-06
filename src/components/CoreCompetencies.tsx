@@ -6,19 +6,14 @@ interface Props {
 }
 
 const CoreCompetencyCard: React.FC<{ competency: CoreCompetency; index: number }> = ({ competency, index }) => {
-  const Icon = competency.icon;
-  
   return (
-    <div 
+    <div
       className="bg-white dark:bg-dark-500 rounded-xl shadow-md dark:shadow-none dark:border dark:border-dark-400 p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-      style={{ 
+      style={{
         animationDelay: `${index * 100}ms`,
         animationFillMode: 'backwards'
       }}
     >
-      <div className="primary-gradient inline-flex p-3 rounded-lg mb-4">
-        {Icon && <Icon className="h-6 w-6 text-white" />}
-      </div>
       <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">{competency.label}</h3>
       <p className="text-gray-600 dark:text-gray-300 text-sm">
         {getDescriptionForCompetency(competency.label)}

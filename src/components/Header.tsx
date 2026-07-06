@@ -114,7 +114,7 @@ const Header: React.FC = () => {
         </div>
         <div className="mt-10 flex flex-col sm:flex-row items-center gap-4">
           <a
-            className="flex items-center gap-2 cursor-pointer justify-center rounded-xl h-12 px-8 bg-[#0da6f2] text-white text-sm font-semibold tracking-wide transition-all duration-300 hover:bg-[#0a8cd1] hover:scale-[1.03] hover:shadow-lg hover:shadow-[#0da6f2]/20 pulse-ring"
+            className="relative flex items-center gap-2 cursor-pointer justify-center rounded-xl h-12 px-8 bg-[#0da6f2] text-white text-sm font-semibold tracking-wide transition-all duration-300 hover:bg-[#0a8cd1] hover:scale-[1.03] hover:shadow-lg hover:shadow-[#0da6f2]/20 pulse-ring"
             href="mailto:cloudenochcsis@gmail.com?subject=Opportunity%20for%20Enoch"
           >
             <span>Get in touch</span>
