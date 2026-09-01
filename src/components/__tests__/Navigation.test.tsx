@@ -48,11 +48,11 @@ describe('Navigation', () => {
     expect(menuButton).toHaveAttribute('aria-expanded', 'true');
 
     // Menu should now be open
-    const mobileNav = document.getElementById('mobile-nav');
-    expect(mobileNav).toBeInTheDocument();
+    expect(screen.getByTestId('mobile-nav')).toBeInTheDocument();
 
     // Clicking again should close it
     fireEvent.click(menuButton);
     expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByTestId('mobile-nav')).not.toBeInTheDocument();
   });
 });

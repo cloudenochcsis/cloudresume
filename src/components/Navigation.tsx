@@ -111,6 +111,7 @@ export const Navigation: React.FC = () => {
         {isMenuOpen && (
           <div
             id="mobile-nav"
+            data-testid="mobile-nav"
             className="md:hidden py-3 px-2 border-t border-slate-800 bg-[#0B0F17] space-y-1"
           >
             {navItems.map((item) => (
