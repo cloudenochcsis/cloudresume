@@ -8,6 +8,9 @@
 
 # Production
 /build
+/out
+/.next
+
 
 # Misc
 .DS_Store
