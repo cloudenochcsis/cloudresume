@@ -1,0 +1,19 @@
+---
+title: "Automating Microservice Deployments Using Terraform, GitHub Actions, and ArgoCD"
+date: "2025-01-15"
+readTime: "6 min read"
+tags: ["GitOps", "Terraform", "ArgoCD", "Kubernetes"]
+author: "Enoch Ayivor"
+canonicalUrl: "https://cloudenoch.hashnode.dev/automating-microservice-deployments-using-terraform-github-actions-and-argocd"
+---
+
+# Automating Microservice Deployments Using Terraform, GitHub Actions, and ArgoCD
+
+In production cloud environments, manual deployments and unversioned cluster changes introduce configuration drift and slow down release cycles.
+
+## Core Architecture Flow
+1. **Terraform**: Codifies VPC networking, subnets, route tables, security groups, and EKS cluster compute.
+2. **CircleCI & GitHub Actions**: Runs unit test suites, security scans, and container builds tagged by commit SHA.
+3. **Argo CD**: Continuous reconciliation loop ensuring Kubernetes cluster state matches declarative Git manifests.
+
+Read the full technical deep dive on [Cloud Enoch on Hashnode](https://cloudenoch.hashnode.dev/automating-microservice-deployments-using-terraform-github-actions-and-argocd).
