@@ -83,20 +83,29 @@ export interface ArticleEntry {
   publishedOn?: string;
 }
 
-export interface ResearchData {
+export interface EducationEntry {
   degree: string;
-  institution: string;
-  department?: string;
-  title?: string;
-  focusTitle?: string;
-  topic?: string;
-  summary: string;
-  description?: string;
-  plainLanguageExplanation?: string;
-  devOpsConnection?: string;
-  relevance?: string;
-  relevanceToDevOps?: string;
+  field: string;
+  description: string;
+  highlight?: string;
 }
+
+export const educationData: EducationEntry[] = [
+  {
+    degree: 'MS in Information Systems',
+    field: 'Information Systems',
+    description:
+      'Advanced distributed systems architecture, enterprise software engineering, database design, and empirical information systems evaluation.',
+    highlight: 'Master of Science with focus on distributed architectures and enterprise systems engineering.',
+  },
+  {
+    degree: 'BSc in Computer Science and Information Technology',
+    field: 'Computer Science and Information Technology',
+    description:
+      'Core foundations of computer systems, data structures, algorithms, operating systems, networking protocols, and systems programming.',
+    highlight: 'Bachelor of Science foundation spanning operating systems, network topologies, and software engineering.',
+  },
+];
 
 export interface SkillCategory {
   title: string;
@@ -118,7 +127,7 @@ export const personalInfo = {
   supportingCopy:
     'I’m Enoch Ayivor, a Senior Cloud DevOps Engineer specializing in AWS, Kubernetes platforms, modular Terraform, declarative GitOps, observability, and cloud infrastructure automation. Former Cloud Team Lead at Crowdbotics managing customer cloud environments.',
   secondaryBio:
-    'Hands-on expertise leading cloud teams at Crowdbotics managing multi-tenant customer environments, deep CS academic foundation, and currently pursuing doctoral research at the University of Cape Town.',
+    'Hands-on expertise leading cloud teams at Crowdbotics managing multi-tenant customer environments, backed by an MS in Information Systems and a BSc in Computer Science and Information Technology.',
   email: 'cloudenochcsis@gmail.com',
   mailtoHref: 'mailto:cloudenochcsis@gmail.com?subject=Opportunity%20for%20Enoch',
   githubUrl: 'https://github.com/cloudenochcsis',
@@ -444,27 +453,7 @@ export const writingAndResearch = {
       publishedOn: 'Cloud Enoch on Hashnode',
     },
   ],
-  research: {
-    degree: 'PhD Candidate in Information Systems',
-    institution: 'University of Cape Town (UCT)',
-    location: 'Cape Town, South Africa',
-    department: 'Department of Information Systems',
-    title: 'GenAI Coding Tools and Developer Expertise Formation',
-    focusTitle: 'GenAI Coding Tools and Developer Expertise Formation',
-    topic: 'Generative AI Coding Tools and Developer Expertise Formation',
-    summary:
-      'Investigating how Generative AI coding assistants influence the acquisition, retention, and evolution of expert knowledge among software developers.',
-    description:
-      'Investigating how automated coding and platform engineering tools influence developer mental models, architectural reasoning, and operational discipline in distributed cloud systems.',
-    plainLanguageExplanation:
-      'As AI-assisted coding becomes standard, understanding how developers build true mastery and mental models of complex distributed systems is critical. My research examines where AI enhances engineering throughput and how teams preserve the deep technical understanding required to debug and run production infrastructure.',
-    devOpsConnection:
-      'This research directly informs how I design automation: building systems where automation handles repetitive toil while engineering teams retain clear observability, architectural clarity, and operational confidence.',
-    relevance:
-      'Bridges hands-on infrastructure reliability with empirical research into modern developer workflows and automated delivery systems.',
-    relevanceToDevOps:
-      'Bridges hands-on infrastructure reliability with empirical research into modern developer workflows and automated delivery systems.',
-  },
+  education: educationData,
 };
 
 export const skillCategories: SkillCategory[] = [
@@ -536,9 +525,9 @@ export const aboutContent = {
         'Claims are backed by verifiable certifications, public code repositories, and upstream open-source contributions that anyone can review.',
     },
     {
-      title: 'Continuous learning and rigorous research',
+      title: 'Continuous learning and engineering discipline',
       description:
-        'Bridging hands-on cloud operations with doctoral research at the University of Cape Town keeps my approach grounded in empirical engineering.',
+        'Bridging hands-on cloud operations with a rigorous computer science academic foundation keeps my approach grounded in empirical software engineering.',
     },
   ],
 };
@@ -548,4 +537,4 @@ export const featuredGitOpsProject = featuredProject;
 export const experienceTimeline = experienceData;
 export const skillsGrid = skillCategories;
 export const blogPosts = writingAndResearch.featuredArticles;
-export const doctoralResearch = writingAndResearch.research;
+export const academicBackground = educationData;
