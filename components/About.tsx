@@ -1,6 +1,6 @@
 import React from 'react';
-import { doctoralResearch } from '../data/portfolioData';
-import { BookOpenIcon, CheckVerifiedIcon, TerminalIcon } from './icons/Icons';
+import { educationData } from '../data/portfolioData';
+import { AcademicCapIcon, CheckVerifiedIcon, TerminalIcon } from './icons/Icons';
 
 export const About: React.FC = () => {
   return (
@@ -10,7 +10,7 @@ export const About: React.FC = () => {
         <span>Background &amp; Philosophy</span>
       </div>
       <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-6">
-        Systems Discipline, Cloud Leadership &amp; Applied Research
+        Systems Discipline, Cloud Leadership &amp; Engineering Foundation
       </h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -27,27 +27,27 @@ export const About: React.FC = () => {
           </p>
         </div>
 
-        {/* Doctoral Research & Core Tenets Column */}
+        {/* Academic Foundation & Core Tenets Column */}
         <div className="lg:col-span-5 space-y-4">
-          {/* PhD Research Card */}
+          {/* Academic Background Card */}
           <div className="p-5 rounded-xl bg-terminal-900 border border-terminal-800 shadow-card">
-            <div className="flex items-center gap-2 mb-2">
-              <BookOpenIcon className="w-4 h-4 text-electric-400" />
+            <div className="flex items-center gap-2 mb-3">
+              <AcademicCapIcon className="w-4 h-4 text-electric-400" />
               <span className="text-xs font-mono font-semibold text-electric-400 uppercase tracking-wider">
-                Doctoral Research
+                Academic Background
               </span>
             </div>
-            <h3 className="text-sm font-bold text-white mb-1">
-              {doctoralResearch.degree}
-            </h3>
-            <div className="text-xs text-slate-400 font-mono mb-2">
-              {doctoralResearch.institution}
-            </div>
-            <p className="text-xs text-slate-300 leading-relaxed mb-3">
-              {doctoralResearch.description}
-            </p>
-            <div className="text-[11px] text-slate-400 border-t border-terminal-800 pt-2 font-mono">
-              Topic: {doctoralResearch.topic}
+            <div className="space-y-3.5">
+              {educationData.map((edu, idx) => (
+                <div key={idx} className={idx > 0 ? 'pt-3 border-t border-terminal-800' : ''}>
+                  <h3 className="text-sm font-bold text-white mb-0.5">
+                    {edu.degree}
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    {edu.description}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 

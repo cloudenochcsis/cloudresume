@@ -98,7 +98,7 @@ export const WritingResearch: React.FC = () => {
           </div>
         </div>
 
-        {/* Doctoral Research (5 cols) */}
+        {/* Academic Background (5 cols) */}
         <div className="lg:col-span-5">
           <div className="h-full rounded-xl bg-editorial-surface border border-editorial-border p-6 shadow-card flex flex-col justify-between">
             <div>
@@ -106,41 +106,37 @@ export const WritingResearch: React.FC = () => {
                 <AcademicCapIcon className="w-5 h-5 text-teal-600" />
                 <div>
                   <h3 className="text-sm font-bold text-editorial-text font-mono uppercase tracking-wider">
-                    Doctoral Research
+                    Academic Background
                   </h3>
                 </div>
               </div>
 
-              <div className="mb-4">
-                <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-teal-50 text-teal-700 border border-teal-100">
-                  {writingAndResearch.research.degree}
-                </span>
-                <h4 className="text-base font-bold text-editorial-text mt-2.5 leading-snug">
-                  {writingAndResearch.research.title}
-                </h4>
-                <div className="text-xs font-mono text-editorial-caption mt-1">
-                  {writingAndResearch.research.institution} • {writingAndResearch.research.location}
-                </div>
+              <div className="space-y-4 mb-4">
+                {(writingAndResearch.education || []).map((edu, idx) => (
+                  <div key={idx} className={idx > 0 ? 'pt-3 border-t border-editorial-border' : ''}>
+                    <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-teal-50 text-teal-700 border border-teal-100">
+                      {edu.degree}
+                    </span>
+                    <p className="text-xs text-editorial-subtext mt-1.5 leading-relaxed">
+                      {edu.description}
+                    </p>
+                  </div>
+                ))}
               </div>
 
-              <div className="space-y-3 text-xs sm:text-sm text-editorial-subtext leading-relaxed">
-                <p>
-                  {writingAndResearch.research.plainLanguageExplanation}
+              <div className="p-3.5 rounded-lg bg-editorial-bg border border-editorial-border">
+                <span className="font-mono text-xs font-semibold text-editorial-text block mb-1">
+                  Computer Science Discipline:
+                </span>
+                <p className="text-xs text-editorial-caption leading-relaxed">
+                  Treating infrastructure reliability as disciplined software engineering: declarative specifications, continuous verification, and telemetry-driven incident response.
                 </p>
-                <div className="p-3.5 rounded-lg bg-editorial-bg border border-editorial-border">
-                  <span className="font-mono text-xs font-semibold text-editorial-text block mb-1">
-                    Connection to DevOps Practice:
-                  </span>
-                  <p className="text-xs text-editorial-caption leading-relaxed">
-                    {writingAndResearch.research.devOpsConnection}
-                  </p>
-                </div>
               </div>
             </div>
 
             <div className="pt-4 mt-6 border-t border-editorial-border flex items-center justify-between text-[11px] font-mono text-editorial-caption">
               <span>Primary Focus: Cloud DevOps</span>
-              <span className="text-teal-600 font-semibold">UCT Dept. of Information Systems</span>
+              <span className="text-teal-600 font-semibold">Computer Science &amp; Info Systems</span>
             </div>
           </div>
         </div>
