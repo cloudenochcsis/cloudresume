@@ -1,64 +1,59 @@
-import React, { FC, useEffect, useState } from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 
 interface VisitorCounterProps {
   className?: string;
 }
 
-const VisitorCounter: FC<VisitorCounterProps> = ({ className }) => {
+export const VisitorCounter: React.FC<VisitorCounterProps> = ({ className = '' }) => {
   const [count, setCount] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchVisitorCount = async () => {
       try {
-        const response = await fetch(process.env.REACT_APP_COUNTER_API_URL || '/api/counter', {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-          },
-        });
-
+        const response = await fetch('/api/counter');
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`HTTP error ${response.status}`);
         }
-
         const data = await response.json();
-        if (typeof data.count !== 'number') {
-          throw new Error('Invalid response format');
+        if (isMounted) {
+          setCount(data.count);
+          setLoading(false);
         }
-
-        setCount(data.count);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch visitor count');
-      } finally {
-        setLoading(false);
+        if (isMounted) {
+          setError(true);
+          setLoading(false);
+        }
       }
     };
 
     fetchVisitorCount();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
-    <div className={`text-center ${className}`}>
-      <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/[0.03] backdrop-blur-xl border border-white/[0.06] transition-all duration-300 hover:border-white/10">
-        <span className="flex items-center justify-center w-5 h-5">
-          <svg className="w-4 h-4 text-[#0da6f2]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-        </span>
-        {loading ? (
-          <span className="text-gray-500 text-sm">Loading...</span>
-        ) : error ? (
-          <span className="text-gray-600 text-sm">Visitor count unavailable</span>
-        ) : (
-          <span className="text-gray-400 text-sm font-medium count-animate">
-            <span className="text-white font-semibold">{count?.toLocaleString()}</span>{' '}
-            {count === 1 ? 'visitor' : 'visitors'}
-          </span>
-        )}
-      </div>
+    <div
+      data-testid="visitor-counter"
+      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-terminal-900 border border-terminal-800 text-xs font-mono text-slate-400 ${className}`}
+    >
+      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+      <span>Visitors:</span>
+      {loading ? (
+        <span className="text-slate-500 animate-pulse">...</span>
+      ) : error ? (
+        <span className="text-slate-500 font-mono">live</span>
+      ) : (
+        <span className="font-semibold text-white">{count?.toLocaleString()}</span>
+      )}
     </div>
   );
 };

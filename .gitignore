@@ -130,5 +130,8 @@ ENV/
 env.bak/
 venv.bak/
 
-# Pytest cache
+# Pytest cache & test artifacts
 .pytest_cache/
+.coverage
+coverage.xml
+test-results/

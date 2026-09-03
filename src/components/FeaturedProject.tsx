@@ -1,205 +1,125 @@
 import React from 'react';
-import { featuredProject } from '../data/portfolioData';
-import { ExternalLinkIcon, LayersIcon, TerminalIcon, CpuChipIcon } from './icons/Icons';
-import { useReveal } from '../hooks/useReveal';
+import { featuredGitOpsProject } from '../data/portfolioData';
+import GitOpsDiagram from './GitOpsDiagram';
+import { ExternalLinkIcon, GitHubIcon, TerminalIcon } from './icons/Icons';
 
 export const FeaturedProject: React.FC = () => {
-  const reveal = useReveal();
-
   return (
-    <article
-      ref={reveal.ref}
-      aria-labelledby="featured-project-title"
-      className={`reveal ${reveal.visible ? 'visible' : ''} mb-12 rounded-xl bg-editorial-surface border border-editorial-border shadow-card overflow-hidden`}
-    >
-      {/* Editorial Header Strip */}
-      <div className="border-b border-editorial-border bg-gradient-to-r from-slate-900 via-slate-850 to-slate-900 text-white p-6 sm:p-8">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#0066FF] text-white text-xs font-mono font-semibold uppercase tracking-wider">
-            <span className="w-1.5 h-1.5 rounded-full bg-white" />
-            {featuredProject.eyebrow}
-          </span>
-          <span className="text-xs font-mono text-slate-300">
-            Microservices • Kubernetes • ArgoCD • OTel
-          </span>
+    <section id="projects" className="py-14 border-b border-terminal-800 scroll-mt-16" aria-label="Featured Engineering Project">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2 font-mono text-xs text-electric-400 uppercase tracking-wider">
+          <TerminalIcon className="w-4 h-4" />
+          <span>Flagship Architecture</span>
         </div>
-        <h3 id="featured-project-title" className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">
-          {featuredProject.title}
-        </h3>
-        <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-3xl">
-          {featuredProject.subtitle}
-        </p>
+        <span className="text-[11px] font-mono px-2.5 py-0.5 rounded bg-electric-500/10 text-electric-400 border border-electric-500/30 font-semibold">
+          Featured Case Study
+        </span>
       </div>
 
-      <div className="p-6 sm:p-8 lg:p-10 space-y-8">
-        {/* Section: The Engineering Challenge */}
+      <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-2">
+        {featuredGitOpsProject.title}
+      </h2>
+      <p className="text-slate-300 text-sm sm:text-base max-w-3xl mb-8 leading-relaxed">
+        {featuredGitOpsProject.tagline}
+      </p>
+
+      {/* Centerpiece Project Container */}
+      <div className="rounded-xl bg-terminal-900 border border-terminal-700/80 p-6 sm:p-8 shadow-card space-y-8">
+        {/* Architecture Flow Diagram Component */}
         <div>
-          <h4 className="text-xs font-mono font-semibold text-editorial-caption uppercase tracking-wider mb-2">
-            The Engineering Challenge
-          </h4>
-          <p className="text-editorial-subtext text-base leading-relaxed">
-            {featuredProject.challenge}
-          </p>
+          <div className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2">
+            System Topology &amp; GitOps Reconciliation Flow
+          </div>
+          <GitOpsDiagram />
         </div>
 
-        {/* Section: Responsive Architecture Diagram (SVG / HTML) */}
-        <div className="p-5 sm:p-6 rounded-xl bg-editorial-bg border border-editorial-border">
-          <div className="flex items-center justify-between mb-4 pb-3 border-b border-editorial-border">
-            <div className="flex items-center gap-2">
-              <LayersIcon className="w-4 h-4 text-[#0066FF]" />
-              <span className="text-xs font-mono font-bold text-editorial-text uppercase tracking-wider">
-                System Architecture &amp; Telemetry Topology
-              </span>
-            </div>
-            <span className="text-[11px] font-mono text-editorial-caption hidden sm:inline">
-              Kubernetes + ArgoCD + OpenTelemetry
-            </span>
+        {/* Technical Narrative: Problem vs Solution */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-terminal-800">
+          <div>
+            <h3 className="text-xs font-mono text-red-400 uppercase tracking-wider font-semibold mb-2">
+              The Engineering Challenge
+            </h3>
+            <p className="text-sm text-slate-300 leading-relaxed">
+              {featuredGitOpsProject.challenge}
+            </p>
           </div>
-
-          {/* Responsive Architecture Flow */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {/* Box 1: Git Repository & ArgoCD */}
-            <div className="p-4 rounded-lg bg-editorial-surface border border-editorial-border flex flex-col justify-between">
-              <div>
-                <div className="text-[11px] font-mono text-[#0066FF] font-semibold mb-1">DECLARATIVE SOURCE</div>
-                <div className="text-sm font-bold text-editorial-text mb-2">GitOps Control Plane</div>
-                <p className="text-xs text-editorial-caption leading-relaxed">
-                  Git repository holds desired cluster manifests. ArgoCD controller continually reconciles drift.
-                </p>
-              </div>
-              <div className="mt-3 pt-2 border-t border-editorial-muted text-[11px] font-mono text-teal-600 font-medium">
-                Sync Status: Reconciled
-              </div>
-            </div>
-
-            {/* Box 2: Kubernetes Compute Cluster */}
-            <div className="p-4 rounded-lg bg-editorial-surface border border-editorial-border flex flex-col justify-between">
-              <div>
-                <div className="text-[11px] font-mono text-[#0066FF] font-semibold mb-1">COMPUTE WORKLOADS</div>
-                <div className="text-sm font-bold text-editorial-text mb-2">Kubernetes Pods</div>
-                <p className="text-xs text-editorial-caption leading-relaxed">
-                  Microservices instrumented with OpenTelemetry SDK. Automatic W3C trace context injection.
-                </p>
-              </div>
-              <div className="mt-3 pt-2 border-t border-editorial-muted text-[11px] font-mono text-editorial-text font-medium">
-                Multi-service mesh
-              </div>
-            </div>
-
-            {/* Box 3: OpenTelemetry Collector */}
-            <div className="p-4 rounded-lg bg-editorial-surface border border-editorial-border flex flex-col justify-between">
-              <div>
-                <div className="text-[11px] font-mono text-teal-600 font-semibold mb-1">TELEMETRY PIPELINE</div>
-                <div className="text-sm font-bold text-editorial-text mb-2">OTel Collector</div>
-                <p className="text-xs text-editorial-caption leading-relaxed">
-                  DaemonSet buffers OTLP spans, filters attributes, and exports trace batches to observability storage.
-                </p>
-              </div>
-              <div className="mt-3 pt-2 border-t border-editorial-muted text-[11px] font-mono text-emerald-600 font-medium">
-                OTLP gRPC/HTTP Ingest
-              </div>
-            </div>
-
-            {/* Box 4: Prometheus & Grafana */}
-            <div className="p-4 rounded-lg bg-editorial-surface border border-editorial-border flex flex-col justify-between">
-              <div>
-                <div className="text-[11px] font-mono text-[#0066FF] font-semibold mb-1">OBSERVABILITY BACKENDS</div>
-                <div className="text-sm font-bold text-editorial-text mb-2">Grafana &amp; Metrics</div>
-                <p className="text-xs text-editorial-caption leading-relaxed">
-                  Real-time RED dashboards, alert rules, and correlated trace waterfalls for root-cause discovery.
-                </p>
-              </div>
-              <div className="mt-3 pt-2 border-t border-editorial-muted text-[11px] font-mono text-[#0066FF] font-medium">
-                Trace-to-Metric Correlation
-              </div>
-            </div>
+          <div>
+            <h3 className="text-xs font-mono text-emerald-400 uppercase tracking-wider font-semibold mb-2">
+              Architectural Solution
+            </h3>
+            <p className="text-sm text-slate-300 leading-relaxed">
+              {featuredGitOpsProject.solution || featuredGitOpsProject.gitOpsDetails}
+            </p>
           </div>
         </div>
 
-        {/* Section: Important Technical Decisions */}
-        <div>
-          <h4 className="text-xs font-mono font-semibold text-editorial-caption uppercase tracking-wider mb-4">
-            Architecture &amp; Key Technical Decisions
-          </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {featuredProject.architectureDetails.map((item) => (
+        {/* Outcomes / What it Proves */}
+        <div className="pt-4 border-t border-terminal-800">
+          <h3 className="text-xs font-mono text-slate-400 uppercase tracking-wider font-semibold mb-3">
+            Production Outcomes &amp; Architectural Decisions
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {(featuredGitOpsProject.outcomes || []).map((outcome, idx) => (
               <div
-                key={item.title}
-                className="p-4 rounded-lg bg-editorial-bg border border-editorial-border"
+                key={idx}
+                className="p-3.5 rounded-lg bg-terminal-950 border border-terminal-800 text-xs text-slate-300 leading-relaxed font-mono flex items-start gap-2.5"
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-2 h-2 rounded-full bg-[#0066FF]" />
-                  <h5 className="text-sm font-bold text-editorial-text">{item.title}</h5>
-                </div>
-                <p className="text-xs text-editorial-subtext leading-relaxed">
-                  {item.description}
-                </p>
+                <span className="text-electric-400 font-bold font-mono">0{idx + 1}.</span>
+                <span>{outcome}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Section: What the project demonstrates */}
-        <div className="p-5 rounded-xl bg-blue-50/60 border border-blue-100 text-editorial-text">
-          <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#0066FF] uppercase tracking-wider mb-1">
-            <CpuChipIcon className="w-4 h-4 text-[#0066FF]" />
-            <span>What this demonstrates</span>
+        {/* Stack Badges and Action Links */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-6 border-t border-terminal-800">
+          {/* Badges */}
+          <div className="flex flex-wrap gap-2">
+            {(featuredGitOpsProject.techStack || featuredGitOpsProject.tags || []).map((tech) => (
+              <span
+                key={tech}
+                className="px-2.5 py-1 rounded bg-terminal-950 border border-terminal-800 text-[11px] font-mono text-slate-300"
+              >
+                {tech}
+              </span>
+            ))}
           </div>
-          <p className="text-sm text-editorial-subtext leading-relaxed font-medium">
-            {featuredProject.demonstrates}
-          </p>
-        </div>
 
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2 pt-2">
-          {featuredProject.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-xs font-mono px-2.5 py-1 rounded-md bg-editorial-muted text-editorial-subtext border border-editorial-border"
+          {/* Action Links */}
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href={featuredGitOpsProject.hashnodeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-electric-500 hover:bg-electric-600 text-white text-xs font-semibold transition-colors shadow-glow no-underline"
             >
-              {tag}
-            </span>
-          ))}
-        </div>
+              <span>Hashnode Writeup</span>
+              <ExternalLinkIcon className="w-3.5 h-3.5" />
+            </a>
 
-        {/* Action Buttons: Application code, Kubernetes manifests, Terraform infrastructure */}
-        <div className="pt-4 border-t border-editorial-border flex flex-wrap items-center gap-4">
-          <a
-            href={featuredProject.links[0].href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="View code — Application code"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#0066FF] text-white text-sm font-semibold hover:bg-[#0052D6] transition-colors shadow-sm no-underline"
-          >
-            <TerminalIcon className="w-4 h-4" />
-            <span>Application code</span>
-            <ExternalLinkIcon className="w-3.5 h-3.5" />
-          </a>
+            <a
+              href={featuredGitOpsProject.githubK8sUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-terminal-950 border border-terminal-800 hover:border-slate-700 text-slate-200 text-xs font-mono transition-colors no-underline"
+            >
+              <GitHubIcon className="w-3.5 h-3.5 text-slate-400" />
+              <span>k8s Manifests</span>
+            </a>
 
-          <a
-            href={featuredProject.links[1].href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-editorial-surface border border-editorial-darkBorder text-editorial-text text-sm font-semibold hover:border-[#0066FF] hover:text-[#0066FF] transition-colors no-underline"
-          >
-            <LayersIcon className="w-4 h-4 text-editorial-caption" />
-            <span>Kubernetes manifests</span>
-            <ExternalLinkIcon className="w-3.5 h-3.5 text-editorial-caption" />
-          </a>
-
-          <a
-            href={featuredProject.links[2].href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-editorial-surface border border-editorial-darkBorder text-editorial-text text-sm font-semibold hover:border-[#0066FF] hover:text-[#0066FF] transition-colors no-underline"
-          >
-            <CpuChipIcon className="w-4 h-4 text-editorial-caption" />
-            <span>Terraform infrastructure</span>
-            <ExternalLinkIcon className="w-3.5 h-3.5 text-editorial-caption" />
-          </a>
+            <a
+              href={featuredGitOpsProject.githubTerraformUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-terminal-950 border border-terminal-800 hover:border-slate-700 text-slate-200 text-xs font-mono transition-colors no-underline"
+            >
+              <GitHubIcon className="w-3.5 h-3.5 text-slate-400" />
+              <span>Terraform Code</span>
+            </a>
+          </div>
         </div>
       </div>
-    </article>
+    </section>
   );
 };
 
