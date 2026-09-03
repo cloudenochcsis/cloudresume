@@ -116,16 +116,18 @@ export interface SkillCategory {
 
 export const personalInfo = {
   name: 'Enoch Ayivor',
+  heroName: 'Enoch .A',
   shortName: 'Enoch A.',
-  title: 'Senior DevOps Engineer',
-  role: 'Senior DevOps Engineer',
+  title: 'Cloud & DevOps Engineer',
+  role: 'Cloud & DevOps Engineer',
+  status: 'Cloud & DevOps Roles',
   location: 'Cape Town, South Africa (Available for Remote EU & Global)',
-  eyebrow: 'Senior Cloud & DevOps Engineer • AWS, Kubernetes & Networking',
+  eyebrow: 'Cloud DevOps Engineer • AWS, Kubernetes & Networking',
   headline: 'Cloud infrastructure that helps teams ship with confidence.',
   valueProp:
     'I design, automate, and operate reliable cloud infrastructure on AWS with Kubernetes, modular Terraform, and declarative GitOps pipelines.',
   supportingCopy:
-    'I’m Enoch Ayivor, a Senior Cloud DevOps Engineer specializing in AWS, Kubernetes platforms, modular Terraform, declarative GitOps, observability, and cloud infrastructure automation. Former Cloud Team Lead at Crowdbotics managing customer cloud environments.',
+    'I’m Enoch Ayivor, a Cloud DevOps Engineer specializing in AWS, Kubernetes platforms, modular Terraform, declarative GitOps, observability, and cloud infrastructure automation. Former Cloud Team Lead at Crowdbotics managing customer cloud environments.',
   secondaryBio:
     'Hands-on expertise leading cloud teams at Crowdbotics managing multi-tenant customer environments, backed by an MS in Information Systems and a BSc in Computer Science and Information Technology.',
   email: 'cloudenochcsis@gmail.com',
