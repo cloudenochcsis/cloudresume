@@ -23,7 +23,7 @@ export default function Home() {
         {/* 2. Featured Project: GitOps Portfolio Pipeline (Centerpiece) */}
         <FeaturedProject />
 
-        {/* 3. About: Technical Support -> DevOps arc, Crowdbotics leadership, PhD */}
+        {/* 3. About: Technical Support -> DevOps arc, Crowdbotics leadership, Academic Background */}
         <About />
 
         {/* 4. Skills / Stack Grid: AWS, IaC, Orchestration, CI/CD, Containers, Networking */}
