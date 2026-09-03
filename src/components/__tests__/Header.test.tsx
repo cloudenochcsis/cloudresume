@@ -30,7 +30,7 @@ describe('Header', () => {
   it('positions the hero around cloud, DevOps, agentic AI, Python, and automation', () => {
     renderHeader();
 
-    expect(screen.getByText(/Cloud DevOps Engineer/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Cloud DevOps Engineer/i)[0]).toBeInTheDocument();
     expect(screen.getByText(/Agentic AI, Python & Automation/i)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /switch to (light|dark) mode/i })).not.toBeInTheDocument();
   });
