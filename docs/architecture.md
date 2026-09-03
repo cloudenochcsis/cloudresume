@@ -94,8 +94,8 @@ sequenceDiagram
         CCI->>CCI: build-and-test-backend (Python 3.11, Pytest)
     end
     CCI->>CCI: next build (Generate Static Assets)
-    CCI->>Srv: SCP static files -> /var/www/portfolio/
-    CCI->>Srv: SCP api files -> /opt/resume-api/
+    CCI->>Srv: SCP static files to /var/www/portfolio/
+    CCI->>Srv: SCP api files to /opt/resume-api/
     CCI->>Srv: systemctl restart resume-api
     CCI->>Srv: nginx -t && systemctl reload nginx
     deactivate CCI
