@@ -1,42 +1,38 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import About from '../About';
 
 describe('About', () => {
-  beforeEach(() => {
-    window.IntersectionObserver = jest.fn().mockImplementation((callback) => ({
-      observe: jest.fn(() => callback([{ isIntersecting: true }])),
-      disconnect: jest.fn(),
-    }));
-  });
-
-  it('links every certification to its verification page', () => {
+  it('renders headline and systems engineering narrative', () => {
     render(<About />);
 
-    expect(screen.getByRole('link', { name: /solutions architect/i })).toHaveAttribute(
-      'href',
-      'https://www.credly.com/badges/193050a7-1625-4d8e-b77d-26d2fe8dd1e2/linked_in_profile'
-    );
-    expect(screen.getByRole('link', { name: /terraform/i })).toHaveAttribute(
-      'href',
-      'https://www.credly.com/badges/59645601-fc1c-42a8-b95b-4fbf3c499ef6/linked_in_profile'
-    );
-    expect(screen.getByRole('link', { name: /azure administrator/i })).toHaveAttribute(
-      'href',
-      'https://learn.microsoft.com/en-us/users/enochayivor-0815/credentials/f46a46b56d4133fb'
-    );
+    expect(
+      screen.getByRole('heading', {
+        name: /systems discipline, cloud leadership & engineering foundation/i,
+      })
+    ).toBeInTheDocument();
+    expect(screen.getByText(/technical support and systems administration/i)).toBeInTheDocument();
+    expect(screen.getByText(/Cloud Team Lead at Crowdbotics/i)).toBeInTheDocument();
   });
 
-  it('shows only verifiable trust signals', () => {
+  it('renders academic background showcasing MS and BSc degrees with zero PhD mentions', () => {
     render(<About />);
 
-    expect(screen.getByRole('link', { name: /merged pull requests/i })).toHaveAttribute(
-      'href',
-      'https://github.com/Tracer-Cloud/opensre/pulls?q=is%3Apr+is%3Amerged+author%3Acloudenochcsis'
-    );
-    // CKA / Azure DevOps Expert have no verify links -> must not render
-    expect(screen.queryByText(/kubernetes administrator/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/devops engineer expert/i)).not.toBeInTheDocument();
-    // no headshot file yet -> no img element
-    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    expect(screen.getByText('Academic Background')).toBeInTheDocument();
+    expect(screen.getByText('MS in Information Systems')).toBeInTheDocument();
+    expect(screen.getByText('BSc in Computer Science and Information Technology')).toBeInTheDocument();
+
+    // Verifies zero PhD/doctoral mentions
+    expect(screen.queryByText(/phd/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/doctoral/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/cape town/i)).not.toBeInTheDocument();
+  });
+
+  it('renders operational principles list', () => {
+    render(<About />);
+
+    expect(screen.getByText(/Zero manual console tweaks; everything codified in Git/i)).toBeInTheDocument();
+    expect(screen.getByText(/Strict network segmentation/i)).toBeInTheDocument();
+    expect(screen.getByText(/Continuous reconciliation \(ArgoCD\) over imperative scripts/i)).toBeInTheDocument();
   });
 });
