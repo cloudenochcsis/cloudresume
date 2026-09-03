@@ -19,14 +19,14 @@ export const Hero: React.FC = () => {
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-terminal-900 border border-terminal-800 text-xs font-mono text-slate-300 mb-6">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           <span className="text-slate-400">status:</span>
-          <span className="text-emerald-400 font-semibold">Available for Senior &amp; Staff DevOps roles</span>
+          <span className="text-emerald-400 font-semibold">{personalInfo.status}</span>
           <span className="text-slate-500 hidden sm:inline">• EU Remote Friendly</span>
         </div>
 
         {/* Name and Title */}
         <div className="space-y-3 mb-6">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white">
-            {personalInfo.name}
+            {personalInfo.heroName || 'Enoch .A'}
           </h1>
           <p className="text-xl sm:text-2xl font-mono font-medium text-electric-400">
             {personalInfo.title}
@@ -42,7 +42,7 @@ export const Hero: React.FC = () => {
         <div className="p-4 rounded-lg bg-terminal-900/90 border border-terminal-800 max-w-3xl mb-8 text-xs sm:text-sm text-slate-300 font-mono flex items-start gap-3">
           <TerminalIcon className="w-5 h-5 text-electric-400 shrink-0 mt-0.5" />
           <div>
-            <span className="text-slate-400">arc:</span> Technical Support &rarr; Systems Specialist &rarr; Cloud Team Lead @ <strong className="text-white font-semibold">Crowdbotics</strong> &rarr; Senior DevOps Engineer
+            <span className="text-slate-400">arc:</span> Technical Support &rarr; Systems Specialist &rarr; Cloud Team Lead @ <strong className="text-white font-semibold">Crowdbotics</strong> &rarr; Cloud &amp; DevOps Engineer
           </div>
         </div>
 
