@@ -10,7 +10,7 @@ describe('WritingResearch', () => {
     }));
   });
 
-  it('connects engineering practice with blog and UCT doctoral research', () => {
+  it('connects engineering practice with blog and academic foundation in CS and Info Systems', () => {
     render(<WritingResearch />);
 
     // Blog links
@@ -21,9 +21,8 @@ describe('WritingResearch', () => {
     expect(screen.getByText(/Declarative GitOps on Kubernetes/i)).toBeInTheDocument();
     expect(screen.getByText(/End-to-End Distributed Tracing in Microservices/i)).toBeInTheDocument();
 
-    // Doctoral research at University of Cape Town
-    expect(screen.getByText(/PhD Candidate in Information Systems/i)).toBeInTheDocument();
-    expect(screen.getByText(/University of Cape Town/i)).toBeInTheDocument();
-    expect(screen.getByText(/GenAI Coding Tools and Developer Expertise Formation/i)).toBeInTheDocument();
+    // Academic background in Computer Science & Information Systems
+    expect(screen.getByText(/MS in Information Systems/i)).toBeInTheDocument();
+    expect(screen.getByText(/BSc in Computer Science and Information Technology/i)).toBeInTheDocument();
   });
 });

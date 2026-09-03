@@ -42,7 +42,7 @@ export const Hero: React.FC = () => {
         <div className="p-4 rounded-lg bg-terminal-900/90 border border-terminal-800 max-w-3xl mb-8 text-xs sm:text-sm text-slate-300 font-mono flex items-start gap-3">
           <TerminalIcon className="w-5 h-5 text-electric-400 shrink-0 mt-0.5" />
           <div>
-            <span className="text-slate-400">arc:</span> Technical Support &rarr; Systems Specialist &rarr; Cloud Team Lead @ <strong className="text-white font-semibold">Crowdbotics</strong> &rarr; Senior DevOps &rarr; PhD Candidate @ <strong className="text-white font-semibold">UCT</strong>
+            <span className="text-slate-400">arc:</span> Technical Support &rarr; Systems Specialist &rarr; Cloud Team Lead @ <strong className="text-white font-semibold">Crowdbotics</strong> &rarr; Senior DevOps Engineer
           </div>
         </div>
 
