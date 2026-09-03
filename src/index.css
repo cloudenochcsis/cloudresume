@@ -2,79 +2,76 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-@keyframes typing {
-  from { width: 0; }
-  to { width: 100%; }
-}
-
-@keyframes blink-caret {
-  from, to { border-color: transparent; }
-  50% { border-color: #0da6f2; }
-}
-
-.typing-effect {
-  overflow: hidden;
-  border-right: 0.15em solid #0da6f2;
-  white-space: nowrap;
-  margin: 0 auto;
-  letter-spacing: 0.05em;
-  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #0D1117;
-  color: white;
-  line-height: 1.6;
+  background-color: #0B0F17;
+  color: #0F172A;
+  line-height: 1.65;
+  overflow-x: hidden;
 }
 
-code {
-  font-family: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+code, kbd, samp, pre {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-.prefers-reduced-motion * {
-  animation-duration: 0.01ms !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: 0.01ms !important;
+/* ── Accessible Focus Visible ── */
+*:focus-visible {
+  outline: 2px solid #0066FF !important;
+  outline-offset: 3px !important;
+  border-radius: 4px;
 }
 
-/* ── Selection colour ── */
+/* ── Selection ── */
 ::selection {
-  background: rgba(13, 166, 242, 0.3);
-  color: #fff;
+  background: rgba(0, 102, 255, 0.2);
+  color: #0F172A;
 }
 
-/* ── Custom scrollbar ── */
+/* ── Custom Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0D1117;
+  background: #0B0F17;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(13, 166, 242, 0.4);
-  border-radius: 3px;
+  background: #1E293B;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(13, 166, 242, 0.7);
+  background: #0066FF;
 }
 
-/* ── Focus visible styles ── */
-*:focus-visible {
-  outline: 2px solid #0da6f2;
-  outline-offset: 2px;
-  border-radius: 4px;
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.prefers-reduced-motion *,
+.prefers-reduced-motion *::before,
+.prefers-reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
 }
