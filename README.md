@@ -45,15 +45,16 @@ flowchart TD
         CircleCI --> TestBE["build-and-test-backend (Python 3.11, Pytest)"]
         TestFE --> Deploy["Deploy via SSH / Systemd"]
         TestBE --> Deploy
-        Deploy --> Nginx
-        Deploy --> FastAPI
     end
 
-    Browser -->|GET / (Static Assets)| Nginx
+    Deploy -.->|"Deploy Static Assets"| Nginx
+    Deploy -.->|"Restart Service"| FastAPI
+
+    Browser -->|"GET / (Static Assets)"| Nginx
     Nginx --> NextStatic
-    Browser -->|GET /api/counter| Nginx
-    Nginx -->|Proxy Pass /api/| FastAPI
-    FastAPI -->|Async Read/Increment| MongoDB
+    Browser -->|"GET /api/counter"| Nginx
+    Nginx -->|"Proxy Pass /api/"| FastAPI
+    FastAPI -->|"Async Read & Increment"| MongoDB
 ```
 
 ---
