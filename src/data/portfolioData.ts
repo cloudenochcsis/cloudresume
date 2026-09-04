@@ -125,7 +125,7 @@ export const personalInfo = {
   eyebrow: 'Cloud DevOps Engineer • AWS, Kubernetes & Networking',
   headline: 'Cloud infrastructure that helps teams ship with confidence.',
   valueProp:
-    'I design, automate, and operate reliable cloud infrastructure on AWS with Kubernetes, modular Terraform, and declarative GitOps pipelines.',
+    'I design, automate, and operate reliable cloud infrastructure on AWS and Azure with Kubernetes, modular Terraform, and declarative GitOps pipelines.',
   supportingCopy:
     'I’m Enoch Ayivor, a Cloud DevOps Engineer specializing in AWS, Kubernetes platforms, modular Terraform, declarative GitOps, observability, and cloud infrastructure automation. Former Cloud Team Lead at Crowdbotics managing customer cloud environments.',
   secondaryBio:
