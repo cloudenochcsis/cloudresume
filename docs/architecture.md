@@ -102,3 +102,11 @@ sequenceDiagram
     Web->>Srv: User visits cloudenoch.com
     Srv-->>Web: Serves updated application
 ```
+
+---
+
+## 5. Deployment & Runbooks
+
+For step-by-step droplet provisioning, systemd unit definitions, and Nginx reverse proxy setup, refer to the [Production Deployment Guide](deployment.md).
+
+

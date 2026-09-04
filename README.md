@@ -96,6 +96,7 @@ cloudresume/
 │       └── test_main.py     # Asynchronous API test cases
 ├── docs/                    # Architectural & project documentation
 │   ├── architecture.md      # Detailed system architecture deep-dive
+│   ├── deployment.md        # Production deployment runbook
 │   └── superpowers/         # Design specifications and implementation plans
 │       ├── plans/
 │       └── specs/
@@ -131,14 +132,13 @@ cloudresume/
 │   │   └── posts/
 │   ├── data/                # Single source of truth data models
 │   │   └── portfolioData.ts # Typed profile, certs, projects, and career data
-│   └── hooks/               # Custom React hooks (scroll reveals, etc.)
+│   └── setupTests.ts        # Jest test setup and DOM matchers
 ├── docker-compose.yml       # Local multi-container development environment
 ├── Dockerfile               # Production multi-stage build (Node 20 -> Nginx)
 ├── next.config.mjs          # Next.js static export configuration
 ├── package.json             # Pinned frontend dependencies and scripts
 ├── tailwind.config.js       # Custom terminal color palette and typography
 ├── tsconfig.json            # Strict TypeScript configuration with @/* path alias
-├── DEPLOYMENT.md            # Production deployment runbook
 └── README.md                # This file
 ```
 
