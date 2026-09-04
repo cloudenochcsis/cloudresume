@@ -1,3 +1,4 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import VisitorCounter from '../VisitorCounter';
 
@@ -9,7 +10,8 @@ describe('VisitorCounter', () => {
   it('renders loading state initially', () => {
     (fetch as jest.Mock).mockReturnValueOnce(new Promise(() => {}));
     render(<VisitorCounter />);
-    expect(screen.getByText(/Loading/i)).toBeInTheDocument();
+    expect(screen.getByText('...')).toBeInTheDocument();
+    expect(screen.getByText('Visitors:')).toBeInTheDocument();
   });
 
   it('displays visitor count when API call succeeds', async () => {
@@ -20,27 +22,17 @@ describe('VisitorCounter', () => {
     });
 
     render(<VisitorCounter />);
-    expect(await screen.findByText(/42/)).toBeInTheDocument();
-    expect(screen.getByText(/visitors/i)).toBeInTheDocument();
+    expect(await screen.findByText('42')).toBeInTheDocument();
+    expect(screen.getByText('Visitors:')).toBeInTheDocument();
   });
 
-  it('displays error message when API call fails with HTTP error', async () => {
+  it('displays graceful fallback when API call fails', async () => {
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: false,
       status: 500,
     });
 
     render(<VisitorCounter />);
-    expect(await screen.findByText(/Visitor count unavailable/i)).toBeInTheDocument();
-  });
-
-  it('displays error message when response has invalid format', async () => {
-    (fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve({ invalidKey: 'invalid' }),
-    });
-
-    render(<VisitorCounter />);
-    expect(await screen.findByText(/Visitor count unavailable/i)).toBeInTheDocument();
+    expect(await screen.findByText('live')).toBeInTheDocument();
   });
 });

@@ -1,145 +1,91 @@
-import React, { useState, useEffect } from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import { personalInfo } from '../data/portfolioData';
 import { MailIcon } from './icons/Icons';
 
 export const Navigation: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const navItems = [
-    { label: 'Work', href: '#work' },
-    { label: 'Experience', href: '#experience' },
-    { label: 'Writing & Research', href: '#writing' },
+  const navLinks = [
+    { label: 'Featured Project', href: '#projects' },
     { label: 'About', href: '#about' },
+    { label: 'Skills', href: '#skills' },
+    { label: 'Experience', href: '#experience' },
+    { label: 'Writing', href: '#writing' },
     { label: 'Contact', href: '#contact' },
   ];
 
-  const handleNavClick = (href: string) => {
-    setIsMenuOpen(false);
-    const targetElement = document.querySelector(href);
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
-    <nav
-      className={`sticky top-0 z-50 transition-all duration-200 ${
-        scrolled
-          ? 'bg-[#0B0F17]/95 backdrop-blur-md border-b border-slate-800 shadow-lg'
-          : 'bg-[#0B0F17] border-b border-slate-850'
-      }`}
-      aria-label="Main navigation"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Brand Name */}
-          <div className="flex items-center">
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="text-lg font-bold text-white hover:text-[#0066FF] transition-colors bg-transparent border-none cursor-pointer tracking-tight flex items-center gap-2 p-1.5 rounded focus:outline-none"
-              aria-label="Enoch A. - Scroll to top"
-            >
-              <span className="font-mono text-[#0066FF] font-black tracking-wider">EA</span>
-              <span className="text-white font-semibold tracking-tight">{personalInfo.shortName}</span>
-            </button>
-          </div>
+    <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-terminal-950/90 border-b border-terminal-800">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        {/* Brand */}
+        <a
+          href="/"
+          className="flex items-center gap-2.5 font-mono text-sm font-bold text-white tracking-tight no-underline"
+        >
+          <span className="w-2.5 h-2.5 rounded-sm bg-electric-500" />
+          <span>Enoch A.</span>
+          <span className="text-[11px] text-slate-500 font-normal hidden sm:inline">~/devops</span>
+        </a>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick(item.href);
-                }}
-                className="nav-link text-slate-300 hover:text-white px-3 py-2 rounded text-sm font-medium transition-colors"
-              >
-                {item.label}
-              </a>
-            ))}
-          </div>
-
-          {/* Desktop "Let's talk" CTA */}
-          <div className="hidden md:flex items-center">
+        {/* Desktop Links */}
+        <nav className="hidden md:flex items-center gap-6 text-xs font-mono">
+          {navLinks.map((link) => (
             <a
-              href={personalInfo.mailtoHref}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0066FF] text-white text-sm font-medium hover:bg-[#0052D6] transition-colors shadow-sm focus:outline-none"
+              key={link.label}
+              href={link.href}
+              className="text-slate-300 hover:text-white transition-colors no-underline"
             >
-              <MailIcon className="w-4 h-4" />
-              <span>Let’s talk</span>
+              {link.label}
             </a>
-          </div>
+          ))}
+        </nav>
 
-          {/* Mobile Hamburger Button */}
-          <div className="md:hidden flex items-center gap-2">
-            <a
-              href={personalInfo.mailtoHref}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0066FF] text-white text-xs font-medium hover:bg-[#0052D6] transition-colors"
-            >
-              <span>Talk</span>
-            </a>
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-slate-300 hover:text-white p-2.5 rounded-lg border border-slate-800 bg-slate-900/60 focus:outline-none"
-              aria-expanded={isMenuOpen}
-              aria-controls="mobile-nav"
-              aria-label="Toggle navigation menu"
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                {isMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Dropdown Menu */}
-        {isMenuOpen && (
-          <div
-            id="mobile-nav"
-            data-testid="mobile-nav"
-            className="md:hidden py-3 px-2 border-t border-slate-800 bg-[#0B0F17] space-y-1"
+        {/* Action Button & Mobile Toggle */}
+        <div className="flex items-center gap-3">
+          <a
+            href={personalInfo.mailtoHref}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-electric-500 hover:bg-electric-600 text-white text-xs font-mono font-semibold transition-colors no-underline"
           >
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick(item.href);
-                }}
-                className="text-slate-300 hover:text-white hover:bg-slate-800/60 block px-3 py-3 rounded-lg text-base font-medium transition-colors"
-              >
-                {item.label}
-              </a>
-            ))}
-            <div className="pt-2 pb-1">
-              <a
-                href={personalInfo.mailtoHref}
-                className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-lg bg-[#0066FF] text-white font-medium text-sm text-center"
-              >
-                <MailIcon className="w-4 h-4" />
-                <span>Let’s talk</span>
-              </a>
-            </div>
-          </div>
-        )}
+            <MailIcon className="w-3.5 h-3.5" />
+            <span>Let’s talk</span>
+          </a>
+
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden p-2 text-slate-400 hover:text-white rounded-lg border border-terminal-800 bg-terminal-900 focus:outline-none"
+            aria-label="Toggle Menu"
+            aria-expanded={isOpen}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {isOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+        </div>
       </div>
-    </nav>
+
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div className="md:hidden border-t border-terminal-800 bg-terminal-950 px-4 py-3 space-y-1 font-mono text-xs">
+          {navLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              onClick={() => setIsOpen(false)}
+              className="block py-2 text-slate-300 hover:text-white no-underline"
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      )}
+    </header>
   );
 };
 
