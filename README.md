@@ -96,6 +96,7 @@ cloudresume/
 │       └── test_main.py     # Asynchronous API test cases
 ├── docs/                    # Architectural & project documentation
 │   ├── architecture.md      # Detailed system architecture deep-dive
+│   ├── deployment.md        # Production deployment runbook
 │   └── superpowers/         # Design specifications and implementation plans
 │       ├── plans/
 │       └── specs/
@@ -138,7 +139,6 @@ cloudresume/
 ├── package.json             # Pinned frontend dependencies and scripts
 ├── tailwind.config.js       # Custom terminal color palette and typography
 ├── tsconfig.json            # Strict TypeScript configuration with @/* path alias
-├── DEPLOYMENT.md            # Production deployment runbook
 └── README.md                # This file
 ```
 

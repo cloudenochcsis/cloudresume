@@ -18,6 +18,8 @@
 -   **Database:** MongoDB Atlas (cloud-hosted)
 -   **CI/CD:** CircleCI automates build and deployment steps
 
+For high-level system topology and sequence flows, refer to the [System Architecture Guide](architecture.md).
+
 ---
 
 ## Step 1: Prepare Your Server
