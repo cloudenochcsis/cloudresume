@@ -9,7 +9,7 @@ RUN yarn build
 # Production stage
 FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Create SSL directory
 RUN mkdir -p /etc/nginx/ssl
