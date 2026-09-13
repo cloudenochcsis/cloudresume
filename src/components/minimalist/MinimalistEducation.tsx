@@ -15,24 +15,16 @@ export const MinimalistEducation: React.FC = () => {
 
       <div className="space-y-6">
         {educationData.map((edu, idx) => (
-          <div key={idx} className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-4">
-            <div className="flex-grow">
-              <h3 className="text-base sm:text-lg font-semibold text-neutral-900">
-                {edu.degree}
-              </h3>
-              <p className="text-sm font-medium text-neutral-600 mb-1">
-                {edu.field}
-              </p>
-              <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
-                {edu.description}
-              </p>
-            </div>
-
-            {edu.period && (
-              <div className="flex-shrink-0 text-xs sm:text-sm font-mono text-neutral-500">
-                {edu.period}
-              </div>
-            )}
+          <div key={idx} className="pb-4 border-b border-neutral-100 last:border-0">
+            <h3 className="text-base sm:text-lg font-semibold text-neutral-900">
+              {edu.degree}
+            </h3>
+            <p className="text-sm font-medium text-neutral-600 mb-1">
+              {edu.field}
+            </p>
+            <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
+              {edu.description}
+            </p>
           </div>
         ))}
       </div>

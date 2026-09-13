@@ -27,17 +27,9 @@ export const MinimalistExperience: React.FC = () => {
               {exp.organization} · <span className="font-normal text-neutral-500">{exp.location}</span>
             </div>
 
-            <p className="text-sm sm:text-base text-neutral-700 leading-relaxed mb-3">
+            <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
               {exp.summary || exp.description}
             </p>
-
-            <ul className="list-disc list-inside text-xs sm:text-sm text-neutral-600 space-y-1 pl-1">
-              {(exp.bullets || exp.highlights).slice(0, 4).map((bullet, bIdx) => (
-                <li key={bIdx} className="leading-relaxed">
-                  {bullet}
-                </li>
-              ))}
-            </ul>
           </div>
         ))}
       </div>

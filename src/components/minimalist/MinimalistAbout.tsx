@@ -44,13 +44,10 @@ export const MinimalistAbout: React.FC = () => {
         </div>
       </div>
 
-      {/* Bio Paragraphs */}
-      <div className="space-y-3.5 text-neutral-700 text-base sm:text-lg leading-relaxed mb-6">
+      {/* Bio */}
+      <div className="text-neutral-700 text-base sm:text-lg leading-relaxed mb-6">
         <p>
-          {personalInfo.valueProp}
-        </p>
-        <p>
-          {personalInfo.supportingCopy}
+          I am a Doctoral Researcher and an IT professional with interests in Cloud and DevOps.
         </p>
       </div>
 
