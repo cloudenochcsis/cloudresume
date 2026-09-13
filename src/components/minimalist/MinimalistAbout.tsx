@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { personalInfo } from '../../data/portfolioData';
 
 export const MinimalistAbout: React.FC = () => {
-  const [imgSrc, setImgSrc] = useState('/avatar.jpg');
+  const [imgSrc, setImgSrc] = useState('/profile.png');
 
   return (
     <section id="about" className="pt-10 pb-8">
