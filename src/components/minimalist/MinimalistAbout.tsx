@@ -44,7 +44,7 @@ export const MinimalistAbout: React.FC = () => {
       {/* Bio */}
       <div className="text-neutral-700 text-base sm:text-lg leading-relaxed mb-6">
         <p>
-          I am a Doctoral Researcher and systems practitioner investigating the intersection of Cloud Computing, DevOps, Software Engineering, and Artificial Intelligence, with a research focus on resilient distributed architectures and intelligent infrastructure automation.
+          I am a Doctoral Researcher and IT Professional working across Cloud Computing, DevOps, Software Engineering, and Artificial Intelligence. My research examines how emerging technologies are shaping software development, while my professional work focuses on building reliable cloud infrastructure, automating delivery, and improving the resilience of distributed systems.
         </p>
       </div>
 
