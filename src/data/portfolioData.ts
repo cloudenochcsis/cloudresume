@@ -93,20 +93,20 @@ export interface EducationEntry {
 
 export const educationData: EducationEntry[] = [
   {
-    degree: 'MS in Information Systems',
-    field: 'Information Systems',
-    period: '2021 — 2023',
-    description:
-      'Advanced distributed systems architecture, enterprise software engineering, database design, and empirical information systems evaluation.',
-    highlight: 'Master of Science with focus on distributed architectures and enterprise systems engineering.',
-  },
-  {
     degree: 'Doctoral Researcher in Information Systems',
     field: 'Information Systems',
     period: '2023 — Present',
     description:
       'Advanced doctoral research focusing on distributed cloud architectures, systems reliability, observability frameworks, and empirical evaluation of cloud-native infrastructure.',
     highlight: 'Doctoral research advancing distributed systems architecture and resilient infrastructure platforms.',
+  },
+  {
+    degree: 'MS in Information Systems',
+    field: 'Information Systems',
+    period: '2021 — 2023',
+    description:
+      'Advanced distributed systems architecture, enterprise software engineering, database design, and empirical information systems evaluation.',
+    highlight: 'Master of Science with focus on distributed architectures and enterprise systems engineering.',
   },
   {
     degree: 'BSc in Computer Science and Information Technology',
