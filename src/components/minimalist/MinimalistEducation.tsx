@@ -16,12 +16,9 @@ export const MinimalistEducation: React.FC = () => {
       <div className="space-y-6">
         {educationData.map((edu, idx) => (
           <div key={idx} className="pb-4 border-b border-neutral-100 last:border-0">
-            <h3 className="text-base sm:text-lg font-semibold text-neutral-900">
+            <h3 className="text-base sm:text-lg font-semibold text-neutral-900 mb-1.5">
               {edu.degree}
             </h3>
-            <p className="text-sm font-medium text-neutral-600 mb-1">
-              {edu.field}
-            </p>
             <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
               {edu.description}
             </p>
