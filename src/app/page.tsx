@@ -1,45 +1,28 @@
 import React from 'react';
-import Navigation from '../components/Navigation';
-import Hero from '../components/Hero';
-import FeaturedProject from '../components/FeaturedProject';
-import About from '../components/About';
-import SkillsGrid from '../components/SkillsGrid';
-import ExperienceTimeline from '../components/ExperienceTimeline';
-import Certifications from '../components/Certifications';
-import BlogPreview from '../components/BlogPreview';
-import Footer from '../components/Footer';
+import MinimalistNav from '../components/minimalist/MinimalistNav';
+import MinimalistAbout from '../components/minimalist/MinimalistAbout';
+import MinimalistEducation from '../components/minimalist/MinimalistEducation';
+import MinimalistProjects from '../components/minimalist/MinimalistProjects';
+import MinimalistExperience from '../components/minimalist/MinimalistExperience';
+import MinimalistCertifications from '../components/minimalist/MinimalistCertifications';
+import MinimalistSkills from '../components/minimalist/MinimalistSkills';
+import MinimalistWriting from '../components/minimalist/MinimalistWriting';
+import MinimalistFooter from '../components/minimalist/MinimalistFooter';
 
 export default function Home() {
   return (
     <>
-      {/* Top Sticky Navigation */}
-      <Navigation />
+      <MinimalistNav />
 
-      {/* Main Content Sections */}
-      <main id="main-content" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 w-full">
-        {/* 1. Hero with value prop, Crowdbotics arc & verified cert badges */}
-        <Hero />
-
-        {/* 2. Featured Project: GitOps Portfolio Pipeline (Centerpiece) */}
-        <FeaturedProject />
-
-        {/* 3. About: Technical Support -> DevOps arc, Crowdbotics leadership, Academic Background */}
-        <About />
-
-        {/* 4. Skills / Stack Grid: AWS, IaC, Orchestration, CI/CD, Containers, Networking */}
-        <SkillsGrid />
-
-        {/* 5. Experience Timeline: Crowdbotics, Support, OpenSRE */}
-        <ExperienceTimeline />
-
-        {/* 6. Certifications: AWS SAA, Terraform Associate, Azure */}
-        <Certifications />
-
-        {/* 7. Writing & Blog: Hashnode Publications & Architecture Guides */}
-        <BlogPreview />
-
-        {/* 8. Contact & Footer */}
-        <Footer />
+      <main id="main-content" className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex-1 w-full">
+        <MinimalistAbout />
+        <MinimalistEducation />
+        <MinimalistProjects />
+        <MinimalistExperience />
+        <MinimalistCertifications />
+        <MinimalistSkills />
+        <MinimalistWriting />
+        <MinimalistFooter />
       </main>
     </>
   );
