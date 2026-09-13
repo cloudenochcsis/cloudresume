@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { personalInfo } from '../../data/portfolioData';
 
 export const MinimalistAbout: React.FC = () => {
-  const [imgSrc, setImgSrc] = useState('/profile.png');
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+  const [imgSrc, setImgSrc] = useState(`${basePath}/profile.png`);
 
   return (
     <section id="about" className="pt-10 pb-8">
@@ -14,7 +15,7 @@ export const MinimalistAbout: React.FC = () => {
           <img
             src={imgSrc}
             alt={personalInfo.name}
-            onError={() => setImgSrc('/avatar.svg')}
+            onError={() => setImgSrc(`${basePath}/avatar.svg`)}
             className="w-36 h-36 sm:w-40 sm:h-40 rounded-full object-cover shadow-md border-4 border-white ring-1 ring-neutral-200"
           />
         </div>
