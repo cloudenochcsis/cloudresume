@@ -48,16 +48,8 @@ export const MinimalistAbout: React.FC = () => {
         </p>
       </div>
 
-      {/* Action Buttons & Links */}
+      {/* Action Links */}
       <div className="flex flex-wrap items-center gap-3.5 pt-1">
-        <a
-          href="/resume.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-neutral-900 hover:bg-neutral-800 text-white px-4 py-2 rounded text-sm font-semibold shadow-sm inline-flex items-center gap-1.5 transition-colors no-underline"
-        >
-          <b>CV</b>
-        </a>
 
         <div className="flex items-center gap-2.5 text-sm sm:text-base text-neutral-600 font-mono">
           <span>[</span>
