@@ -88,19 +88,30 @@ export interface EducationEntry {
   field: string;
   description: string;
   highlight?: string;
+  period?: string;
 }
 
 export const educationData: EducationEntry[] = [
   {
     degree: 'MS in Information Systems',
     field: 'Information Systems',
+    period: '2021 — 2023',
     description:
       'Advanced distributed systems architecture, enterprise software engineering, database design, and empirical information systems evaluation.',
     highlight: 'Master of Science with focus on distributed architectures and enterprise systems engineering.',
   },
   {
+    degree: 'Doctoral Researcher in Information Systems',
+    field: 'Information Systems',
+    period: '2023 — Present',
+    description:
+      'Advanced doctoral research focusing on distributed cloud architectures, systems reliability, observability frameworks, and empirical evaluation of cloud-native infrastructure.',
+    highlight: 'Doctoral research advancing distributed systems architecture and resilient infrastructure platforms.',
+  },
+  {
     degree: 'BSc in Computer Science and Information Technology',
     field: 'Computer Science and Information Technology',
+    period: '2017 — 2021',
     description:
       'Core foundations of computer systems, data structures, algorithms, operating systems, networking protocols, and systems programming.',
     highlight: 'Bachelor of Science foundation spanning operating systems, network topologies, and software engineering.',
@@ -127,7 +138,7 @@ export const personalInfo = {
   valueProp:
     'I design, automate, and operate reliable cloud infrastructure on AWS and Azure with Kubernetes, modular Terraform, and declarative GitOps pipelines.',
   supportingCopy:
-    'I’m Enoch Ayivor, a Cloud DevOps Engineer specializing in AWS, Kubernetes platforms, modular Terraform, declarative GitOps, observability, and cloud infrastructure automation. Former Cloud Team Lead at Crowdbotics managing customer cloud environments.',
+    'I’m Enoch Ayivor, a Cloud DevOps Engineer and Doctoral Researcher in Information Systems specializing in AWS, Kubernetes platforms, modular Terraform, declarative GitOps, observability, and cloud infrastructure automation. Former Cloud Team Lead at Crowdbotics managing customer cloud environments.',
   secondaryBio:
     'Hands-on expertise leading cloud teams at Crowdbotics managing multi-tenant customer environments, backed by an MS in Information Systems and a BSc in Computer Science and Information Technology.',
   email: 'cloudenochcsis@gmail.com',

@@ -15,17 +15,13 @@ describe('About', () => {
     expect(screen.getByText(/Cloud Team Lead at Crowdbotics/i)).toBeInTheDocument();
   });
 
-  it('renders academic background showcasing MS and BSc degrees with zero PhD mentions', () => {
+  it('renders academic background showcasing Doctoral Researcher, MS and BSc degrees', () => {
     render(<About />);
 
     expect(screen.getByText('Academic Background')).toBeInTheDocument();
+    expect(screen.getByText('Doctoral Researcher in Information Systems')).toBeInTheDocument();
     expect(screen.getByText('MS in Information Systems')).toBeInTheDocument();
     expect(screen.getByText('BSc in Computer Science and Information Technology')).toBeInTheDocument();
-
-    // Verifies zero PhD/doctoral mentions
-    expect(screen.queryByText(/phd/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/doctoral/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/cape town/i)).not.toBeInTheDocument();
   });
 
   it('renders operational principles list', () => {

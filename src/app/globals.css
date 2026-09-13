@@ -11,17 +11,19 @@
     scroll-behavior: smooth;
     background-color: #ffffff;
     color: #2c2c2c;
+    font-size: 17px; /* Matches Sumin Yu's base reading size */
   }
 
   body {
     background-color: #ffffff;
     color: #2c2c2c;
-    font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    font-weight: 300;
   }
 
   /* Accessible focus rings */
@@ -43,6 +45,57 @@
   }
   ::-webkit-scrollbar-thumb:hover {
     background: #9ca3af;
+  }
+}
+
+/* Sumin Yu Headings & Typography */
+h1, .h1 {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #2c2c2c;
+}
+
+h2, .h2 {
+  font-family: "DM Sans", sans-serif;
+  font-size: 1.75rem !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #2c2c2c;
+}
+
+h3, .h3 {
+  font-family: "DM Sans", sans-serif;
+  font-size: 1.25rem !important;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+p.lead {
+  font-size: 1.15rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: #2c2c2c;
+}
+
+/* Sumin Yu Profile Image */
+.img-profile-inline {
+  width: 10rem;
+  height: 10rem;
+  object-fit: cover;
+  object-position: center 15%;
+  border-radius: 9999px;
+  border: 4px solid #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  image-rendering: auto;
+}
+
+@media (min-width: 640px) {
+  .img-profile-inline {
+    width: 11.5rem;
+    height: 11.5rem;
   }
 }
 
