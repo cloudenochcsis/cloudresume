@@ -44,7 +44,7 @@ export const MinimalistAbout: React.FC = () => {
       {/* Bio */}
       <div className="text-neutral-700 text-base sm:text-lg leading-relaxed mb-6">
         <p>
-          I am a Doctoral Researcher and an IT professional with interests in Cloud and DevOps.
+          I am a Doctoral Researcher and systems practitioner investigating the intersection of Cloud Computing, DevOps, Software Engineering, and Artificial Intelligence, with a research focus on resilient distributed architectures and intelligent infrastructure automation.
         </p>
       </div>
 
