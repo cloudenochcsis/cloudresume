@@ -54,7 +54,7 @@ export const MinimalistAbout: React.FC = () => {
           href="/resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          className="btn-gradient px-4 py-2 rounded text-sm font-semibold shadow-sm inline-flex items-center gap-1.5 no-underline"
+          className="bg-neutral-900 hover:bg-neutral-800 text-white px-4 py-2 rounded text-sm font-semibold shadow-sm inline-flex items-center gap-1.5 transition-colors no-underline"
         >
           <b>CV</b>
         </a>

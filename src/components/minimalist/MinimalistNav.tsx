@@ -44,7 +44,7 @@ export const MinimalistNav: React.FC = () => {
         <div className="flex items-center gap-3">
           <a
             href={personalInfo.mailtoHref}
-            className="btn-gradient px-3.5 py-1.5 rounded text-xs font-semibold shadow-sm inline-flex items-center gap-1"
+            className="bg-neutral-900 hover:bg-neutral-800 text-white px-3.5 py-1.5 rounded text-xs font-semibold shadow-sm inline-flex items-center gap-1 transition-colors"
           >
             Contact
           </a>
