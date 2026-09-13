@@ -30,7 +30,7 @@ describe('FeaturedProject', () => {
 
     expect(screen.getByRole('link', { name: /Hashnode Writeup/i })).toHaveAttribute(
       'href',
-      'https://cloudenoch.hashnode.dev/automating-microservice-deployments-using-terraform-github-actions-and-argocd'
+      'https://cloudenoch.hashnode.dev/'
     );
     expect(screen.getByRole('link', { name: /k8s Manifests/i })).toHaveAttribute(
       'href',

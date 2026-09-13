@@ -24,7 +24,7 @@ describe('BlogPreview', () => {
       })
     ).toHaveAttribute(
       'href',
-      'https://cloudenoch.hashnode.dev/automating-microservice-deployments-using-terraform-github-actions-and-argocd'
+      'https://cloudenoch.hashnode.dev/'
     );
   });
 });
