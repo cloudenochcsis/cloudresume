@@ -10,16 +10,13 @@ export const MinimalistAbout: React.FC = () => {
     <section id="about" className="pt-10 pb-8">
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-8 mb-6">
         {/* Profile Picture Slot */}
-        <div className="flex-shrink-0 text-center">
-          <div className="relative w-36 h-36 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-white shadow-md ring-1 ring-neutral-200">
-            <img
-              src={imgSrc}
-              alt={personalInfo.name}
-              onError={() => setImgSrc('/avatar.svg')}
-              className="w-full h-full object-cover"
-              style={{ objectPosition: 'center 18%' }}
-            />
-          </div>
+        <div className="flex-shrink-0 text-center sm:text-left">
+          <img
+            src={imgSrc}
+            alt={personalInfo.name}
+            onError={() => setImgSrc('/avatar.svg')}
+            className="w-36 h-36 sm:w-40 sm:h-40 rounded-full object-cover shadow-md border-4 border-white ring-1 ring-neutral-200"
+          />
         </div>
 
         {/* Title & Identity */}

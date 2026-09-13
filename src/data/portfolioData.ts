@@ -370,7 +370,7 @@ export const experienceData: ExperienceEntry[] = [
     role: 'Infrastructure & Systems Engineer',
     organization: 'Enterprise Systems & Networks',
     company: 'Enterprise Systems & Networks',
-    location: 'Cape Town, South Africa',
+    location: 'Remote',
     period: '2019 — 2021',
     type: 'Full-time',
     summary:
